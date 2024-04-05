@@ -134,7 +134,7 @@ Vagrant.configure("2") do |config|
             v.storage :file, bus: "sata", device: volume["name"], size: volume["size"]
           end
         end
-        v.nested = true if node["roles"].include?("compute")
+        v.nested = true
       end
 
       volume_mounts_dict = ""
