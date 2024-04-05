@@ -151,11 +151,7 @@ Vagrant.configure("2") do |config|
       nodeconfig.vm.provision "shell", privileged: false do |sh|
         sh.env = {
           SOCKS_PROXY: socks_proxy.to_s,
-          OPENSTACK_NODE_ROLES: node["roles"].join(" ").to_s,
-          OPENSTACK_SCRIPTS_DIR: "/vagrant",
-          OS_KOLLA_BUILD_ARGS: ENV.fetch("OS_KOLLA_BUILD_ARGS", nil),
-          OS_DEBUG: ENV.fetch("OS_DEBUG", nil),
-          DOCKER_REGISTRY_IP: "10.10.13.2"
+          OS_DEBUG: ENV.fetch("OS_DEBUG", nil)
         }
         sh.inline = <<-SHELL
           cd /vagrant/
