@@ -20,10 +20,12 @@
   networks:
     - name: mgmt-net
       ip: "172.16.1.201"
-    - name: external-net
-      ip: "0.0.0.0"
   roles:
+    - controller
+    - network
+    - compute
     - storage
+    - monitoring
   volumes:
     - name: sdb
       size: 200
@@ -33,10 +35,12 @@
   networks:
     - name: mgmt-net
       ip: "172.16.1.202"
-    - name: external-net
-      ip: "0.0.0.0"
   roles:
+    - controller
+    - network
+    - compute
     - storage
+    - monitoring
   volumes:
     - name: sdb
       size: 200
@@ -46,10 +50,12 @@
   networks:
     - name: mgmt-net
       ip: "172.16.1.203"
-    - name: external-net
-      ip: "0.0.0.0"
   roles:
+    - controller
+    - network
+    - compute
     - storage
+    - monitoring
   volumes:
     - name: sdb
       size: 200
