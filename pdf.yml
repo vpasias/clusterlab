@@ -14,73 +14,42 @@
 # Tunnel Network(tunnel-net) - This interface is used by Neutron for vm-to-vm traffic over tunnel-neted networks (like VxLan).
 # Storage Network(storage-net) - This interface is used virtual machines to communicate to Ceph.
 # External Network(external-net)  This is the raw interface given to neutron as its external network port.
-- name: "registry"
-  memory: 8192
-  cpus: 1
-  volumes:
-    - name: sdb
-      size: 50
-      mount: /var/lib/docker/
+- name: "node01.example.com"
+  memory: 32768
+  cpus: 16
   networks:
-    - name: tunnel-net
-      ip: "10.10.13.2"
-  roles:
-    - registry
-- name: "control01"
-  memory: 8192
-  cpus: 1
-  networks:
-    - name: tunnel-net
-      ip: "10.10.13.4"
-  roles:
-    - controller
-    - network
-- name: "control02"
-  memory: 8192
-  cpus: 1
-  networks:
-    - name: tunnel-net
-      ip: "10.10.13.5"
-  roles:
-    - controller
-    - network
-- name: "control03"
-  memory: 8192
-  cpus: 1
-  networks:
-    - name: tunnel-net
-      ip: "10.10.13.6"
-  roles:
-    - controller
-    - network
-- name: "compute01"
-  memory: 8192
-  cpus: 1
-  networks:
-    - name: tunnel-net
-      ip: "10.10.13.33"
-    - name: storage-net
-      ip: "10.10.14.33"
-  roles:
-    - compute
-- name: "storage01"
-  memory: 8192
-  cpus: 1
-  networks:
-    - name: tunnel-net
-      ip: "10.10.13.97"
-    - name: storage-net
-      ip: "10.10.14.97"
+    - name: mgmt-net
+      ip: "172.16.1.201"
+    - name: external-net
+      ip: "0.0.0.0"
   roles:
     - storage
   volumes:
     - name: sdb
-      size: 100
-- name: "monitoring01"
-  memory: 8192
-  cpus: 1
+      size: 200
+- name: "node02.example.com"
+  memory: 32768
+  cpus: 16
   networks:
-    - name: tunnel-net
-      ip: "10.10.13.129"
+    - name: mgmt-net
+      ip: "172.16.1.202"
+    - name: external-net
+      ip: "0.0.0.0"
   roles:
-    - monitoring
+    - storage
+  volumes:
+    - name: sdb
+      size: 200
+- name: "node03.example.com"
+  memory: 32768
+  cpus: 16
+  networks:
+    - name: mgmt-net
+      ip: "172.16.1.203"
+    - name: external-net
+      ip: "0.0.0.0"
+  roles:
+    - storage
+  volumes:
+    - name: sdb
+      size: 200
