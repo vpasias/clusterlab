@@ -42,7 +42,7 @@ end
   no_proxy += ",10.0.2.#{i}"
 end
 # NOTE: This is the kolla_internal_vip_address value
-no_proxy += ",10.10.13.3"
+no_proxy += ",172.16.1.3"
 socks_proxy = ENV["socks_proxy"] || ENV["SOCKS_PROXY"] || ""
 
 os_distro = ENV["OS_DISTRO"] || "ubuntu_22"
