@@ -65,6 +65,7 @@ Vagrant.configure("2") do |config|
     v.management_network_name = "administration" # Administration - Provides Internet access for all nodes and is used for administration to install software packages
     v.random_hostname = true
     v.cpu_mode = "host-passthrough"
+    v.machine_virtual_size = 100
     v.disk_device = "sda"
     v.disk_bus = "sata"
   end
