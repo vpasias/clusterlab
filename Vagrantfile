@@ -87,7 +87,7 @@ Vagrant.configure("2") do |config|
   end
 
   # Basic requirements installation
-  config.vm.provision "shell", path: "#{File.dirname(__FILE__)}/requirements/base.sh"
+  config.vm.provision "shell", path: "#{File.dirname(__FILE__)}/base.sh"
 
   config.vm.provision "shell", inline: <<~SHELL
     if command -v sestatus; then
