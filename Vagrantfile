@@ -25,7 +25,7 @@ def which(cmd)
 end
 
 nodes = YAML.load_file("#{File.dirname(__FILE__)}/pdf.yml")
-vagrant_boxes = YAML.load_file("#{File.dirname(__FILE__)}/../../distros_supported.yml")
+vagrant_boxes = YAML.load_file("#{File.dirname(__FILE__)}/distros_supported.yml")
 
 no_proxy = ENV["NO_PROXY"] || ENV["no_proxy"] || "127.0.0.1,localhost"
 hosts = "127.0.0.1   localhost\n"
@@ -48,18 +48,18 @@ socks_proxy = ENV["socks_proxy"] || ENV["SOCKS_PROXY"] || ""
 os_distro = ENV["OS_DISTRO"] || "ubuntu_22"
 box = vagrant_boxes[os_distro]
 
-system("echo -e \"\n\n\n\" | ssh-keygen -f #{File.dirname(__FILE__)}/../../insecure_keys/key -t rsa -N ''") unless File.exist?("#{File.dirname(__FILE__)}/../../insecure_keys/key")
+system("echo -e \"\n\n\n\" | ssh-keygen -f #{File.dirname(__FILE__)}/insecure_keys/key -t rsa -N ''") unless File.exist?("#{File.dirname(__FILE__)}/insecure_keys/key")
 
 Vagrant.configure("2") do |config|
   config.vm.provider :libvirt
   config.vm.provider :virtualbox
 
-  config.vm.synced_folder "../../", "/vagrant"
+  config.vm.synced_folder "/", "/vagrant"
   config.vm.box = box["name"]
   config.vm.box_version = box["version"]
   config.ssh.insert_key = false
   config.vm.provider :libvirt do |v, override|
-    override.vm.synced_folder "../../", "/vagrant", type: "virtiofs"
+    override.vm.synced_folder "/", "/vagrant", type: "virtiofs"
     v.memorybacking :access, mode: "shared"
     v.management_network_address = "10.0.2.0/24"
     v.management_network_name = "administration" # Administration - Provides Internet access for all nodes and is used for administration to install software packages
@@ -87,7 +87,7 @@ Vagrant.configure("2") do |config|
   end
 
   # Basic requirements installation
-  config.vm.provision "shell", path: "#{File.dirname(__FILE__)}/../../requirements/base.sh"
+  config.vm.provision "shell", path: "#{File.dirname(__FILE__)}/requirements/base.sh"
 
   config.vm.provision "shell", inline: <<~SHELL
     if command -v sestatus; then
@@ -129,38 +129,7 @@ Vagrant.configure("2") do |config|
         end
       end
       nodeconfig.vm.provider :libvirt do |v|
-        if node.key? "volumes"
-          node["volumes"].each do |volume|
-            v.storage :file, bus: "sata", device: volume["name"], size: volume["size"]
-          end
-        end
         v.nested = true
-      end
-
-      volume_mounts_dict = ""
-      cinder_volume = ""
-      if node.key? "volumes"
-        node["volumes"].each do |volume|
-          if volume.key? "mount"
-            volume_mounts_dict += "#{volume['name']}=#{volume['mount']},"
-          else
-            cinder_volume += "/dev/#{volume['name']},"
-          end
-        end
-      end
-      nodeconfig.vm.provision "shell", privileged: false do |sh|
-        sh.env = {
-          SOCKS_PROXY: socks_proxy.to_s,
-          OPENSTACK_NODE_ROLES: node["roles"].join(" ").to_s,
-          OPENSTACK_SCRIPTS_DIR: "/vagrant",
-          OS_KOLLA_BUILD_ARGS: ENV.fetch("OS_KOLLA_BUILD_ARGS", nil),
-          OS_DEBUG: ENV.fetch("OS_DEBUG", nil),
-          DOCKER_REGISTRY_IP: "172.16.1.3"
-        }
-        sh.inline = <<-SHELL
-          cd /vagrant/
-          ./node.sh -v "#{volume_mounts_dict[0...-1]}" -c "#{cinder_volume[0...-1]}" | tee ~/node.log
-        SHELL
       end
     end
   end
