@@ -117,7 +117,8 @@ Vagrant.configure("2") do |config|
           nodeconfig.vm.network :private_network, ip: network["ip"], type: :static, libvirt__network_name: network["name"], nic_type: "virtio", virtualbox__intnet: true
         end
       end
-      nodeconfig.vm.network :private_network, ip: "0.0.0.0", auto_network: true, libvirt__network_name: "external-net", nic_type: "virtio", virtualbox__intnet: true if node["roles"].include?("network")
+      #nodeconfig.vm.network :private_network, ip: "0.0.0.0", auto_network: true, libvirt__network_name: "external-net", nic_type: "virtio", virtualbox__intnet: true if node["roles"].include?("network")
+      nodeconfig.vm.network :public_network, bridge: "br0", mode: "bridge"
 
       nodeconfig.vm.provider "virtualbox" do |v|
         if node.key? "volumes"
