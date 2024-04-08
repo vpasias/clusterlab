@@ -41,7 +41,7 @@ Vagrant.configure("2") do |config|
     sudo sed -i '/swap/d' /etc/fstab
     sudo echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu
     sudo chmod 440 /etc/sudoers.d/ubuntu
-    sudo apt-get update
+    sudo apt-get update -y
     useradd -m #{USERNAME} --groups sudo
     su -c "printf 'cd /home/#{USERNAME}\nsudo su #{USERNAME}' >> .bash_profile" -s /bin/sh vagrant
     sudo -u #{USERNAME} mkdir -p /home/#{USERNAME}/.ssh
@@ -49,6 +49,7 @@ Vagrant.configure("2") do |config|
     sudo chsh -s /bin/bash #{USERNAME}
     sudo cp /tmp/hosts /etc/hosts
     sudo echo 'options kvm_intel nested=1' > /etc/modprobe.d/qemu-system-x86.conf
+    sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils iperf iperf3 mtr traceroute netcat sshpass socat
   SCRIPT
   
   nodes.each do | (name, cfg) |
