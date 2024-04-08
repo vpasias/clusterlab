@@ -48,6 +48,7 @@ Vagrant.configure("2") do |config|
     sudo -u #{USERNAME} cat /tmp/id_rsa.pub >> /home/#{USERNAME}/.ssh/authorized_keys
     sudo chsh -s /bin/bash #{USERNAME}
     sudo cp /tmp/hosts /etc/hosts
+    sudo echo 'options kvm_intel nested=1' > /etc/modprobe.d/qemu-system-x86.conf
   SCRIPT
   
   nodes.each do | (name, cfg) |
