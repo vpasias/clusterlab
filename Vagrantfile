@@ -12,8 +12,7 @@ AUTOCONF = 'off'
 SERVERIP = ''
 DNS0IP = '172.16.1.1'
 DNS1IP = ''
-GATEWAYIP1 = '172.168.1.1'
-GATEWAYIP2 = '172.168.2.1'
+GATEWAYIP = '172.168.1.1'
 NETMASK = '255.255.255.0'
 
 nodes = {
@@ -73,7 +72,6 @@ Vagrant.configure("2") do |config|
         :dev => BRIDGE2,
         :mode => 'bridge',
         :type => 'bridge',
-        :gateway => GATEWAYIP2,
         :keep => true
 
       node.vm.provider :libvirt do |libvirt|
