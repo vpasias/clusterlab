@@ -38,7 +38,6 @@ Vagrant.configure("2") do |config|
     sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT==" net.ifnames=0 biosdevname=0"/GRUB_CMDLINE_LINUX_DEFAULT="console=tty0 console=ttyS0 net.ifnames=0 biosdevname=0"/' /etc/default/grub
     sudo sed -i 's/#GRUB_TERMINAL=console/GRUB_TERMINAL="serial console"/' /etc/default/grub
     sudo update-grub
-    sudo swapoff -a
     sudo sed -i '/swap/d' /etc/fstab
     sudo echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu
     sudo chmod 440 /etc/sudoers.d/ubuntu
