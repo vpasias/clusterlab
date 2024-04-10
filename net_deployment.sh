@@ -26,3 +26,9 @@ virsh net-define /mnt/extra/cluster.xml && virsh net-autostart cluster && virsh 
 virsh net-define /mnt/extra/service.xml && virsh net-autostart service && virsh net-start service
 
 ip a && sudo virsh net-list --all
+
+#ip link add name br1 type bridge
+#ip link set dev br1 up
+#ip link add name br2 type bridge
+#ip link set dev br2 up
+#ip a 
