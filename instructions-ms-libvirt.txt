@@ -12,9 +12,17 @@ screen
 # exit a session and terminate it: exit
 
 sudo -i
+cd /mnt/extra && cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT
+
+# Create the iason user
+sudo useradd iason -m -s /bin/bash && sudo usermod -aG sudo iason && echo "iason:iason" | chpasswd && echo "iason ALL=(root) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/iason && \
+sudo chmod 0440 /etc/sudoers.d/iason && su - iason
+
+# Prepare the hypervisor node.
+mkdir .ssh && ssh-keygen -q -t rsa -N "" -f .ssh/id_rsa && cat .ssh/id_rsa.pub >> .ssh/authorized_keys && sudo bash -c "cat .ssh/id_rsa.pub >> /root/.ssh/authorized_keys" && \
+ssh -o "StrictHostKeyChecking=no" root@127.0.0.1 uname -a
 
 # Install vagrant
-cd /mnt/extra && cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && sudo virsh list --all && sudo brctl show && \
 wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg && \
 echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list && \
 sudo apt update -y && sudo apt install vagrant && vagrant plugin install vagrant-libvirt && \
@@ -30,7 +38,7 @@ sudo tee --append /etc/hosts <<< "172.16.1.107 n7.example.com"
 ######################################## MicroStack Cluster (https://github.com/vpasias/clusterlab) #############################################################################################################
 ##################################################################################################################################################################################
 
-git clone https://github.com/vpasias/clusterlab.git && cd /mnt/extra/clusterlab && ls -lah && chmod +x net_deployment.sh && ./net_deployment.sh && \
+git clone https://github.com/vpasias/clusterlab.git && cd /home/clusterlab && ls -lah && chmod +x net_deployment.sh && ./net_deployment.sh && \
 sudo virsh list --all && sudo brctl show && sudo virsh net-list --all
 
 #cp Vagrantfile Vagrantfile-libvirt && cp -a Vagrantfile-vbox Vagrantfile
