@@ -1,0 +1,121 @@
+chmod +x cloudlab-setup-ubuntu-tl.sh && ./cloudlab-setup-ubuntu-tl.sh && \
+sudo apt-get install libvirt-daemon genisoimage libguestfs-tools libosinfo-bin virtinst qemu-kvm git vim net-tools wget curl bash-completion python-pip libvirt-daemon-system virt-manager bridge-utils libnss-libvirt libvirt-clients osinfo-db-tools intltool sshpass p7zip-full p7zip-rar -y && \
+sudo sed -i 's/hosts:          files dns/hosts:          files libvirt libvirt_guest dns/' /etc/nsswitch.conf && sudo lsmod | grep kvm && sudo reboot
+#sudo systemctl restart libvirtd && sudo systemctl status libvirtd
+
+screen
+# Press Return to continue
+# detach from session without killing it: Ctrl a d 
+# to see screen sessions: screen -ls
+# detach from closed session: screen -d -r 1920.pts-0.node0
+# enter session: screen -r 1920.pts-0.node0
+# exit a session and terminate it: exit
+
+sudo -i
+
+# Install vagrant
+cd /mnt/extra && cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && sudo virsh list --all && sudo brctl show && \
+wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg && \
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list && \
+sudo apt update -y && sudo apt install vagrant && vagrant plugin install vagrant-libvirt
+
+##################################################################################################################################################################################
+######################################## MicroK8s Cluster (https://github.com/vpasias/mk8s_cluster) #############################################################################################################
+##################################################################################################################################################################################
+
+it clone https://github.com/vpasias/clusterlab.git && ls -lah && chmod +x net_deployment.sh && ./net_deployment.sh && vagrant up
+
+for i in {1..3}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo ip a"; done && \
+for i in {1..3}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "uname -a"; done
+
+ssh -o "StrictHostKeyChecking=no" ubuntu@n1
+
+cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && lsblk
+
+sudo snap install openstack --channel 2023.2
+
+sunbeam prepare-node-script | bash -x && newgrp snap_daemon
+
+sunbeam cluster bootstrap --role control --role compute --role storage
+
+#Management networks shared by hosts (CIDRs, separated by comma) (10.20.20.0/24): 172.16.1.0/24
+#MetalLB address allocation range (supports multiple ranges, comma separated) (10.20.20.10-10.20.20.20): 172.16.1.201-172.16.1.220
+#Disks to attach to MicroCeph: /dev/vdb
+
+sunbeam cluster add --name n2.example.com
+
+#Token: 
+
+exit
+
+ssh -o "StrictHostKeyChecking=no" ubuntu@n2
+
+sudo snap install openstack --channel 2023.2
+
+sunbeam prepare-node-script | bash -x && newgrp snap_daemon
+
+sunbeam cluster join --role control --role compute --role storage \
+   --token 
+
+#Free network interface that will be configured for external traffic [eno1/eno2] (eno1): enp9s0
+
+exit
+
+ssh -o "StrictHostKeyChecking=no" ubuntu@n1
+
+sunbeam cluster add --name n3.example.com
+
+#Token: 
+
+exit
+
+ssh -o "StrictHostKeyChecking=no" ubuntu@n3
+
+sudo snap install openstack --channel 2023.2
+
+sunbeam prepare-node-script | bash -x && newgrp snap_daemon
+
+sunbeam cluster join --role control --role compute --role storage \
+   --token 
+
+#Free network interface that will be configured for external traffic [eno1/eno2] (eno1): enp8s0
+
+exit
+
+ssh -o "StrictHostKeyChecking=no" ubuntu@n1
+
+sunbeam cluster resize
+
+sunbeam configure --openrc demo-openrc
+
+#Local or remote access to VMs [local/remote] (local): remote
+#CIDR of network to use for external networking (10.20.20.0/24): 172.16.2.0/24
+#IP address of default gateway for external network (10.20.20.1): 172.16.2.1
+#Populate OpenStack cloud with demo user, default images, flavors etc [y/n] (y):
+#Username to use for access to OpenStack (demo):
+#Password to use for access to OpenStack (mt********):
+#Network range to use for project network (192.168.122.0/24):
+#Enable ping and SSH access to instances? [y/n] (y):
+#Start of IP allocation range for external network (10.20.20.2): 172.16.2.2
+#End of IP allocation range for external network (10.20.20.254): 172.16.2.254
+#Network type for access to external network [flat/vlan] (flat):
+#Writing openrc to demo-openrc ... done
+#Free network interface that will be configured for external traffic [eno1/eno2] (eno1): enp8s0
+
+sunbeam launch ubuntu --name test
+
+#############################################################################################################
+################ Delete ########################################################################################
+#############################################################################################################
+# virsh console n1
+# virsh shutdown n1
+# virsh start n1
+# virsh list --all
+# for i in {1..3}; do virsh shutdown n$i; done && sleep 10 && virsh list --all && for i in {1..3}; do virsh start n$i; done && sleep 10 && virsh list --all
+
+cd /mnt/extra/kvm-install-vm && \
+for i in {1..3}; do ./kvm-install-vm remove n$i; done && rm -rf vbdnode1* && rm -rf vbdnode2* && virsh net-destroy management && \
+rm -rf /mnt/extra/management.xml && virsh net-destroy cluster && rm -rf /mnt/extra/cluster.xml && virsh net-destroy service && rm -rf /mnt/extra/service.xml && \
+virsh net-undefine management && virsh net-undefine cluster && virsh net-undefine service && \
+rm -rf /root/.ssh/known_hosts && touch /root/.ssh/known_hosts && \
+sudo virsh list --all && sudo brctl show && sudo virsh net-list --all
