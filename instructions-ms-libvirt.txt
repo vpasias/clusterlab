@@ -33,6 +33,8 @@ sudo tee --append /etc/hosts <<< "172.16.1.107 n7.example.com"
 git clone https://github.com/vpasias/clusterlab.git && cd /mnt/extra/clusterlab && ls -lah && chmod +x net_deployment.sh && ./net_deployment.sh && \
 sudo virsh list --all && sudo brctl show && sudo virsh net-list --all
 
+#cp Vagrantfile Vagrantfile-libvirt && cp -a Vagrantfile-vbox Vagrantfile
+
 vagrant up --provider=libvirt
 
 ssh -o "StrictHostKeyChecking=no" ubuntu@n1.example.com
