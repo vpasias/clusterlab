@@ -1,6 +1,11 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# Enable the experimental disks feature via environment variable, requires Vagrant >=2.2.8.
+ENV["VAGRANT_EXPERIMENTAL"] = "disks"
+
+BRIDGE = 'br2'
+
 ############################################################
 # SSH Public Key
 ############################################################
@@ -18,8 +23,8 @@ $ssh_public_key_content = File.readlines($ssh_public_key_filename).first.strip
 ############################################################
 
 $single_node = false
-$os = "ubuntu1804"
-$ip_prefix = "192.168.180"
+$os = "ubuntu2204"
+$ip_prefix = "172.16.1"
 
 $script = <<-SCRIPT
 mkdir -p /root/.ssh
@@ -47,7 +52,7 @@ $controllers_cpus = 8
 # Workers
 ############################################################
 
-$workers_count = 3
+$workers_count = 0
 $workers_ram = 32768
 $workers_cpus = 8
 
@@ -55,7 +60,7 @@ $workers_cpus = 8
 # Storage
 ############################################################
 
-$storage_count = 3
+$storage_count = 0
 $storage_ram = 8192
 $storage_cpus = 4
 
@@ -70,7 +75,7 @@ else
 end
 
 if ENV["OS"] 
-    if ENV["OS"] != "ubuntu1804" && ENV["OS"] != "ubuntu2004" && ENV["OS"] != "centos" && ENV["OS"] != "debian"
+    if ENV["OS"] != "ubuntu2204" && ENV["OS"] != "centos" && ENV["OS"] != "debian"
         raise "Unsupported OS: '" + ENV["OS"] + "'"
     end
 
@@ -81,10 +86,8 @@ end
 # Setup
 ############################################################
 
-if $os == "ubuntu2004"
-  $box = "bento/ubuntu-20.04"
-elsif $os == "ubuntu1804" 
-  $box = "bento/ubuntu-18.04"  
+if $os == "ubuntu2204"
+  $box = "generic/ubuntu2204"
 elsif $os == "debian" 
   $box = "bento/debian-10"
 else
@@ -206,6 +209,13 @@ def add_machine(config, ram, cpus, name, ip)
     config.vm.define name do |machine|
         machine.vm.hostname = name
         machine.vm.network :private_network, ip: ip
+
+      	machine.vm.network :public_network,
+            :dev => BRIDGE,
+            :mode => 'bridge',
+            :type => 'bridge',
+            :keep => true
+
         machine.vm.provider :virtualbox do |vb|
 	    vb.name = name
             vb.memory = ram
@@ -242,6 +252,8 @@ Vagrant.configure("2") do |config|
 	vb.customize ['modifyvm', :id, '--nested-hw-virt', 'on']
         vb.customize ['modifyvm', :id, '--nicpromisc2', 'allow-all']
     end
+
+    config.vm.disk :disk, name: "sdb", size: "200GB"
 
     config.vm.provision "shell" do |s|
         s.inline = <<-SHELL
