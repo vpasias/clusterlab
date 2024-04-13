@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-HOME=/mnt/extra/
+HOME=/home/iason/
 
-cat > /mnt/extra/cluster.xml <<EOF
+cat > /home/iason/cluster.xml <<EOF
 <network>
   <name>cluster</name>
   <bridge name="br1" stp='off' macTableManager="kernel"/>
@@ -12,7 +12,7 @@ cat > /mnt/extra/cluster.xml <<EOF
 </network>
 EOF
 
-cat > /mnt/extra/service.xml <<EOF
+cat > /home/iason/service.xml <<EOF
 <network>
   <name>service</name>
   <bridge name="br2" stp='off' macTableManager="kernel"/>
@@ -22,8 +22,8 @@ cat > /mnt/extra/service.xml <<EOF
 </network>
 EOF
 
-virsh net-define /mnt/extra/cluster.xml && virsh net-autostart cluster && virsh net-start cluster
-virsh net-define /mnt/extra/service.xml && virsh net-autostart service && virsh net-start service
+sudo virsh net-define /home/iason/cluster.xml && sudo virsh net-autostart cluster && sudo virsh net-start cluster
+sudo virsh net-define /home/iason/service.xml && sudo virsh net-autostart service && sudo virsh net-start service
 
 ip a && sudo virsh net-list --all
 
