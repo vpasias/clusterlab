@@ -1,5 +1,5 @@
 chmod +x cloudlab-setup-ubuntu-tl.sh && ./cloudlab-setup-ubuntu-tl.sh && \
-sudo apt-get install libvirt-daemon genisoimage libguestfs-tools libosinfo-bin virtinst qemu-kvm git vim net-tools wget curl bash-completion python-pip libvirt-daemon-system virt-manager bridge-utils libnss-libvirt libvirt-clients osinfo-db-tools intltool sshpass p7zip-full p7zip-rar -y && \
+sudo apt-get install libvirt-daemon genisoimage libguestfs-tools libosinfo-bin virtinst qemu-kvm git vim net-tools wget curl bash-completion python-pip libvirt-daemon-system virt-manager bridge-utils libnss-libvirt libvirt-clients osinfo-db-tools intltool sshpass p7zip-full p7zip-rar libvirt-dev -y && \
 sudo sed -i 's/hosts:          files dns/hosts:          files libvirt libvirt_guest dns/' /etc/nsswitch.conf && sudo lsmod | grep kvm && sudo reboot
 #sudo systemctl restart libvirtd && sudo systemctl status libvirtd
 
@@ -7,8 +7,8 @@ screen
 # Press Return to continue
 # detach from session without killing it: Ctrl a d 
 # to see screen sessions: screen -ls
-# detach from closed session: screen -d -r 1920.pts-0.node0
-# enter session: screen -r 1920.pts-0.node0
+# detach from closed session: screen -d -r 1989.pts-0.node0
+# enter session: screen -r 1989.pts-0.node0
 # exit a session and terminate it: exit
 
 sudo -i
@@ -23,9 +23,7 @@ mkdir .ssh && ssh-keygen -q -t rsa -N "" -f .ssh/id_rsa && cat .ssh/id_rsa.pub >
 ssh -o "StrictHostKeyChecking=no" root@127.0.0.1 uname -a
 
 # Install vagrant
-wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg && \
-echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list && \
-sudo apt update -y && sudo apt install vagrant && vagrant plugin install vagrant-libvirt && \
+curl -fsSL http://bit.ly/initVagrant | PROVIDER=libvirt bash && \
 sudo tee --append /etc/hosts <<< "172.16.1.101 n1.example.com" && \
 sudo tee --append /etc/hosts <<< "172.16.1.102 n2.example.com" && \
 sudo tee --append /etc/hosts <<< "172.16.1.103 n3.example.com" && \
@@ -33,6 +31,14 @@ sudo tee --append /etc/hosts <<< "172.16.1.104 n4.example.com" && \
 sudo tee --append /etc/hosts <<< "172.16.1.105 n5.example.com" && \
 sudo tee --append /etc/hosts <<< "172.16.1.106 n6.example.com" && \
 sudo tee --append /etc/hosts <<< "172.16.1.107 n7.example.com"
+
+# cat /etc/hosts
+
+exit
+
+su - iason
+
+vagrant -v && virsh list --all && virsh net-list --all && virsh pool-list && vagrant plugin list && vagrant box list && vagrant global-status
 
 ##################################################################################################################################################################################
 ######################################## MicroStack Cluster (https://github.com/vpasias/clusterlab) #############################################################################################################
