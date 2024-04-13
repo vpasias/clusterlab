@@ -46,6 +46,7 @@ Vagrant.configure("2") do |config|
     su -c "printf 'cd /home/#{USERNAME}\nsudo su #{USERNAME}' >> .bash_profile" -s /bin/sh vagrant
     sudo -u #{USERNAME} mkdir -p /home/#{USERNAME}/.ssh
     sudo -u #{USERNAME} cat /tmp/id_rsa.pub >> /home/#{USERNAME}/.ssh/authorized_keys
+    sudo chmod 600 ~/.ssh/authorized_keys
     sudo chsh -s /bin/bash #{USERNAME}
     sudo cp /tmp/hosts /etc/hosts
     sudo echo 'options kvm_intel nested=1' > /etc/modprobe.d/qemu-system-x86.conf
