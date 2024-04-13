@@ -71,7 +71,7 @@ $storage_cpus = 4
 if ENV["MULTI_NODE"] == true
     $single_node = false
 else
-    $single_node = true
+    $single_node = false
 end
 
 if ENV["OS"] 
