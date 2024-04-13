@@ -5,6 +5,7 @@ HOME=/home/iason/
 cat > /home/iason/cluster.xml <<EOF
 <network>
   <name>cluster</name>
+  <forward mode='nat'/>
   <bridge name="br1" stp='off' macTableManager="kernel"/>
   <mtu size="9216"/>
   <mac address='52:54:00:97:98:99'/>
