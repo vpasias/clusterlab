@@ -9,19 +9,19 @@ cat > /mnt/extra/management.xml <<EOF
   <bridge name='virbr100' stp='off' macTableManager="kernel"/>
   <mtu size="9216"/>
   <mac address='52:54:00:8a:8b:8c'/>
-  <ip address='172.16.1.1' netmask='255.255.255.0'>
+  <ip address='192.168.100.1' netmask='255.255.255.0'>
     <dhcp>
-      <range start='172.16.1.199' end='172.16.1.254'/>
-      <host mac='52:54:00:8a:8b:c0' name='n0' ip='172.16.1.200'/>
-      <host mac='52:54:00:8a:8b:c1' name='n1' ip='172.16.1.201'/>
-      <host mac='52:54:00:8a:8b:c2' name='n2' ip='172.16.1.202'/>
-      <host mac='52:54:00:8a:8b:c3' name='n3' ip='172.16.1.203'/>
-      <host mac='52:54:00:8a:8b:c4' name='n4' ip='172.16.1.204'/>
-      <host mac='52:54:00:8a:8b:c5' name='n5' ip='172.16.1.205'/>
-      <host mac='52:54:00:8a:8b:c6' name='n6' ip='172.16.1.206'/>
-      <host mac='52:54:00:8a:8b:c7' name='n7' ip='172.16.1.207'/>
-      <host mac='52:54:00:8a:8b:c8' name='n8' ip='172.16.1.208'/>
-      <host mac='52:54:00:8a:8b:c9' name='n9' ip='172.16.1.209'/>
+      <range start='192.168.100.199' end='192.168.100.254'/>
+      <host mac='52:54:00:8a:8b:c0' name='n0' ip='192.168.100.200'/>
+      <host mac='52:54:00:8a:8b:c1' name='n1' ip='192.168.100.201'/>
+      <host mac='52:54:00:8a:8b:c2' name='n2' ip='192.168.100.202'/>
+      <host mac='52:54:00:8a:8b:c3' name='n3' ip='192.168.100.203'/>
+      <host mac='52:54:00:8a:8b:c4' name='n4' ip='192.168.100.204'/>
+      <host mac='52:54:00:8a:8b:c5' name='n5' ip='192.168.100.205'/>
+      <host mac='52:54:00:8a:8b:c6' name='n6' ip='192.168.100.206'/>
+      <host mac='52:54:00:8a:8b:c7' name='n7' ip='192.168.100.207'/>
+      <host mac='52:54:00:8a:8b:c8' name='n8' ip='192.168.100.208'/>
+      <host mac='52:54:00:8a:8b:c9' name='n9' ip='192.168.100.209'/>
     </dhcp>
   </ip>
 </network>
@@ -33,7 +33,7 @@ cat > /mnt/extra/service.xml <<EOF
   <bridge name="virbr101" stp='off' macTableManager="kernel"/>
   <mtu size="9216"/>
   <mac address='52:54:00:9a:9b:9c'/>
-  <ip address='172.16.2.1' netmask='255.255.255.0'/>
+  <ip address='192.168.200.1' netmask='255.255.255.0'/>
 </network>
 EOF
 
@@ -97,16 +97,16 @@ for i in {0..0}; do virsh attach-interface --domain n$i --type network --source 
 
 for i in {0..0}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "cat << EOF | sudo tee /etc/hosts
 127.0.0.1 localhost
-172.16.1.200  n0.example.com
-172.16.1.201  n1.example.com
-172.16.1.202  n2.example.com
-172.16.1.203  n3.example.com
-172.16.1.204  n4.example.com
-172.16.1.205  n5.example.com
-172.16.1.206  n6.example.com
-172.16.1.207  n7.example.com
-172.16.1.208  n8.example.com
-172.16.1.209  n9.example.com
+192.168.100.200  n0.example.com
+192.168.100.201  n1.example.com
+192.168.100.202  n2.example.com
+192.168.100.203  n3.example.com
+192.168.100.204  n4.example.com
+192.168.100.205  n5.example.com
+192.168.100.206  n6.example.com
+192.168.100.207  n7.example.com
+192.168.100.208  n8.example.com
+192.168.100.209  n9.example.com
 # The following lines are desirable for IPv6 capable hosts
 ::1 ip6-localhost ip6-loopback
 fe00::0 ip6-localnet
@@ -145,10 +145,10 @@ network:
       dhcp4: false
       dhcp6: false
       addresses:
-        - 172.16.1.200/24
+        - 192.168.100.200/24
       routes:
         - to: default
-          via: 172.16.1.1
+          via: 192.168.100.1
           metric: 100
           on-link: true
     enp8s0:
