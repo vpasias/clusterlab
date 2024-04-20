@@ -60,42 +60,42 @@ sleep 60
 
 virsh list --all && brctl show && virsh net-list --all
 
-for i in {1..1}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i 'echo "root:gprm8350" | sudo chpasswd'; done
-for i in {1..1}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i 'echo "ubuntu:kyax7344" | sudo chpasswd'; done
-for i in {1..1}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config"; done
-for i in {1..1}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config"; done
-for i in {1..1}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo systemctl restart sshd"; done
-for i in {1..1}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo rm -rf /root/.ssh/authorized_keys"; done
+for i in {0..0}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i 'echo "root:gprm8350" | sudo chpasswd'; done
+for i in {0..0}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i 'echo "ubuntu:kyax7344" | sudo chpasswd'; done
+for i in {0..0}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config"; done
+for i in {0..0}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config"; done
+for i in {0..0}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo systemctl restart sshd"; done
+for i in {0..0}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo rm -rf /root/.ssh/authorized_keys"; done
 
-for i in {1..1}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo hostnamectl set-hostname n$i.example.com --static"; done
+for i in {0..0}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo hostnamectl set-hostname n$i.example.com --static"; done
 
-for i in {1..1}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo apt update -y && sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils iperf iperf3 mtr traceroute netcat sshpass socat"; done
+for i in {0..0}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo apt update -y && sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils iperf iperf3 mtr traceroute netcat sshpass socat"; done
 
-for i in {1..1}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo chmod -x /etc/update-motd.d/*"; done
+for i in {0..0}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo chmod -x /etc/update-motd.d/*"; done
 
-for i in {1..1}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i 'cat << EOF | sudo tee /etc/update-motd.d/01-custom
+for i in {0..0}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i 'cat << EOF | sudo tee /etc/update-motd.d/01-custom
 #!/bin/sh
 echo "****************************WARNING****************************************
 UNAUTHORISED ACCESS IS PROHIBITED. VIOLATORS WILL BE PROSECUTED.
 *********************************************************************************"
 EOF'; done
 
-for i in {1..1}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo chmod +x /etc/update-motd.d/01-custom"; done
+for i in {0..0}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo chmod +x /etc/update-motd.d/01-custom"; done
 
-for i in {1..1}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "cat << EOF | sudo tee /etc/modprobe.d/qemu-system-x86.conf
+for i in {0..0}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "cat << EOF | sudo tee /etc/modprobe.d/qemu-system-x86.conf
 options kvm_intel nested=1
 EOF"; done
 
-for i in {1..1}; do virsh shutdown n$i; done && sleep 10 && virsh list --all && for i in {1..1}; do virsh start n$i; done && sleep 10 && virsh list --all
+for i in {0..0}; do virsh shutdown n$i; done && sleep 10 && virsh list --all && for i in {0..0}; do virsh start n$i; done && sleep 10 && virsh list --all
 
 sleep 30
 
-for i in {1..1}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo apt update -y"; done
+for i in {0..0}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo apt update -y"; done
 
-for i in {1..1}; do virsh attach-interface --domain n$i --type network --source service --model virtio --mac 02:00:aa:0a:01:1$i --config --live; done
-for i in {1..1}; do virsh attach-interface --domain n$i --type network --source cluster --model e1000 --mac 02:00:aa:0a:02:1$i --config --live; done
+for i in {0..0}; do virsh attach-interface --domain n$i --type network --source service --model virtio --mac 02:00:aa:0a:01:1$i --config --live; done
+#for i in {0..0}; do virsh attach-interface --domain n$i --type network --source cluster --model e1000 --mac 02:00:aa:0a:02:1$i --config --live; done
 
-for i in {1..1}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "cat << EOF | sudo tee /etc/hosts
+for i in {0..0}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "cat << EOF | sudo tee /etc/hosts
 127.0.0.1 localhost
 172.16.1.200  n0.example.com
 172.16.1.201  n1.example.com
@@ -116,7 +116,7 @@ ff02::2 ip6-allrouters
 ff02::3 ip6-allhosts
 EOF"; done
 
-for i in {1..1}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "cat << EOF | sudo tee /etc/sysctl.d/60-lxd-production.conf
+for i in {0..0}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "cat << EOF | sudo tee /etc/sysctl.d/60-lxd-production.conf
 fs.inotify.max_queued_events=1048576
 fs.inotify.max_user_instances=1048576
 fs.inotify.max_user_watches=1048576
@@ -130,9 +130,9 @@ kernel.keys.maxbytes=2000000
 net.ipv4.ip_forward=1
 EOF"; done
 
-for i in {1..1}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo sysctl --system"; done
+for i in {0..0}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo sysctl --system"; done
 
-for i in {1..1}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "#echo vm.swappiness=1 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p"; done
+for i in {0..0}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "#echo vm.swappiness=1 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p"; done
 
 ssh -o "StrictHostKeyChecking=no" ubuntu@n0 "cat << EOF | sudo tee /etc/netplan/01-netcfg.yaml
 # This file describes the network interfaces available on your system
@@ -156,7 +156,7 @@ network:
       dhcp6: false
 EOF"
 
-for i in {1..1}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo netplan apply"; done
+for i in {0..0}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo netplan apply"; done
 sleep 40
 
-for i in {1..1}; do virsh shutdown n$i; done && sleep 10 && virsh list --all && for i in {1..1}; do virsh start n$i; done && sleep 10 && virsh list --all
+for i in {0..0}; do virsh shutdown n$i; done && sleep 10 && virsh list --all && for i in {0..0}; do virsh start n$i; done && sleep 10 && virsh list --all
