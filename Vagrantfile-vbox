@@ -266,22 +266,22 @@ Vagrant.configure("2") do |config|
         add_machine(config, $single_node_ram, $single_node_cpus, single_node_name(), single_node_ip())
     else
         (0..$controllers_count - 1).each do |j|
-            add_hosts_entry(config, controller_name(j).example.com, controller_ip(j))
+            add_hosts_entry(config, controller_name(j)'.example.com', controller_ip(j))
         end
         (0..$workers_count - 1).each do |j|
-            add_hosts_entry(config, worker_name(j).example.com, worker_ip(j))
+            add_hosts_entry(config, worker_name(j)'.example.com', worker_ip(j))
         end
         (0..$storage_count - 1).each do |j|
-            add_hosts_entry(config, storage_name(j).example.com, storage_ip(j))
+            add_hosts_entry(config, storage_name(j)'.example.com', storage_ip(j))
         end
         (0..$controllers_count - 1).each do |i|
-            add_machine(config, $controllers_ram, $controllers_cpus, controller_name(i).example.com, controller_ip(i))
+            add_machine(config, $controllers_ram, $controllers_cpus, controller_name(i)'.example.com', controller_ip(i))
         end
         (0..$workers_count - 1).each do |i|
-            add_machine(config, $workers_ram, $workers_cpus, worker_name(i).example.com, worker_ip(i))
+            add_machine(config, $workers_ram, $workers_cpus, worker_name(i)'.example.com', worker_ip(i))
         end
         (0..$storage_count - 1).each do |i|
-            add_machine(config, $storage_ram, $storage_cpus, storage_name(i).example.com, storage_ip(i))
+            add_machine(config, $storage_ram, $storage_cpus, storage_name(i)'.example.com', storage_ip(i))
         end
     end
 end
