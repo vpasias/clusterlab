@@ -178,7 +178,7 @@ def single_node_name()
 end
 
 def controller_name(index)
-    return '"n" + index_padding(index)'.example.com
+    return "n" + index_padding(index)
 end
 
 def worker_name(index)
