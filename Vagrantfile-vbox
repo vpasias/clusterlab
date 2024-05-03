@@ -29,8 +29,9 @@ $ip_prefix = "172.16.1"
 $script = <<-SCRIPT
 mkdir -p /root/.ssh
 echo #{$ssh_public_key_content} >> /root/.ssh/authorized_keys
-export HOSTNAME=$(hostname)
-sed -i -e "s/127\.0\.0\.1.*$HOSTAME.*$HOSTNAME//" /etc/hosts
+sudo tee --append /etc/hosts <<< "172.16.1.200 n00.example.com" && \
+sudo tee --append /etc/hosts <<< "172.16.1.201 n01.example.com" && \
+sudo tee --append /etc/hosts <<< "172.16.1.202 n02.example.com"
 SCRIPT
 
 ############################################################
@@ -207,7 +208,7 @@ end
 
 def add_machine(config, ram, cpus, name, ip)
     config.vm.define name do |machine|
-        machine.vm.hostname = name[".example.com"]
+        machine.vm.hostname = name
         machine.vm.network :private_network, ip: ip
 
       	machine.vm.network :public_network,
