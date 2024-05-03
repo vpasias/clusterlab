@@ -207,7 +207,7 @@ end
 
 def add_machine(config, ram, cpus, name, ip)
     config.vm.define name do |machine|
-        machine.vm.hostname = name
+        machine.vm.hostname = name[".example.com"]
         machine.vm.network :private_network, ip: ip
 
       	machine.vm.network :public_network,
