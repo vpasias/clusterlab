@@ -4,7 +4,7 @@
 # Enable the experimental disks feature via environment variable, requires Vagrant >=2.2.8.
 ENV["VAGRANT_EXPERIMENTAL"] = "disks"
 
-#BRIDGE = 'brext'
+BRIDGE = 'brext'
 
 ############################################################
 # SSH Public Key
@@ -211,7 +211,7 @@ def add_machine(config, ram, cpus, name, ip)
         machine.vm.network :private_network, ip: ip
 
       	machine.vm.network :public_network,
-            :dev => brext,
+            :dev => BRIDGE,
             :mode => 'bridge',
             :type => 'bridge',
             :keep => true
