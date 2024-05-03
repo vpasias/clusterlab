@@ -178,15 +178,15 @@ def single_node_name()
 end
 
 def controller_name(index)
-    return "controller" + index_padding(index)
+    return "n" + index_padding(index)
 end
 
 def worker_name(index)
-    return "worker" + index_padding(index)
+    return "w" + index_padding(index)
 end
 
 def storage_name(index)
-    return "storage" + index_padding(index)
+    return "s" + index_padding(index)
 end
 
 def single_node_ip()
@@ -207,7 +207,7 @@ end
 
 def add_machine(config, ram, cpus, name, ip)
     config.vm.define name do |machine|
-        machine.vm.hostname = name
+        machine.vm.hostname = name.example.com
         machine.vm.network :private_network, ip: ip
 
       	machine.vm.network :public_network,
