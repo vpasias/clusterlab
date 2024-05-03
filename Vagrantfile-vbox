@@ -29,8 +29,8 @@ $ip_prefix = "172.16.1"
 $script = <<-SCRIPT
 mkdir -p /root/.ssh
 echo #{$ssh_public_key_content} >> /root/.ssh/authorized_keys
-sudo tee --append /etc/hosts <<< "172.16.1.200 n00.example.com" && \
-sudo tee --append /etc/hosts <<< "172.16.1.201 n01.example.com" && \
+sudo tee --append /etc/hosts <<< "172.16.1.200 n00.example.com"
+sudo tee --append /etc/hosts <<< "172.16.1.201 n01.example.com"
 sudo tee --append /etc/hosts <<< "172.16.1.202 n02.example.com"
 SCRIPT
 
