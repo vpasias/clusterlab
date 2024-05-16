@@ -1,2 +1,2 @@
 # clusterlab
-Cluster Lab based on Vagrant
+Cluster Lab configurations based on Vagrant and KVM
