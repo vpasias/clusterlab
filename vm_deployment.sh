@@ -418,4 +418,11 @@ ssh -o "StrictHostKeyChecking=no" ubuntu@n1 "sudo tee -a /etc/hosts <<EOF
 172.16.3.27 n7
 EOF"
 
+for i in {0..7}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common -y"; done
+for i in {0..7}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor > /etc/apt/trusted.gpg.d/docker-ce.gpg"; done
+for i in {0..7}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i 'echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -sc) stable" | sudo tee /etc/apt/sources.list.d/docker-ce.list > /dev/null'; done
+for i in {0..7}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo apt-get update -y"; done
+for i in {0..7}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo apt-get install docker-ce docker-ce-cli containerd.io -y"; done
+for i in {0..7}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo systemctl enable --now docker"; done
+
 for i in {0..7}; do virsh shutdown n$i; done && sleep 10 && virsh list --all && for i in {0..7}; do virsh start n$i; done && sleep 10 && virsh list --all
