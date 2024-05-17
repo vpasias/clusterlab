@@ -55,8 +55,8 @@ ip a && sudo virsh net-list --all
 
 sleep 20
 
-# Node 0 - access node
-./kvm-install-vm create -c 2 -m 8192 -d 80 -t ubuntu2204 -f host-passthrough -k /root/.ssh/id_rsa.pub -l /mnt/extra/virt/images -L /mnt/extra/virt/vms -b virbr100 -T US/Eastern -M 52:54:00:8a:8b:c0 n0
+# Node 0 - access-management terminal
+./kvm-install-vm create -c 4 -m 16384 -d 100 -t ubuntu2204 -f host-passthrough -k /root/.ssh/id_rsa.pub -l /mnt/extra/virt/images -L /mnt/extra/virt/vms -b virbr100 -T US/Eastern -M 52:54:00:8a:8b:c0 n0
 
 # Node 1
 ./kvm-install-vm create -c 4 -m 16384 -d 100 -t ubuntu2204 -f host-passthrough -k /root/.ssh/id_rsa.pub -l /mnt/extra/virt/images -L /mnt/extra/virt/vms -b virbr100 -T US/Eastern -M 52:54:00:8a:8b:c1 n1
@@ -363,6 +363,11 @@ network:
 EOF"
 
 for i in {1..7}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo netplan apply"; done
-sleep 40
+
+ssh -o "StrictHostKeyChecking=no" ubuntu@n0 "sudo DEBIAN_FRONTEND=noninteractive apt install cinnamon-desktop-environment --install-recommends -y"
+ssh -o "StrictHostKeyChecking=no" ubuntu@n0 "sudo DEBIAN_FRONTEND=noninteractive apt install xrdp --install-recommends -y"
+ssh -o "StrictHostKeyChecking=no" ubuntu@n0 "sudo ufw allow from any to any port 3389 proto tcp"
+ssh -o "StrictHostKeyChecking=no" ubuntu@n0 "sudo systemctl enable --now xrdp"
+ssh -o "StrictHostKeyChecking=no" ubuntu@n0 "sudo systemctl set-default graphical.target"
 
 for i in {0..7}; do virsh shutdown n$i; done && sleep 10 && virsh list --all && for i in {0..7}; do virsh start n$i; done && sleep 10 && virsh list --all
