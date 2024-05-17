@@ -43,6 +43,8 @@ do
   ssh-copy-id -p gprm8350 root@$node
 done
 
+# Ceph Deployment
+
 wget -q -O- 'https://download.ceph.com/keys/release.asc' | gpg --dearmor -o /etc/apt/trusted.gpg.d/cephadm.gpg && \
 echo deb https://download.ceph.com/debian-reef/ $(lsb_release -sc) main > /etc/apt/sources.list.d/cephadm.list && \
 apt-get update && \
@@ -96,3 +98,30 @@ ceph auth get-or-create client.nova mon 'allow r' osd 'allow class-read object_p
 ceph auth get-or-create client.cinder-backup mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=backups' -o /etc/ceph/ceph.client.cinder-backup.keyring
 
 ceph status && ceph osd tree && ceph df && ceph orch ps && ceph osd pool ls && ls -lh /etc/ceph/
+
+# Openstack Deployment
+
+apt-get update -y
+apt-get install python3-dev libffi-dev gcc libssl-dev python3-selinux python3-setuptools python3-venv -y
+
+python3 -m venv kolla-venv
+echo "source ~/kolla-venv/bin/activate" >> ~/.bashrc
+source ~/kolla-venv/bin/activate
+
+pip install -U pip && pip install 'ansible-core>=2.14,<2.16' && ansible --version
+pip install git+https://opendev.org/openstack/kolla-ansible@master
+
+mkdir /etc/ansible && mkdir -p /etc/kolla && chown $USER:$USER /etc/kolla
+
+cp -r ~/kolla-venv/share/kolla-ansible/etc_examples/kolla/* /etc/kolla && cp ~/kolla-venv/share/kolla-ansible/ansible/inventory/* .
+
+kolla-ansible install-deps
+
+tee /etc/ansible/ansible.cfg<<EOF
+[defaults]
+host_key_checking=False
+pipelining=True
+forks=100
+EOF
+
+cp multinode multinode.bak
