@@ -92,6 +92,8 @@ for i in {0..7}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo rm -rf /r
 
 for i in {0..7}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo hostnamectl set-hostname n$i.example.com --static"; done
 
+for i in {0..7}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo timedatectl set-timezone America/New_York"; done
+
 for i in {0..7}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo apt update -y && sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils iperf iperf3 mtr traceroute netcat sshpass socat python3 python2 python3-dev python2-dev"; done
 
 for i in {0..7}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo chmod -x /etc/update-motd.d/*"; done
