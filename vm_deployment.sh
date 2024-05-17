@@ -11,7 +11,7 @@ cat > /mnt/extra/management.xml <<EOF
   <mac address='52:54:00:8a:8b:8c'/>
   <ip address='172.16.1.1' netmask='255.255.255.0'>
     <dhcp>
-      <range start='172.16.1.2' end='172.16.1.199'/>
+      <range start='172.16.1.19' end='172.16.1.249'/>
       <host mac='52:54:00:8a:8b:c0' name='n0' ip='172.16.1.20'/>
       <host mac='52:54:00:8a:8b:c1' name='n1' ip='172.16.1.21'/>
       <host mac='52:54:00:8a:8b:c2' name='n2' ip='172.16.1.22'/>
@@ -369,5 +369,49 @@ ssh -o "StrictHostKeyChecking=no" ubuntu@n0 "sudo DEBIAN_FRONTEND=noninteractive
 ssh -o "StrictHostKeyChecking=no" ubuntu@n0 "sudo ufw allow from any to any port 3389 proto tcp"
 ssh -o "StrictHostKeyChecking=no" ubuntu@n0 "sudo systemctl enable --now xrdp"
 ssh -o "StrictHostKeyChecking=no" ubuntu@n0 "sudo systemctl set-default graphical.target"
+
+ssh -o "StrictHostKeyChecking=no" ubuntu@n0 "sudo tee -a /etc/hosts <<EOF
+172.16.1.20 n0 n0.example.com
+172.16.1.21 n1 n1.example.com
+172.16.1.22 n2 n2.example.com
+172.16.1.23 n3 n3.example.com
+172.16.1.24 n4 n4.example.com
+172.16.1.25 n5 n5.example.com
+172.16.1.26 n6 n6.example.com
+172.16.1.27 n7 n7.example.com
+172.16.1.10 internal.example.com
+172.16.1.250 public.example.com
+
+172.16.3.20 n0
+172.16.3.21 n1
+172.16.3.22 n2
+172.16.3.23 n3
+172.16.3.24 n4
+172.16.3.25 n5
+172.16.3.26 n6
+172.16.3.27 n7
+EOF"
+
+ssh -o "StrictHostKeyChecking=no" ubuntu@n1 "sudo tee -a /etc/hosts <<EOF
+172.16.1.20 n0 n0.example.com
+172.16.1.21 n1 n1.example.com
+172.16.1.22 n2 n2.example.com
+172.16.1.23 n3 n3.example.com
+172.16.1.24 n4 n4.example.com
+172.16.1.25 n5 n5.example.com
+172.16.1.26 n6 n7.example.com
+172.16.1.27 n7 n7.example.com
+172.16.1.10 internal.example.com
+172.16.1.250 public.example.com
+
+172.16.3.20 n0
+172.16.3.21 n1
+172.16.3.22 n2
+172.16.3.23 n3
+172.16.3.24 n4
+172.16.3.25 n5
+172.16.3.26 n6
+172.16.3.27 n7
+EOF"
 
 for i in {0..7}; do virsh shutdown n$i; done && sleep 10 && virsh list --all && for i in {0..7}; do virsh start n$i; done && sleep 10 && virsh list --all
