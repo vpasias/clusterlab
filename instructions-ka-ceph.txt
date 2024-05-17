@@ -1,1 +1,98 @@
+chmod +x cloudlab-setup-ubuntu-tl.sh && ./cloudlab-setup-ubuntu-tl.sh && \
+sudo apt-get install libvirt-daemon genisoimage libguestfs-tools libosinfo-bin virtinst qemu-kvm git vim net-tools wget curl bash-completion python-pip libvirt-daemon-system virt-manager bridge-utils libnss-libvirt libvirt-clients osinfo-db-tools intltool sshpass p7zip-full p7zip-rar -y && \
+sudo sed -i 's/hosts:          files dns/hosts:          files libvirt libvirt_guest dns/' /etc/nsswitch.conf && sudo lsmod | grep kvm && sudo reboot
+#sudo systemctl restart libvirtd && sudo systemctl status libvirtd
 
+screen
+# Press Return to continue
+# detach from session without killing it: Ctrl a d 
+# to see screen sessions: screen -ls
+# detach from closed session: screen -d -r 1920.pts-0.node0
+# enter session: screen -r 1920.pts-0.node0
+# exit a session and terminate it: exit
+
+sudo -i
+
+# Create OS node VMs
+cd /mnt/extra && cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && sudo virsh list --all && sudo brctl show && \
+mkdir -p /mnt/extra/virt/images && mkdir -p /mnt/extra/virt/vms && cd /mnt/extra/virt/images && \
+cd /usr/lib/ipxe/qemu/ && wget https://github.com/qemu/qemu/raw/master/pc-bios/efi-e1000e.rom && cd /mnt/extra && \
+wget -O "/mnt/extra/osinfo-db.tar.xz" https://releases.pagure.org/libosinfo/osinfo-db-20240510.tar.xz && sudo osinfo-db-import --local "/mnt/extra/osinfo-db.tar.xz" && \
+cd /mnt/extra/ && git clone https://github.com/giovtorres/kvm-install-vm.git && cd kvm-install-vm
+
+##################################################################################################################################################################################
+########## Production Ready OpenStack Cluster (https://achchusnulchikam.medium.com/deploy-production-ready-openstack-using-kolla-ansible-9cd1d1f210f1r) ##########################
+##################################################################################################################################################################################
+
+git clone https://github.com/vpasias/clusterlab.git && ls -lah && \
+cd /mnt/extra/kvm-install-vm && cp /mnt/extra/kvm-install-vm/clusterlab/vm_deployment.sh . && chmod +x vm_deployment.sh && ./vm_deployment.sh
+
+for i in {0..7}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "uname -a"; done
+
+ssh -o "StrictHostKeyChecking=no" ubuntu@n1
+
+cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && lsblk && ip a && sudo docker ps
+# cat /etc/hosts
+
+sudo -i
+
+ssh-keygen -t rsa
+
+for node in n{1..7}
+do
+  ssh-copy-id -p gprm8350 root@$node
+done
+
+wget -q -O- 'https://download.ceph.com/keys/release.asc' | gpg --dearmor -o /etc/apt/trusted.gpg.d/cephadm.gpg && \
+echo deb https://download.ceph.com/debian-reef/ $(lsb_release -sc) main > /etc/apt/sources.list.d/cephadm.list && \
+apt-get update && \
+apt-cache policy cephadm && \
+apt-get install cephadm -y
+
+cephadm bootstrap --mon-ip=172.16.1.21 --cluster-network 172.16.3.0/24 --initial-dashboard-password=gprm8350 --dashboard-password-noupdate --allow-fqdn-hostname | tee cephadm-bootstrap.log
+
+# replace XXXXXXXXXXXXXXXXXXXXXXX with the respective fsid displayed on the screen
+/usr/sbin/cephadm shell --fsid XXXXXXXXXXXXXXXXXXXXXXX -c /etc/ceph/ceph.conf -k /etc/ceph/ceph.client.admin.keyring
+cephadm add-repo --release reef && cephadm install ceph-common && ceph versions
+
+for node in n{1..7}
+do
+  echo "=== Copying ceph.pub to $node ==="
+  ssh-copy-id -f -i /etc/ceph/ceph.pub root@$node
+  echo ""
+  sleep 2
+done
+
+for node in n{1..7}
+do
+  ceph orch host add $node
+done
+
+ceph orch host ls
+
+ceph orch device ls
+ceph orch apply osd --all-available-devices --method raw
+
+for node in n{1..7}
+do
+  ceph orch host label add $node mon
+done
+
+for node in n{1..7}
+do
+  ceph orch host label add $node osd
+done
+ceph orch host ls
+
+for pool_name in volumes images backups vms
+do
+  ceph osd pool create $pool_name
+  rbd pool init $pool_name
+done
+
+ceph auth get-or-create client.glance mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=images' -o /etc/ceph/ceph.client.glance.keyring
+ceph auth get-or-create client.cinder mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=volumes, allow rwx pool=images' -o /etc/ceph/ceph.client.cinder.keyring
+ceph auth get-or-create client.nova mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=vms, allow rx pool=images' -o /etc/ceph/ceph.client.nova.keyring
+ceph auth get-or-create client.cinder-backup mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=backups' -o /etc/ceph/ceph.client.cinder-backup.keyring
+
+ceph status && ceph osd tree && ceph df && ceph orch ps && ceph osd pool ls && ls -lh /etc/ceph/
