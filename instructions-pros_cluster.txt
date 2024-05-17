@@ -21,7 +21,7 @@ wget -O "/mnt/extra/osinfo-db.tar.xz" https://releases.pagure.org/libosinfo/osin
 cd /mnt/extra/ && git clone https://github.com/giovtorres/kvm-install-vm.git && cd kvm-install-vm
 
 ##################################################################################################################################################################################
-########## Production Ready OpenStack Cluster (https://achchusnulchikam.medium.com/deploy-production-ready-openstack-using-kolla-ansible-9cd1d1f210f1r) ##########################
+########## Production Ready OpenStack (PROS) Cluster (https://achchusnulchikam.medium.com/deploy-production-ready-openstack-using-kolla-ansible-9cd1d1f210f1r) ##########################
 ##################################################################################################################################################################################
 
 git clone https://github.com/vpasias/clusterlab.git && ls -lah && \
