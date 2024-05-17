@@ -47,9 +47,7 @@ done
 
 wget -q -O- 'https://download.ceph.com/keys/release.asc' | gpg --dearmor -o /etc/apt/trusted.gpg.d/cephadm.gpg && \
 echo deb https://download.ceph.com/debian-reef/ $(lsb_release -sc) main > /etc/apt/sources.list.d/cephadm.list && \
-apt-get update && \
-apt-cache policy cephadm && \
-apt-get install cephadm -y
+apt-get update && apt-cache policy cephadm && apt-get install cephadm -y
 
 cephadm bootstrap --mon-ip=172.16.1.21 --cluster-network 172.16.3.0/24 --initial-dashboard-password=gprm8350 --dashboard-password-noupdate --allow-fqdn-hostname | tee cephadm-bootstrap.log
 
@@ -72,8 +70,7 @@ done
 
 ceph orch host ls
 
-ceph orch device ls
-ceph orch apply osd --all-available-devices --method raw
+ceph orch device ls && ceph orch apply osd --all-available-devices --method raw
 
 for node in n{1..7}
 do
@@ -84,6 +81,7 @@ for node in n{1..7}
 do
   ceph orch host label add $node osd
 done
+
 ceph orch host ls
 
 for pool_name in volumes images backups vms
@@ -92,7 +90,7 @@ do
   rbd pool init $pool_name
 done
 
-ceph auth get-or-create client.glance mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=images' -o /etc/ceph/ceph.client.glance.keyring
+ceph auth get-or-create client.glance mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=images' -o /etc/ceph ceph.client.glance.keyring
 ceph auth get-or-create client.cinder mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=volumes, allow rwx pool=images' -o /etc/ceph/ceph.client.cinder.keyring
 ceph auth get-or-create client.nova mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=vms, allow rx pool=images' -o /etc/ceph/ceph.client.nova.keyring
 ceph auth get-or-create client.cinder-backup mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=backups' -o /etc/ceph/ceph.client.cinder-backup.keyring
@@ -101,12 +99,10 @@ ceph status && ceph osd tree && ceph df && ceph orch ps && ceph osd pool ls && l
 
 # Openstack Deployment
 
-apt-get update -y
-apt-get install python3-dev libffi-dev gcc libssl-dev python3-selinux python3-setuptools python3-venv -y
+apt-get update -y && apt-get install python3-dev libffi-dev gcc libssl-dev python3-selinux python3-setuptools python3-venv -y
 
 python3 -m venv kolla-venv
-echo "source ~/kolla-venv/bin/activate" >> ~/.bashrc
-source ~/kolla-venv/bin/activate
+echo "source ~/kolla-venv/bin/activate" >> ~/.bashrc && source ~/kolla-venv/bin/activate
 
 pip install -U pip && pip install 'ansible-core>=2.14,<2.16' && ansible --version
 pip install git+https://opendev.org/openstack/kolla-ansible@master
@@ -130,8 +126,7 @@ git clone https://github.com/vpasias/clusterlab.git && cp /etc/kolla/clusterlab/
 
 ansible -i multinode all -m ping
 
-kolla-genpwd
-kolla-ansible -i multinode certificates
+kolla-genpwd && kolla-ansible -i multinode certificates
 
 mkdir /etc/kolla/config && mkdir /etc/kolla/config/nova && mkdir /etc/kolla/config/glance && \
 mkdir -p /etc/kolla/config/cinder/cinder-volume && mkdir /etc/kolla/config/cinder/cinder-backup
@@ -206,3 +201,24 @@ kolla-ansible -i multinode deploy
 
 ### Do post-deploy after OpenStack was successfuly deployed
 kolla-ansible -i multinode post-deploy
+
+cat /etc/kolla/certificates/ca/root.crt | sudo tee -a /etc/ssl/certs/ca-certificates.crt && \
+echo "export OS_CACERT=/etc/ssl/certs/ca-certificates.crt" >> /etc/kolla/admin-openrc.sh && \
+pip3 install python-openstackclient && openstack --version
+
+source ~/kolla-venv/bin/activate && source /etc/kolla/admin-openrc.sh && \
+openstack endpoint list && openstack service list && openstack compute service list && \
+openstack network agent list && openstack volume service list && cinder get-pools
+
+# Access from n0:
+# URL: https://public.example.com
+
+kolla-venv/share/kolla-ansible/init-runonce
+
+openstack volume create --image cirros --size 3 boot-cirros
+
+sleep 20
+
+openstack server create --volume boot-cirros --flavor m1.tiny --key-name mykey -network demo-net vm-cirros
+
+ceph df
