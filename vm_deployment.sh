@@ -117,6 +117,8 @@ sleep 30
 
 for i in {0..7}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo apt update -y"; done
 
+for i in {0..7}; do ssh -o "StrictHostKeyChecking=no" ubuntu@n$i "sudo apt upgrade -y"; done
+
 for i in {1..7}; do qemu-img create -f qcow2 vbdnode1$i 200G; done
 #for i in {1..7}; do qemu-img create -f qcow2 vbdnode2$i 200G; done
 #for i in {1..7}; do qemu-img create -f qcow2 vbdnode3$i 200G; done
