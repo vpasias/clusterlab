@@ -23,17 +23,17 @@ mkdir -p /mnt/extra/virt/images && mkdir -p /mnt/extra/virt/vms && \
 wget -O "/mnt/extra/osinfo-db.tar.xz" https://releases.pagure.org/libosinfo/osinfo-db-20231215.tar.xz && sudo osinfo-db-import --local "/mnt/extra/osinfo-db.tar.xz" && \
 sudo sed -i -E 's,#?(security_driver)\s*=.*,\1 = "none",g' /etc/libvirt/qemu.conf && sudo systemctl restart libvirtd
 
-##################################################################################################################################################################################
-######################################## MicroStack Cluster (https://github.com/nobuto-m/quick-microstack/) #############################################################################################################
-##################################################################################################################################################################################
+################################################################################################################################################################################
+######################################## MicroStack Cluster (https://github.com/nobuto-m/quick-microstack/) ####################################################################
+################################################################################################################################################################################
 
 uvt-simplestreams-libvirt sync release=jammy arch=amd64
 
-#sudo ls -lah /var/lib/uvtool/libvirt/images/
+#sudo ls -lah /var/lib/uvtool/libvirt/images/ && uvt-kvm list
 
 ssh-keygen
 
-cd /mnt/extra && git clone https://github.com/nobuto-m/quick-microstack.git && ls -lah && cd /mnt/extra/quick-microstack 
+cd /mnt/extra && git clone https://github.com/nobuto-m/quick-microstack.git && ls -lah && cd /mnt/extra/quick-microstack
 
 cat <<EOF | virsh net-define /dev/stdin
 <network>
@@ -50,3 +50,24 @@ EOF
 virsh net-autostart virbr-sunbeam && virsh net-start virbr-sunbeam
 
 chmod +x redeploy-microstack.sh && ./redeploy-microstack.sh
+
+#############################################################################################################
+################ Delete ########################################################################################
+#############################################################################################################
+
+sudo snap remove --purge microk8s && \
+sudo snap remove --purge juju && \
+sudo snap remove --purge openstack && \
+sudo snap remove --purge openstack-hypervisor && \
+sudo /usr/sbin/remove-juju-services && \
+sudo rm -rf /var/lib/juju && \
+rm -rf ~/.local/share/juju && \
+rm -rf ~/snap/openstack && \
+rm -rf ~/snap/openstack-hypervisor && \
+rm -rf ~/snap/microstack/ && \
+rm -rf ~/snap/juju/ && \
+rm -rf ~/snap/microk8s/ && \
+sudo init 6
+
+cd /mnt/extra/ && virsh net-destroy virbr-sunbeam && virsh net-undefine virbr-sunbeam && rm -rf /root/.ssh/known_hosts && touch /root/.ssh/known_hosts && \
+sudo virsh list --all && sudo brctl show && sudo virsh net-list --all
