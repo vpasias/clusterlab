@@ -51,6 +51,18 @@ virsh net-autostart virbr-sunbeam && virsh net-start virbr-sunbeam
 
 chmod +x redeploy-microstack.sh && ./redeploy-microstack.sh
 
+# Access 1st machine
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.11
+
+juju status -m admin/controller
+juju status -m openstack
+sudo microk8s status
+sudo microk8s.kubectl get pods --namespace openstack
+sudo microceph status
+sudo ceph -s
+sunbeam cluster list
+sunbeam inspect plans
+
 #############################################################################################################
 ################ Delete ########################################################################################
 #############################################################################################################
