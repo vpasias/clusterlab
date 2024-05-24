@@ -44,10 +44,13 @@ network:
       dhcp6: false
       accept-ra: false
       addresses:
-        - 10.0.124.1${i}/24          
+        - 10.0.124.1${i}/24
+    enp9s0:
+      dhcp4: false
+      dhcp6: false
+      accept-ra: false
 EOF
 done
-
 
 for i in {1..7}; do
     virsh detach-interface "node-${i}.localdomain" network --config
