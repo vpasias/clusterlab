@@ -1,0 +1,32 @@
+cat <<EOF | sudo lxd init --preseed
+config: {}
+networks:
+- config:
+    ipv4.address: 10.0.9.1/24
+    ipv4.nat: "true"
+    ipv4.dhcp.ranges: 10.0.9.51-10.0.9.200
+    ipv6.address: none
+  description: ""
+  name: lxdbr0
+  type: ""
+storage_pools:
+- config:
+    source: /mnt/extra/uvtool/
+  description: ""
+  name: lxdpool
+  driver: dir
+profiles:
+- config: {}
+  description: ""
+  devices:
+    eth0:
+      name: eth0
+      network: lxdbr0
+      type: nic
+    root:
+      path: /
+      pool: default
+      type: disk
+  name: default
+cluster: null
+EOF
