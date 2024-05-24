@@ -70,12 +70,62 @@ for i in {1..7}; do
 
     ssh_to "${i}" -t -- sudo apt update -y
     ssh_to "${i}" -t -- sudo apt upgrade -y
-    ssh_to "${i}" -t -- sudo timedatectl set-timezone America/New_York
+    ssh_to "${i}" -t -- 'sudo timedatectl set-timezone America/New_York'
     ssh_to "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils iperf iperf3 mtr traceroute netcat sshpass socat python3 python2 python3-dev python2-dev
-    ssh_to "${i}" -t -- echo "root:gprm8350" | sudo chpasswd
+    ssh_to "${i}" -t -- 'echo "root:gprm8350" | sudo chpasswd'
 
     # LP: #2065911
     # TODO: make it permanent across reboots
     ssh_to "${i}" -- sudo ip link set enp7s0 up
     ssh_to "${i}" -- sudo ip link set enp9s0 up
+done
+
+ssh_to 1 -- 'sudo tee -a /etc/hosts <<EOF
+10.0.123.11 node-1 node-1.localdomain
+10.0.123.12 node-2 node-2.localdomain
+10.0.123.13 node-3 node-3.localdomain
+10.0.123.14 node-4 node-4.localdomain
+10.0.123.15 node-5 node-5.localdomain
+10.0.123.16 node-6 node-6.localdomain
+10.0.123.17 node-7 node-7.localdomain
+10.0.123.5 internal.localdomain
+10.0.123.10 public.localdomain
+
+10.0.124.11 node-1
+10.0.124.12 node-2
+10.0.124.13 node-3
+10.0.124.14 node-4
+10.0.124.15 node-5
+10.0.124.16 node-6
+10.0.124.17 node-7
+EOF'
+
+for i in {1..7}; do
+
+    ssh_to "${i}" -t -- sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common -y
+    ssh_to "${i}" -t -- 'curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor > /etc/apt/trusted.gpg.d/docker-ce.gpg'
+    ssh_to "${i}" -t -- 'echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -sc) stable" | sudo tee /etc/apt/sources.list.d/docker-ce.list > /dev/null'
+    ssh_to "${i}" -t -- sudo apt-get update -y
+    ssh_to "${i}" -t -- sudo apt-get install docker-ce docker-ce-cli containerd.io -y
+    ssh_to "${i}" -t -- sudo systemctl enable --now docker
+
+done
+
+for i in {1..7}; do
+
+ssh_to "${i}" -t -- 'sudo chmod -x /etc/update-motd.d/*'
+ssh_to "${i}" -t -- 'cat << EOF | sudo tee /etc/update-motd.d/01-custom
+#!/bin/sh
+echo "****************************WARNING****************************************
+UNAUTHORISED ACCESS IS PROHIBITED. VIOLATORS WILL BE PROSECUTED.
+*********************************************************************************"
+EOF'
+ssh_to "${i}" -t -- sudo chmod +x /etc/update-motd.d/01-custom
+
+done
+
+for i in {1..7}; do
+
+    ssh_to "${i}" -t -- sudo reboot
+
 done
