@@ -21,11 +21,9 @@ sudo -i
 cd /mnt/extra && cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && sudo virsh list --all && sudo brctl show && \
 mkdir -p /mnt/extra/virt/images && mkdir -p /mnt/extra/virt/vms && \
 wget -O "/mnt/extra/osinfo-db.tar.xz" https://releases.pagure.org/libosinfo/osinfo-db-20231215.tar.xz && sudo osinfo-db-import --local "/mnt/extra/osinfo-db.tar.xz" && \
-sudo sed -i -E 's,#?(security_driver)\s*=.*,\1 = "none",g' /etc/libvirt/qemu.conf && sudo systemctl restart libvirtd && uvt-simplestreams-libvirt sync release=jammy arch=amd64
+sudo sed -i -E 's,#?(security_driver)\s*=.*,\1 = "none",g' /etc/libvirt/qemu.conf && sudo systemctl restart libvirtd && uvt-simplestreams-libvirt sync release=jammy arch=amd64 && ssh-keygen
 
 #sudo ls -lah /var/lib/uvtool/libvirt/images/ && uvt-kvm list
-
-ssh-keygen
 
 ##################################################################################################################################################################################
 ########## Production Ready OpenStack (PROS) Cluster (https://achchusnulchikam.medium.com/deploy-production-ready-openstack-using-kolla-ansible-9cd1d1f210f1r) ##########################
@@ -158,7 +156,7 @@ EOF
 
 cd /etc/kolla && cp multinode multinode.bak
 
-git clone https://github.com/vpasias/clusterlab.git && mv /etc/kolla/clusterlab/multinode-uvt ~/multinode
+git clone https://github.com/vpasias/clusterlab.git && mv /etc/kolla/clusterlab/multinode-uvt /etc/kolla/multinode
 
 ansible -i multinode all -m ping
 
@@ -177,7 +175,7 @@ cp /etc/ceph/ceph.client.cinder.keyring /etc/kolla/config/cinder/cinder-volume/ 
 cp /etc/ceph/ceph.client.cinder.keyring /etc/kolla/config/cinder/cinder-backup/ && \
 cp /etc/ceph/ceph.client.cinder-backup.keyring /etc/kolla/config/cinder/cinder-backup/
 
-for node in n{2..7}
+for node in node-{2..7}
 do
   scp -r /etc/ceph/ root@$node:/etc/
 done
@@ -188,14 +186,14 @@ vim globals.yml
 ---
 kolla_base_distro: "ubuntu"
 openstack_release: "master"
-kolla_internal_vip_address: "172.16.1.10"
-kolla_internal_fqdn: "internal.example.com"
-kolla_external_vip_address: "172.16.1.250"
-kolla_external_fqdn: "public.example.com"
+kolla_internal_vip_address: "10.0.123.5"
+kolla_internal_fqdn: "internal.localdomain"
+kolla_external_vip_address: "10.0.123.10"
+kolla_external_fqdn: "public.localdomain"
 kolla_external_vip_interface: "enp1s0"
 api_interface: "enp1s0"
 tunnel_interface: "enp1s0"
-neutron_external_interface: "enp7s0"
+neutron_external_interface: "enp9s0"
 neutron_plugin_agent: "ovn"
 kolla_enable_tls_internal: "yes"
 kolla_enable_tls_external: "yes"
@@ -246,8 +244,10 @@ source ~/kolla-venv/bin/activate && source /etc/kolla/admin-openrc.sh && \
 openstack endpoint list && openstack service list && openstack compute service list && \
 openstack network agent list && openstack volume service list && cinder get-pools
 
-# Access from n0:
-# URL: https://public.example.com
+# from local terminal:
+ssh -L 8001:10.0.123.11:443 vpasias@130.127.134.14
+# URL: https://localhost:8001
+### URL: https://public.localdomain
 
 kolla-venv/share/kolla-ansible/init-runonce
 
@@ -262,15 +262,7 @@ ceph df
 #############################################################################################################
 ################ Delete ########################################################################################
 #############################################################################################################
-# virsh console n1
-# virsh shutdown n1
-# virsh start n1
-# virsh list --all
-# for i in {0..7}; do virsh shutdown n$i; done && sleep 10 && virsh list --all && for i in {1..3}; do virsh start n$i; done && sleep 10 && virsh list --all
 
-cd /mnt/extra/kvm-install-vm && \
-for i in {0..7}; do ./kvm-install-vm remove n$i; done && rm -rf vbdnode1* && rm -rf vbdnode2* && virsh net-destroy management && \
-rm -rf /mnt/extra/management.xml && virsh net-destroy storage && rm -rf /mnt/extra/storage.xml && virsh net-destroy service && rm -rf /mnt/extra/service.xml && \
-virsh net-undefine management && virsh net-undefine storage && virsh net-undefine service && \
-rm -rf /root/.ssh/known_hosts && touch /root/.ssh/known_hosts && \
-sudo virsh list --all && sudo brctl show && sudo virsh net-list --all
+for i in {1..7}; do uvt-kvm destroy "node-${i}.localdomain"; done && \
+cd /mnt/extra/ && virsh net-destroy virbr-mgt && virsh net-undefine virbr-mgt && virsh net-destroy virbr-sto && virsh net-undefine virbr-sto && virsh net-destroy virbr-ser && virsh net-undefine virbr-ser && \
+rm -rf /root/.ssh/known_hosts && touch /root/.ssh/known_hosts && sudo virsh list --all && sudo brctl show && sudo virsh net-list --all
