@@ -70,9 +70,15 @@ for i in {1..7}; do
 
     ssh_to "${i}" -t -- sudo apt update -y
     ssh_to "${i}" -t -- sudo apt upgrade -y
-    ssh_to "${i}" -t -- 'sudo timedatectl set-timezone America/New_York'
+    ssh_to "${i}" -t -- sudo timedatectl set-timezone America/New_York
     ssh_to "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils iperf iperf3 mtr traceroute netcat sshpass socat python3 python2 python3-dev python2-dev
+
     ssh_to "${i}" -t -- 'echo "root:gprm8350" | sudo chpasswd'
+    ssh_to "${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
+    ssh_to "${i}" -t -- "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config"
+    ssh_to "${i}" -t -- "sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config"
+    ssh_to "${i}" -t -- sudo systemctl restart sshd
+    ssh_to "${i}" -t -- sudo rm -rf /root/.ssh/authorized_keys
 
     # LP: #2065911
     # TODO: make it permanent across reboots
