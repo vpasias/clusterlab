@@ -122,14 +122,14 @@ done
 
 for i in {1..7}; do
 
-ssh_to "${i}" -t -- 'sudo chmod -x /etc/update-motd.d/*'
-ssh_to "${i}" -t -- 'cat << EOF | sudo tee /etc/update-motd.d/01-custom
-#!/bin/sh
-echo "****************************WARNING****************************************
-UNAUTHORISED ACCESS IS PROHIBITED. VIOLATORS WILL BE PROSECUTED.
-*********************************************************************************"
-EOF'
-ssh_to "${i}" -t -- sudo chmod +x /etc/update-motd.d/01-custom
+    ssh_to "${i}" -t -- 'sudo chmod -x /etc/update-motd.d/*'
+    ssh_to "${i}" -t -- 'cat << EOF | sudo tee /etc/update-motd.d/01-custom
+    #!/bin/sh
+    echo "****************************WARNING****************************************
+    UNAUTHORISED ACCESS IS PROHIBITED. VIOLATORS WILL BE PROSECUTED.
+    *********************************************************************************"
+    EOF'
+    ssh_to "${i}" -t -- sudo chmod +x /etc/update-motd.d/01-custom
 
 done
 
