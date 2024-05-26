@@ -266,5 +266,5 @@ ceph df
 #############################################################################################################
 
 for i in {1..7}; do uvt-kvm destroy "node-${i}.localdomain"; done && \
-cd /mnt/extra/ && virsh net-destroy virbr-mgt && virsh net-undefine virbr-mgt && virsh net-destroy virbr-sto && virsh net-undefine virbr-sto && virsh net-destroy virbr-ser && virsh net-undefine virbr-ser && \
+cd /mnt/extra/ && virsh net-destroy virbr-mgt && virsh net-undefine virbr-mgt && virsh net-destroy virbr-sto && virsh net-undefine virbr-sto && virsh net-destroy virbr-ser && virsh net-undefine virbr-ser && rm -rf clusterlab/ && \
 rm -rf /root/.ssh/known_hosts && touch /root/.ssh/known_hosts && sudo virsh list --all && sudo brctl show && sudo virsh net-list --all
