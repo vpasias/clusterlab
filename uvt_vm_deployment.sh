@@ -39,13 +39,13 @@ network:
       nameservers:
         addresses:
           - 10.0.123.1
-    enp7s0:
+    enp9s0:
       dhcp4: false
       dhcp6: false
       accept-ra: false
       addresses:
         - 10.0.124.1${i}/24
-    enp9s0:
+    enp10s0:
       dhcp4: false
       dhcp6: false
       accept-ra: false
@@ -85,8 +85,8 @@ for i in {1..7}; do
 
     # LP: #2065911
     # TODO: make it permanent across reboots
-    ssh_to "${i}" -- sudo ip link set enp7s0 up
     ssh_to "${i}" -- sudo ip link set enp9s0 up
+    ssh_to "${i}" -- sudo ip link set enp10s0 up
 done
 
 ssh_to 1 -- 'sudo tee -a /etc/hosts <<EOF
