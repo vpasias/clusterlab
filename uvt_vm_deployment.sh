@@ -80,6 +80,7 @@ for i in {1..7}; do
     ssh_to "${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
     ssh_to "${i}" -t -- "sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config"
     ssh_to "${i}" -t -- "sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config"
+    ssh_to "${i}" -t -- "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config.d/60-cloudimg-settings.conf"
     ssh_to "${i}" -t -- sudo systemctl restart sshd
     ssh_to "${i}" -t -- sudo rm -rf /root/.ssh/authorized_keys
 
