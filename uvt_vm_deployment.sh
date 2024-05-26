@@ -111,9 +111,12 @@ EOF'
 
 for i in {1..7}; do
 
-    ssh_to "${i}" -t -- sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common -y
-    ssh_to "${i}" -t -- 'curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg'
-    ssh_to "${i}" -t -- 'echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -sc) stable" | sudo tee /etc/apt/sources.list.d/docker-ce.list > /dev/null'
+    ssh_to "${i}" -t -- sudo apt-get update -y
+    ssh_to "${i}" -t -- sudo apt-get install ca-certificates curl -y
+    ssh_to "${i}" -t -- sudo install -m 0755 -d /etc/apt/keyrings
+    ssh_to "${i}" -t -- sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    ssh_to "${i}" -t -- sudo chmod a+r /etc/apt/keyrings/docker.asc
+    ssh_to "${i}" -t -- echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     ssh_to "${i}" -t -- sudo apt-get update -y
     ssh_to "${i}" -t -- sudo apt-get install docker-ce docker-ce-cli containerd.io -y
     ssh_to "${i}" -t -- sudo systemctl enable --now docker
