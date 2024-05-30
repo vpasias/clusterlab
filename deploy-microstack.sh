@@ -4,8 +4,23 @@ set -eux
 
 cd "$(dirname "$0")"
 
+cat <<EOF | virsh net-define /dev/stdin
+<network>
+  <name>virbr-sunbeam</name>
+  <bridge name='virbr-sunbeam' stp='off'/>
+  <forward mode='nat'/>
+  <ip address='10.0.123.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='10.0.123.101' end='10.0.123.254'/>
+    </dhcp>
+  </ip>
+</network>
+EOF
+
+virsh net-autostart virbr-sunbeam && virsh net-start virbr-sunbeam
+
 ## clean up
-for i in {1..7}; do
+for i in {1..5}; do
     # FIXME: the requirement of FQDN is not documented well in each tutorial
     uvt-kvm destroy "node-${i}.localdomain" || true
 done
@@ -16,7 +31,7 @@ function ssh_to() {
     ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu "${ip}" "$@"
 }
 
-for i in {1..7}; do
+for i in {1..5}; do
     cat <<EOF | uvt-kvm create \
         --machine-type q35 \
         --cpu 16 \
@@ -49,7 +64,7 @@ EOF
 done
 
 
-for i in {1..7}; do
+for i in {1..5}; do
     virsh detach-interface "node-${i}.localdomain" network --config
 
     virsh attach-interface "node-${i}.localdomain" network virbr-sunbeam \
@@ -61,7 +76,7 @@ for i in {1..7}; do
 done
 
 
-for i in {1..7}; do
+for i in {1..5}; do
     until ssh_to "${i}" -t -- cloud-init status --wait; do
         sleep 1
     done
@@ -101,21 +116,13 @@ ssh_to 5 -t -- \
     time sunbeam cluster join --role compute --role storage \
         --token "$(ssh_to 1 -- sunbeam cluster add --name node-5.localdomain -f value)"
 
-ssh_to 6 -t -- \
-    time sunbeam cluster join --role compute --role storage \
-        --token "$(ssh_to 1 -- sunbeam cluster add --name node-6.localdomain -f value)"
-
-ssh_to 7 -t -- \
-    time sunbeam cluster join --role compute --role storage \
-        --token "$(ssh_to 1 -- sunbeam cluster add --name node-7.localdomain -f value)"
-
 ssh_to 1 -t -- \
     time sunbeam cluster resize
 
 ssh_to 1 -t -- \
     time sunbeam configure --openrc demo-openrc --manifest deployment_manifest.yaml
 
-for i in {1..7}; do
+for i in {1..5}; do
     ssh_to "${i}" -t -- \
         'time sunbeam openrc > admin-openrc'
 done
