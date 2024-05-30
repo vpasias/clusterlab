@@ -1,1 +1,69 @@
+chmod +x cloudlab-setup-ubuntu-tl.sh && ./cloudlab-setup-ubuntu-tl.sh && \
+sudo apt-get install libvirt-daemon genisoimage libguestfs-tools libosinfo-bin virtinst qemu-kvm git vim net-tools wget curl bash-completion python-pip libvirt-daemon-system virt-manager bridge-utils libnss-libvirt libvirt-clients osinfo-db-tools intltool sshpass p7zip-full p7zip-rar uvtool -y && \
+sudo sed -i 's/hosts:          files dns/hosts:          files libvirt libvirt_guest dns/' /etc/nsswitch.conf && sudo lsmod | grep kvm && sudo reboot
+#sudo systemctl restart libvirtd && sudo systemctl status libvirtd
 
+screen
+# Press Return to continue
+# detach from session without killing it: Ctrl a d 
+# to see screen sessions: screen -ls
+# detach from closed session: screen -d -r 1981.pts-0.node0
+# enter session: screen -r 1981.pts-0.node0
+# exit a session and terminate it: exit
+
+sudo apt update -y && sudo apt install cockpit -y && sudo systemctl enable --now cockpit.socket && sudo apt install cockpit-machines -y && echo "root:gprm8350" | sudo chpasswd && \
+cd /mnt/extra/virt/images/ && http://mirrors.edge.kernel.org/ubuntu-releases/22.04.4/ubuntu-22.04.4-live-server-amd64.iso
+exit
+
+sudo -i
+
+# Create OS node VMs
+cd /mnt/extra && cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && sudo virsh list --all && sudo brctl show && \
+mkdir -p /mnt/extra/virt/images && mkdir -p /mnt/extra/virt/vms && \
+wget -O "/mnt/extra/osinfo-db.tar.xz" https://releases.pagure.org/libosinfo/osinfo-db-20231215.tar.xz && sudo osinfo-db-import --local "/mnt/extra/osinfo-db.tar.xz" && \
+sudo sed -i -E 's,#?(security_driver)\s*=.*,\1 = "none",g' /etc/libvirt/qemu.conf && sudo systemctl restart libvirtd
+
+################################################################################################################################################################################
+######################################## MicroStack Cluster (https://github.com/nobuto-m/quick-microstack/) ####################################################################
+################################################################################################################################################################################
+
+uvt-simplestreams-libvirt sync release=jammy arch=amd64
+
+#sudo ls -lah /var/lib/uvtool/libvirt/images/ && uvt-kvm list
+
+ssh-keygen
+
+cd /mnt/extra && git clone https://github.com/vpasias/clusterlab.git && ls -lah && cd /mnt/extra/clusterlab && chmod +x deploy-microstack.sh && ./deploy-microstack.sh
+
+# Access 1st machine
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.11
+
+juju status -m admin/controller
+juju status -m openstack
+sudo microk8s status
+sudo microk8s.kubectl get pods --namespace openstack
+sudo microceph status
+sudo ceph -s
+sunbeam cluster list
+sunbeam inspect plans
+
+#############################################################################################################
+################ Delete ########################################################################################
+#############################################################################################################
+
+sudo snap remove --purge microk8s && \
+sudo snap remove --purge juju && \
+sudo snap remove --purge openstack && \
+sudo snap remove --purge openstack-hypervisor && \
+sudo /usr/sbin/remove-juju-services && \
+sudo rm -rf /var/lib/juju && \
+rm -rf ~/.local/share/juju && \
+rm -rf ~/snap/openstack && \
+rm -rf ~/snap/openstack-hypervisor && \
+rm -rf ~/snap/microstack/ && \
+rm -rf ~/snap/juju/ && \
+rm -rf ~/snap/microk8s/ && \
+sudo init 6
+
+cd /mnt/extra/ && for i in {1..5}; do uvt-kvm destroy "node-${i}.localdomain"; done && virsh net-destroy virbr-sunbeam && virsh net-undefine virbr-sunbeam && \
+rm -rf /root/.ssh/known_hosts && touch /root/.ssh/known_hosts && sudo virsh list --all && sudo brctl show && sudo virsh net-list --all
