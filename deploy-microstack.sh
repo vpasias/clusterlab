@@ -78,7 +78,7 @@ done
 
 for i in {1..5}; do
     until ssh_to "${i}" -t -- cloud-init status --wait; do
-        sleep 1
+        sleep 5
     done
 
     ssh_to "${i}" -t -- sudo snap install openstack --channel 2024.1/edge
