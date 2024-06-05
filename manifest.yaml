@@ -21,6 +21,7 @@ deployment:
       osd_devices: /dev/vdc,/dev/vdd
     node-7.localdomain:
       osd_devices: /dev/vdc,/dev/vdd
+  region: RegionOne
   external_network:
     nic: enp9s0
     cidr: 10.0.123.0/24
