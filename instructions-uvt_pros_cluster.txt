@@ -183,7 +183,7 @@ do
   scp -r /etc/ceph/ root@$node:/etc/
 done
 
-cp /etc/kolla/clusterlab/globals.ym /etc/kolla/globals.ym
+cp /etc/kolla/clusterlab/globals.yml /etc/kolla/globals.yml
 
 # vim globals.yml
 
