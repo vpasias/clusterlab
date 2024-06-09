@@ -88,6 +88,8 @@ cephadm bootstrap --mon-ip=10.0.123.11 --cluster-network 10.0.124.0/24 --initial
 
 # replace XXXXXXXXXXXXXXXXXXXXXXX with the respective fsid displayed on the screen
 /usr/sbin/cephadm shell --fsid XXXXXXXXXXXXXXXXXXXXXXX -c /etc/ceph/ceph.conf -k /etc/ceph/ceph.client.admin.keyring
+exit
+
 cephadm add-repo --release reef && cephadm install ceph-common && ceph versions
 
 for node in node-{1..7}
