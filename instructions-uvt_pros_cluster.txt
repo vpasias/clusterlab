@@ -107,15 +107,7 @@ done
 
 ceph orch host ls
 
-#ceph orch device ls && ceph orch apply osd --all-available-devices --method raw
-ceph orch device ls && \
-ceph orch apply osd --method raw node-1:/dev/vdc && ceph orch apply osd --method raw node-1:/dev/vdd && \
-ceph orch apply osd --method raw node-2:/dev/vdc && ceph orch apply osd --method raw node-2:/dev/vdd && \
-ceph orch apply osd --method raw node-3:/dev/vdc && ceph orch apply osd --method raw node-3:/dev/vdd && \
-ceph orch apply osd --method raw node-4:/dev/vdc && ceph orch apply osd --method raw node-4:/dev/vdd && \
-ceph orch apply osd --method raw node-5:/dev/vdc && ceph orch apply osd --method raw node-5:/dev/vdd && \
-ceph orch apply osd --method raw node-6:/dev/vdc && ceph orch apply osd --method raw node-6:/dev/vdd && \
-ceph orch apply osd --method raw node-7:/dev/vdc && ceph orch apply osd --method raw node-7:/dev/vdd
+ceph orch device ls && ceph orch apply osd --all-available-devices --method raw && ceph orch device ls
 
 for node in node-{1..7}
 do
