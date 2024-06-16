@@ -16,7 +16,7 @@ for i in {1..1}; do
         --cpu 60 \
         --host-passthrough \
         --memory 327680 \
-        --disk 1400 \
+        --disk 1200 \
         --unsafe-caching \
         --network-config /dev/stdin \
         --no-start \
