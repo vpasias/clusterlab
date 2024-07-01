@@ -58,7 +58,6 @@ for i in {1..9}; do
     done
 
     ssh_to "${i}" -t -- sudo apt update -y
-    ssh_to "${i}" -t -- sudo apt upgrade -y
     ssh_to "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils iperf iperf3 mtr traceroute netcat sshpass socat python3 python2 python3-dev python2-dev
 
     ssh_to "${i}" -t -- 'echo "root:gprm8350" | sudo chpasswd'
