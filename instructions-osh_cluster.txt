@@ -88,7 +88,7 @@ all:
       group: ubuntu
     # The user and group that will be used to run Docker commands.
     docker_users:
-      - ununtu
+      - ubuntu
     # The MetalLB controller will be installed on the Kubernetes cluster.
     metallb_setup: true
     # Loopback devices will be created on all cluster nodes which then can be used
