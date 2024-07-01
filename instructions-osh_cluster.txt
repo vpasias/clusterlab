@@ -45,7 +45,7 @@ git clone https://github.com/vpasias/clusterlab.git && ls -lah && cd /mnt/extra/
 
 for i in {1..9}; do ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.1$i 'uname -a'; done
 
-ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.11
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.19
 
 cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && lsblk && ip a && sudo docker ps
 # cat /etc/hosts
@@ -73,6 +73,268 @@ git clone https://opendev.org/zuul/zuul-jobs.git
 pip install ansible
 
 export ANSIBLE_ROLES_PATH=~/osh/openstack-helm-infra/roles:~/osh/zuul-jobs/roles
+
+cat > ~/osh/inventory.yaml <<EOF
+---
+all:
+  vars:
+    ansible_port: 22
+    ansible_user: ubuntu
+    ansible_ssh_private_key_file: /home/ubuntu/.ssh/id_rsa
+    ansible_ssh_extra_args: -o StrictHostKeyChecking=no
+    # The user and group that will be used to run Kubectl and Helm commands.
+    kubectl:
+      user: ubuntu
+      group: ubuntu
+    # The user and group that will be used to run Docker commands.
+    docker_users:
+      - ununtu
+    # The MetalLB controller will be installed on the Kubernetes cluster.
+    metallb_setup: true
+    # Loopback devices will be created on all cluster nodes which then can be used
+    # to deploy a Ceph cluster which requires block devices to be provided.
+    # Please use loopback devices only for testing purposes. They are not suitable
+    # for production due to performance reasons.
+    loopback_setup: true
+    loopback_device: /dev/loop100
+    loopback_image: /var/lib/openstack-helm/ceph-loop.img
+    loopback_image_size: 12G
+  children:
+    # The primary node where Kubectl and Helm will be installed. If it is
+    # the only node then it must be a member of the groups k8s_cluster and
+    # k8s_control_plane. If there are more nodes then the wireguard tunnel
+    # will be established between the primary node and the k8s_control_plane node.
+    primary:
+      hosts:
+        primary:
+          ansible_host: 10.0.123.19
+    # The nodes where the Kubernetes components will be installed.
+    k8s_cluster:
+      hosts:
+        node-1:
+          ansible_host: 10.0.123.11
+        node-2:
+          ansible_host: 10.0.123.12
+        node-3:
+          ansible_host: 10.0.123.13
+        node-4:
+          ansible_host: 10.0.123.14
+        node-5:
+          ansible_host: 10.0.123.15
+        node-6:
+          ansible_host: 10.0.123.16
+    # The control plane node where the Kubernetes control plane components will be installed.
+    # It must be the only node in the group k8s_control_plane.
+    k8s_control_plane:
+      hosts:
+        node-1:
+          ansible_host: 10.0.123.11
+    # These are Kubernetes worker nodes. There could be zero such nodes.
+    # In this case the Openstack workloads will be deployed on the control plane node.
+    k8s_nodes:
+      hosts:
+        node-2:
+          ansible_host: 10.0.123.12
+        node-3:
+          ansible_host: 10.0.123.13
+        node-4:
+          ansible_host: 10.0.123.14
+        node-5:
+          ansible_host: 10.0.123.15
+        node-6:
+          ansible_host: 10.0.123.16
+EOF
+
+cat > ~/osh/deploy-env.yaml <<EOF
+---
+- hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - ensure-python
+    - ensure-pip
+    - clear-firewall
+    - deploy-env
+EOF
+
+cd ~/osh && ansible-playbook -i inventory.yaml deploy-env.yaml
+
+kubectl get nodes && kubectl get pods
+
+tee > /tmp/openstack_namespace.yaml <<EOF
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: openstack
+EOF
+kubectl apply -f /tmp/openstack_namespace.yaml
+
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
+    --version="4.8.3" \
+    --namespace=openstack \
+    --set controller.kind=Deployment \
+    --set controller.admissionWebhooks.enabled="false" \
+    --set controller.scope.enabled="true" \
+    --set controller.service.enabled="false" \
+    --set controller.ingressClassResource.name=nginx \
+    --set controller.ingressClassResource.controllerValue="k8s.io/ingress-nginx" \
+    --set controller.ingressClassResource.default="false" \
+    --set controller.ingressClass=nginx \
+    --set controller.labels.app=ingress-api
+
+tee > /tmp/metallb_system_namespace.yaml <<EOF
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: metallb-system
+EOF
+kubectl apply -f /tmp/metallb_system_namespace.yaml
+
+helm repo add metallb https://metallb.github.io/metallb
+helm install metallb metallb/metallb -n metallb-system
+
+tee > /tmp/metallb_ipaddresspool.yaml <<EOF
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+    name: public
+    namespace: metallb-system
+spec:
+    addresses:
+    - "172.24.128.0/24"
+EOF
+
+kubectl apply -f /tmp/metallb_ipaddresspool.yaml
+
+tee > /tmp/metallb_l2advertisement.yaml <<EOF
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+    name: public
+    namespace: metallb-system
+spec:
+    ipAddressPools:
+    - public
+EOF
+
+kubectl apply -f /tmp/metallb_l2advertisement.yaml
+
+tee > /tmp/metallb_system_namespace.yaml <<EOF
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: metallb-system
+EOF
+kubectl apply -f /tmp/metallb_system_namespace.yaml
+
+helm repo add metallb https://metallb.github.io/metallb
+helm install metallb metallb/metallb -n metallb-system
+
+tee > /tmp/metallb_ipaddresspool.yaml <<EOF
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+    name: public
+    namespace: metallb-system
+spec:
+    addresses:
+    - "172.24.128.0/24"
+EOF
+
+kubectl apply -f /tmp/metallb_ipaddresspool.yaml
+
+tee > /tmp/metallb_l2advertisement.yaml <<EOF
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+    name: public
+    namespace: metallb-system
+spec:
+    ipAddressPools:
+    - public
+EOF
+
+kubectl apply -f /tmp/metallb_l2advertisement.yaml
+
+tee > /tmp/openstack_endpoint_service.yaml <<EOF
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: public-openstack
+  namespace: openstack
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: "172.24.128.100"
+spec:
+  externalTrafficPolicy: Cluster
+  type: LoadBalancer
+  selector:
+    app: ingress-api
+  ports:
+    - name: http
+      port: 80
+    - name: https
+      port: 443
+EOF
+
+docker run -d --name dnsmasq --restart always \
+    --cap-add=NET_ADMIN \
+    --network=host \
+    --entrypoint dnsmasq \
+    docker.io/openstackhelm/neutron:2024.1-ubuntu_jammy \
+    --keep-in-foreground \
+    --no-hosts \
+    --bind-interfaces \
+    --address="/openstack.svc.cluster.local/172.24.128.100" \
+    --listen-address="172.17.0.1" \
+    --no-resolv \
+    --server=8.8.8.8
+
+echo "nameserver 172.17.0.1" > /etc/resolv.conf
+
+tee > /tmp/ceph-adapter-rook-ceph.yaml <<EOF
+manifests:
+  configmap_bin: true
+  configmap_templates: true
+  configmap_etc: false
+  job_storage_admin_keys: true
+  job_namespace_client_key: false
+  job_namespace_client_ceph_config: false
+  service_mon_discovery: true
+EOF
+
+helm upgrade --install ceph-adapter-rook openstack-helm-infra/ceph-adapter-rook \
+  --namespace=ceph \
+  --values=/tmp/ceph-adapter-rook-ceph.yaml
+
+helm osh wait-for-pods ceph
+
+tee > /tmp/ceph-adapter-rook-openstack.yaml <<EOF
+manifests:
+  configmap_bin: true
+  configmap_templates: false
+  configmap_etc: true
+  job_storage_admin_keys: false
+  job_namespace_client_key: true
+  job_namespace_client_ceph_config: true
+  service_mon_discovery: false
+EOF
+
+helm upgrade --install ceph-adapter-rook openstack-helm-infra/ceph-adapter-rook \
+  --namespace=openstack \
+  --values=/tmp/ceph-adapter-rook-openstack.yaml
+
+helm osh wait-for-pods openstack
+
+kubectl label --overwrite nodes --all openstack-control-plane=enabled
+kubectl label --overwrite nodes --all openstack-compute-node=enabled
+kubectl label --overwrite nodes --all openvswitch=enabled
+kubectl label --overwrite nodes --all linuxbridge=enabled
 
 #############################################################################################################
 ################ Delete ########################################################################################
