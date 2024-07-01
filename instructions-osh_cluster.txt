@@ -27,6 +27,7 @@ sudo sed -i -E 's,#?(security_driver)\s*=.*,\1 = "none",g' /etc/libvirt/qemu.con
 
 #####################################################################################################################################################
 ### Production Ready OpenStack Helm Cluster ###
+### https://docs.openstack.org/openstack-helm/latest/install/index.html ###
 #####################################################################################################################################################
 
 cat <<EOF | virsh net-define /dev/stdin
@@ -57,6 +58,21 @@ for node in node-{1..9}
 do
   sshpass -p gprm8350 ssh-copy-id -o StrictHostKeyChecking=no root@$node
 done
+
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && \
+chmod 700 get_helm.sh && ./get_helm.sh
+
+helm repo add openstack-helm https://tarballs.opendev.org/openstack/openstack-helm && \
+helm repo add openstack-helm-infra https://tarballs.opendev.org/openstack/openstack-helm-infra && \
+helm plugin install https://opendev.org/openstack/openstack-helm-plugin
+
+mkdir ~/osh && cd ~/osh && \
+git clone https://opendev.org/openstack/openstack-helm-infra.git && \
+git clone https://opendev.org/zuul/zuul-jobs.git
+
+pip install ansible
+
+export ANSIBLE_ROLES_PATH=~/osh/openstack-helm-infra/roles:~/osh/zuul-jobs/roles
 
 #############################################################################################################
 ################ Delete ########################################################################################
