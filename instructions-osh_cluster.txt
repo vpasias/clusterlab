@@ -80,7 +80,9 @@ git clone https://opendev.org/openstack/openstack-helm-infra.git && \
 git clone https://opendev.org/zuul/zuul-jobs.git
 
 sudo apt install python3-pip -y
-pip install ansible
+#pip install ansible
+sudo apt update && sudo apt install software-properties-common -y && \
+sudo add-apt-repository --yes --update ppa:ansible/ansible && sudo apt install ansible -y
 
 export ANSIBLE_ROLES_PATH=~/osh/openstack-helm-infra/roles:~/osh/zuul-jobs/roles
 
