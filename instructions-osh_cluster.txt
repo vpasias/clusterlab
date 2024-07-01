@@ -47,7 +47,7 @@ for i in {1..9}; do ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/nul
 
 ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.19
 
-cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && lsblk && ip a && sudo docker ps
+cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && lsblk && ip a
 # cat /etc/hosts
 
 ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
