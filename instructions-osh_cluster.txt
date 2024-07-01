@@ -50,13 +50,11 @@ ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123
 cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && lsblk && ip a && sudo docker ps
 # cat /etc/hosts
 
-sudo -i
-
 ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
 
 for node in node-{1..9}
 do
-  sshpass -p gprm8350 ssh-copy-id -o StrictHostKeyChecking=no root@$node
+  sshpass -p kyax7344 ssh-copy-id -o StrictHostKeyChecking=no ubuntu@$node
 done
 
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && \
@@ -66,22 +64,11 @@ helm repo add openstack-helm https://tarballs.opendev.org/openstack/openstack-he
 helm repo add openstack-helm-infra https://tarballs.opendev.org/openstack/openstack-helm-infra && \
 helm plugin install https://opendev.org/openstack/openstack-helm-plugin
 
-su - ubuntu
-
-ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
-
-for node in node-{1..9}
-do
-  sshpass -p kyax7344 ssh-copy-id -o StrictHostKeyChecking=no ubuntu@$node
-done
-
 mkdir ~/osh && cd ~/osh && \
 git clone https://opendev.org/openstack/openstack-helm-infra.git && \
 git clone https://opendev.org/zuul/zuul-jobs.git
 
-sudo apt install python3-pip -y
-#pip install ansible
-sudo apt update && sudo apt install software-properties-common -y && \
+sudo apt update && sudo apt install python3-pip -y && sudo apt install software-properties-common -y && \
 sudo add-apt-repository --yes --update ppa:ansible/ansible && sudo apt install ansible -y
 
 export ANSIBLE_ROLES_PATH=~/osh/openstack-helm-infra/roles:~/osh/zuul-jobs/roles
