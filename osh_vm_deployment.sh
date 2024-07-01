@@ -70,7 +70,7 @@ for i in {1..9}; do
 
 done
 
-ssh_to 1 -- 'sudo tee -a /etc/hosts <<EOF
+ssh_to 9 -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.11 node-1 node-1.localdomain
 10.0.123.12 node-2 node-2.localdomain
 10.0.123.13 node-3 node-3.localdomain
