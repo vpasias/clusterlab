@@ -159,6 +159,7 @@ EOF
 
 cd ~/osh && ansible-playbook -i inventory.yaml deploy-env.yaml
 
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && chmod +x kubectl && sudo mv kubectl /usr/local/bin && kubectl version
 kubectl get nodes && kubectl get pods
 
 tee > /tmp/openstack_namespace.yaml <<EOF
