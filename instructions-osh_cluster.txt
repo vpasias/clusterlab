@@ -42,7 +42,7 @@ EOF
 virsh net-autostart virbr-mgt && virsh net-start virbr-mgt && \
 git clone https://github.com/vpasias/clusterlab.git && ls -lah && cd /mnt/extra/clusterlab && chmod +x osh_vm_deployment.sh && ./osh_vm_deployment.sh
 
-for i in {1..7}; do ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.1$i 'uname -a'; done
+for i in {1..9}; do ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.1$i 'uname -a'; done
 
 ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.11
 
@@ -53,7 +53,7 @@ sudo -i
 
 ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
 
-for node in node-{1..7}
+for node in node-{1..9}
 do
   sshpass -p gprm8350 ssh-copy-id -o StrictHostKeyChecking=no root@$node
 done
@@ -62,6 +62,6 @@ done
 ################ Delete ########################################################################################
 #############################################################################################################
 
-for i in {1..7}; do uvt-kvm destroy "node-${i}.localdomain"; done && cd /mnt/extra/ && \
-virsh net-destroy virbr-mgt && virsh net-undefine virbr-mgt && virsh net-destroy virbr-sto && virsh net-undefine virbr-sto && virsh net-destroy virbr-ser && virsh net-undefine virbr-ser && \
-rm -rf clusterlab && rm -rf /root/.ssh/known_hosts && touch /root/.ssh/known_hosts && sudo virsh list --all && sudo brctl show && sudo virsh net-list --all
+for i in {1..9}; do uvt-kvm destroy "node-${i}.localdomain"; done && cd /mnt/extra/ && \
+virsh net-destroy virbr-mgt && virsh net-undefine virbr-mgt && rm -rf clusterlab && \
+rm -rf /root/.ssh/known_hosts && touch /root/.ssh/known_hosts && sudo virsh list --all && sudo brctl show && sudo virsh net-list --all
