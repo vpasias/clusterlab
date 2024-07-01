@@ -79,6 +79,7 @@ mkdir ~/osh && cd ~/osh && \
 git clone https://opendev.org/openstack/openstack-helm-infra.git && \
 git clone https://opendev.org/zuul/zuul-jobs.git
 
+sudo apt install python3-pip -y
 pip install ansible
 
 export ANSIBLE_ROLES_PATH=~/osh/openstack-helm-infra/roles:~/osh/zuul-jobs/roles
