@@ -66,6 +66,15 @@ helm repo add openstack-helm https://tarballs.opendev.org/openstack/openstack-he
 helm repo add openstack-helm-infra https://tarballs.opendev.org/openstack/openstack-helm-infra && \
 helm plugin install https://opendev.org/openstack/openstack-helm-plugin
 
+su - ubuntu
+
+ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
+
+for node in node-{1..9}
+do
+  sshpass -p kyax7344 ssh-copy-id -o StrictHostKeyChecking=no ubuntu@$node
+done
+
 mkdir ~/osh && cd ~/osh && \
 git clone https://opendev.org/openstack/openstack-helm-infra.git && \
 git clone https://opendev.org/zuul/zuul-jobs.git
