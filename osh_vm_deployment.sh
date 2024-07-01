@@ -58,7 +58,7 @@ for i in {1..9}; do
     done
 
     ssh_to "${i}" -t -- sudo apt update -y
-    ssh_to "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils iperf iperf3 mtr traceroute netcat sshpass socat python3 python2 python3-dev python2-dev
+    ssh_to "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils iperf iperf3 mtr traceroute netcat sshpass socat
 
     ssh_to "${i}" -t -- 'echo "root:gprm8350" | sudo chpasswd'
     ssh_to "${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
@@ -81,20 +81,6 @@ ssh_to 9 -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.18 node-8 node-8.localdomain
 10.0.123.19 node-9 node-9.localdomain
 EOF'
-
-for i in {1..9}; do
-
-    ssh_to "${i}" -t -- sudo apt-get update -y
-    ssh_to "${i}" -t -- sudo apt-get install ca-certificates curl -y
-    ssh_to "${i}" -t -- sudo install -m 0755 -d /etc/apt/keyrings
-    ssh_to "${i}" -t -- sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-    ssh_to "${i}" -t -- sudo chmod a+r /etc/apt/keyrings/docker.asc
-    ssh_to "${i}" -t -- 'echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null'
-    ssh_to "${i}" -t -- sudo apt-get update -y
-    ssh_to "${i}" -t -- sudo apt-get install docker-ce docker-ce-cli containerd.io -y
-    ssh_to "${i}" -t -- sudo systemctl enable --now docker
-
-done
 
 for i in {1..9}; do
 
