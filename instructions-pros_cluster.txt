@@ -21,7 +21,8 @@ sudo -i
 cd /mnt/extra && cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && sudo virsh list --all && sudo brctl show && \
 mkdir -p /mnt/extra/virt/images && mkdir -p /mnt/extra/virt/vms && \
 wget -O "/mnt/extra/osinfo-db.tar.xz" https://releases.pagure.org/libosinfo/osinfo-db-20231215.tar.xz && sudo osinfo-db-import --local "/mnt/extra/osinfo-db.tar.xz" && \
-sudo sed -i -E 's,#?(security_driver)\s*=.*,\1 = "none",g' /etc/libvirt/qemu.conf && sudo systemctl restart libvirtd && uvt-simplestreams-libvirt sync release=jammy arch=amd64 && ssh-keygen
+sudo sed -i -E 's,#?(security_driver)\s*=.*,\1 = "none",g' /etc/libvirt/qemu.conf && sudo systemctl restart libvirtd && uvt-simplestreams-libvirt sync release=jammy arch=amd64 && \
+ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
 
 #sudo ls -lah /var/lib/uvtool/libvirt/images/ && uvt-kvm list
 
