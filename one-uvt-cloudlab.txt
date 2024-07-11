@@ -1,0 +1,86 @@
+chmod +x cloudlab-setup-ubuntu-tl.sh && ./cloudlab-setup-ubuntu-tl.sh && \
+sudo apt-get install libvirt-daemon genisoimage libguestfs-tools libosinfo-bin virtinst qemu-kvm git vim net-tools wget curl bash-completion python-pip libvirt-daemon-system virt-manager bridge-utils libnss-libvirt libvirt-clients osinfo-db-tools intltool sshpass p7zip-full p7zip-rar uvtool -y && \
+sudo sed -i 's/hosts:          files dns/hosts:          files libvirt libvirt_guest dns/' /etc/nsswitch.conf && sudo lsmod | grep kvm && sudo reboot
+#sudo systemctl restart libvirtd && sudo systemctl status libvirtd
+
+screen
+# Press Return to continue
+# detach from session without killing it: Ctrl a d 
+# to see screen sessions: screen -ls
+# detach from closed session: screen -d -r 1909.pts-0.node0
+# enter session: screen -r 1909.pts-0.node0
+# exit a session and terminate it: exit
+
+sudo apt update -y && sudo apt install cockpit -y && sudo systemctl enable --now cockpit.socket && sudo apt install cockpit-machines -y && echo "root:gprm8350" | sudo chpasswd && \
+cd /mnt/extra/virt/images/ && http://mirrors.edge.kernel.org/ubuntu-releases/22.04.4/ubuntu-22.04.4-live-server-amd64.iso
+exit
+
+sudo -i
+
+# Create OS node VMs
+cd /mnt/extra && cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && sudo virsh list --all && sudo brctl show && \
+mkdir -p /mnt/extra/virt/images && mkdir -p /mnt/extra/virt/vms && \
+wget -O "/mnt/extra/osinfo-db.tar.xz" https://releases.pagure.org/libosinfo/osinfo-db-20240701.tar.xz && sudo osinfo-db-import --local "/mnt/extra/osinfo-db.tar.xz" && \
+sudo sed -i -E 's,#?(security_driver)\s*=.*,\1 = "none",g' /etc/libvirt/qemu.conf && sudo systemctl restart libvirtd && uvt-simplestreams-libvirt sync release=jammy arch=amd64 && \
+ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
+
+#sudo ls -lah /var/lib/uvtool/libvirt/images/ && uvt-kvm list
+
+##################################################################################################################################################################################
+### POpenNebula Ansible Cluster (https://github.com/OpenNebula/one-deploy/wiki) ###
+##################################################################################################################################################################################
+
+git clone https://github.com/vpasias/clusterlab.git && ls -lah && cd /mnt/extra/clusterlab && chmod +x one_vm_deployment.sh && ./one_vm_deployment.sh
+
+for i in {1..7}; do ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.1$i 'uname -a'; done
+
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.11
+
+cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && lsblk && ip a
+# cat /etc/hosts
+
+exit
+
+for node in n{1..7}
+do
+  sshpass -p kyax7344 ssh-copy-id -o StrictHostKeyChecking=no ubuntu@$node
+done
+
+for node in n{1..7}
+do
+  sshpass -p gprm8350 ssh-copy-id -o StrictHostKeyChecking=no root@$node
+done
+
+###https://github.com/OpenNebula/one-deploy/wiki/sys_reqs
+apt install python3-pip -y && pip3 install 'ansible-core<2.16'
+git clone https://github.com/vpasias/clusterlab.git && git clone git@github.com:OpenNebula/one-deploy.git && cd /mnt/extra/one-deploy/ && make requirements
+
+#apt install python3-pip && pip3 install poetry
+#git clone https://github.com/vpasias/clusterlab.git && git clone git@github.com:OpenNebula/one-deploy.git && cd /mnt/extra/one-deploy/ && make requirements
+#poetry env list
+#poetry shell
+
+cp -a /mnt/extra/clusterlab/evpn-hci.yml /mnt/extra/one-deploy/inventory/evpn-hci.yml
+#ls -la /mnt/extra/one-deploy/inventory
+
+make I=inventory/evpn-hci.yml
+
+#Verifying the Installation
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.11
+sudo -i
+sudo -i -u oneadmin
+onedatastore list
+onevnet list
+onemarketapp export -d default 'Alpine Linux 3.20' alpine
+oneimage list
+onetemplate instantiate --nic admin_net alpine
+onevm list
+#verify VM connectivity via pinging the IP address of the VM
+ping -c 2 172.20.100
+
+#############################################################################################################
+################ Delete ########################################################################################
+#############################################################################################################
+
+for i in {1..7}; do uvt-kvm destroy "n${i}"; done && cd /mnt/extra/ && virsh net-destroy virbr-mgt && virsh net-undefine virbr-mgt && \
+rm -rf clusterlab && rm -rf /root/.ssh/known_hosts && touch /root/.ssh/known_hosts && sudo virsh list --all && sudo brctl show && sudo virsh net-list --all
