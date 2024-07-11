@@ -35,7 +35,7 @@ for i in {1..7}; do
         --unsafe-caching \
         --network-config /dev/stdin \
         --no-start \
-        "n${i}.localdomain" \
+        "n${i}" \
         release=jammy
 network:
   version: 2
@@ -56,12 +56,12 @@ EOF
 done
 
 for i in {1..7}; do
-    virsh detach-interface "n${i}.localdomain" network --config
+    virsh detach-interface "n${i}" network --config
 
-    virsh attach-interface "n${i}.localdomain" network virbr-mgt \
+    virsh attach-interface "n${i}" network virbr-mgt \
         --model virtio --config
 
-    virsh start "n${i}.localdomain"
+    virsh start "n${i}"
 done
 
 
