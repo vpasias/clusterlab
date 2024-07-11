@@ -1,1 +1,84 @@
+---
+all:
+  vars:
+    ansible_user: ubuntu
+    ensure_keys_for: [ubuntu, root]
+    one_pass: opennebula
+    one_version: '6.8'
+    features:
+      ceph: true
+      evpn: true
+    ds:
+      mode: ceph
+    vn:
+      evpn0:
+        managed: true
+        template:
+          VN_MAD: vxlan
+          VXLAN_MODE: evpn
+          IP_LINK_CONF: nolearning=
+          PHYDEV: eth0
+          AUTOMATIC_VLAN_ID: "YES"
+          GUEST_MTU: 1450
+          AR:
+            TYPE: IP4
+            IP: 172.20.2.200
+            SIZE: 48
+          NETWORK_ADDRESS: 172.20.2.0
+          NETWORK_MASK: 255.255.255.0
+          GATEWAY: 172.20.2.1
+          DNS: 8.8.8.8
+    one_vip: 10.0.123.250
+    one_vip_cidr: 24
+    one_vip_if: enp1s0
 
+router:
+  hosts:
+    n1: { ansible_host: 10.0.123.11 }
+    n2: { ansible_host: 10.0.123.12 }
+
+frontend:
+  hosts:
+    n1: { ansible_host: 10.0.123.11 }
+    n2: { ansible_host: 10.0.123.12 }
+    n3: { ansible_host: 10.0.123.13 }
+
+node:
+  hosts:
+    n4: { ansible_host: 10.0.123.14 }
+    n5: { ansible_host: 10.0.123.15 }
+    n6: { ansible_host: 10.0.123.16 }
+
+ceph:
+  children:
+    ? mons
+    ? mgrs
+    ? osds
+  vars:
+    osd_memory_target: 4294967296 # 4GiB (default)
+    # Assuming all osds are of equal size, setup resource limits and reservations
+    # for all osd systemd services.
+    ceph_osd_systemd_overrides:
+      Service:
+        CPUWeight: 200 # 100 is the kernel default
+        CPUQuota: 100% # 1 full core
+        MemoryMin: "{{ (0.75 * osd_memory_target) | int }}"
+        MemoryHigh: "{{ osd_memory_target | int }}"
+    # Make sure osds preserve memory if it's below the value of the "osd_memory_target" fact.
+    ceph_conf_overrides:
+      osd:
+        ? osd memory target
+        : "{{ osd_memory_target | int }}"
+    osd_auto_discovery: true
+
+mons:
+  hosts:
+    n1: { ansible_host: 10.0.123.11, monitor_address: 10.0.123.11 }
+    n2: { ansible_host: 10.0.123.12, monitor_address: 10.0.123.12 }
+    n3: { ansible_host: 10.0.123.13, monitor_address: 10.0.123.13 }
+
+mgrs:
+  hosts:
+    n1: { ansible_host: 10.0.123.11 }
+    n2: { ansible_host: 10.0.123.12 }
+    n3: { ansible_host: 10.0.123.13 }
