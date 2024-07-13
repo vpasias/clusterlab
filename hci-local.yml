@@ -21,11 +21,11 @@ all:
           GUEST_MTU: 1450
           AR:
             TYPE: IP4
-            IP: 172.20.0.200
+            IP: 172.20.2.200
             SIZE: 48
-          NETWORK_ADDRESS: 172.20.0.0
+          NETWORK_ADDRESS: 172.20.2.0
           NETWORK_MASK: 255.255.255.0
-          GATEWAY: 172.20.0.1
+          GATEWAY: 172.20.2.1
           DNS: 8.8.8.8
     one_vip: 10.0.123.250
     one_vip_cidr: 24
