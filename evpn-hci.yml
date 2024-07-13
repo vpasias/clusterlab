@@ -82,3 +82,10 @@ mgrs:
     n1: { ansible_host: 10.0.123.11 }
     n2: { ansible_host: 10.0.123.12 }
     n3: { ansible_host: 10.0.123.13 }
+
+osds:
+  hosts:
+    # NOTE: The Ceph osds are deployed along the OpenNebula KVM nodes (HCI setup).
+    n4: { ansible_host: 10.0.123.14 }
+    n5: { ansible_host: 10.0.123.15 }
+    n6: { ansible_host: 10.0.123.16 }
