@@ -17,7 +17,7 @@ all:
           VN_MAD: vxlan
           VXLAN_MODE: evpn
           IP_LINK_CONF: nolearning=
-          PHYDEV: eth0
+          PHYDEV: enp1s0
           AUTOMATIC_VLAN_ID: "YES"
           GUEST_MTU: 1450
           AR:
