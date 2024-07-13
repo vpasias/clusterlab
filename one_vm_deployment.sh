@@ -85,6 +85,20 @@ done
 
 for i in {1..7}; do
 
+    ssh_to "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
+    10.0.123.11 n1
+    10.0.123.12 n2
+    10.0.123.13 n3
+    10.0.123.14 n4
+    10.0.123.15 n5
+    10.0.123.16 n6
+    10.0.123.17 n7
+    EOF'
+
+done
+
+for i in {1..7}; do
+
     ssh_to "${i}" -t -- sudo reboot
 
 done
