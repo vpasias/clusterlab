@@ -1,0 +1,72 @@
+---
+all:
+  vars:
+    ansible_user: ubuntu
+    ensure_keys_for: [ubuntu, root]
+    one_pass: opennebula
+    one_version: '6.8'
+    features:
+      ceph: true
+    ds:
+      mode: ceph
+    vn:
+      admin_net:
+        managed: true
+        template:
+          VN_MAD: bridge
+          PHYDEV: enp1s0
+          BRIDGE: br0
+          AR:
+            TYPE: IP4
+            IP: 10.0.123.200
+            SIZE: 48
+          NETWORK_ADDRESS: 10.0.123.0
+          NETWORK_MASK: 255.255.255.0
+          GATEWAY: 10.0.123.1
+          DNS: 8.8.8.8
+    one_vip: 10.0.123.250
+    one_vip_cidr: 24
+    one_vip_if: enp1s0
+
+router:
+  hosts:
+    n1: { ansible_host: 10.0.123.11 }
+    n2: { ansible_host: 10.0.123.12 }
+
+frontend:
+  hosts:
+    n1: { ansible_host: 10.0.123.11 }
+    n2: { ansible_host: 10.0.123.12 }
+    n3: { ansible_host: 10.0.123.13 }
+
+node:
+  hosts:
+    n4: { ansible_host: 10.0.123.14 }
+    n5: { ansible_host: 10.0.123.15 }
+    n6: { ansible_host: 10.0.123.16 }
+
+ceph:
+  children:
+    ? mons
+    ? mgrs
+    ? osds
+  vars:
+    osd_auto_discovery: true
+
+mons:
+  hosts:
+    mon1: { ansible_host: 10.0.123.11, monitor_address: 10.0.123.11 }
+#    mon2: { ansible_host: 10.0.123.12, monitor_address: 10.0.123.12 }
+#    mon3: { ansible_host: 10.0.123.13, monitor_address: 10.0.123.13 }
+
+mgrs:
+  hosts:
+    mgr1: { ansible_host: 10.0.123.11 }
+#    mgr2: { ansible_host: 10.0.123.12 }
+#    mgr3: { ansible_host: 10.0.123.13 }
+
+osds:
+  hosts:
+    osd1: { ansible_host: 10.0.123.17 }
+    osd2: { ansible_host: 10.0.123.18 }
+    osd3: { ansible_host: 10.0.123.19 }
