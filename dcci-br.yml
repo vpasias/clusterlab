@@ -2,6 +2,8 @@
 all:
   vars:
     ansible_user: root
+#    ansible_user: ubuntu
+#    ensure_keys_for: [ubuntu, root]
     one_pass: opennebula
     one_version: '6.8'
     features:
