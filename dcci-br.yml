@@ -1,8 +1,7 @@
 ---
 all:
   vars:
-    ansible_user: ubuntu
-    ensure_keys_for: [ubuntu, root]
+    ansible_user: root
     one_pass: opennebula
     one_version: '6.8'
     features:
@@ -50,29 +49,29 @@ ceph:
 
 mons:
   hosts:
-    mon1: { ansible_host: 10.0.123.11, monitor_address: 10.0.123.11 }
-#    mon2: { ansible_host: 10.0.123.12, monitor_address: 10.0.123.12 }
-#    mon3: { ansible_host: 10.0.123.13, monitor_address: 10.0.123.13 }
+    n1: { ansible_host: 10.0.123.11, monitor_address: 10.0.123.11 }
+#    n2: { ansible_host: 10.0.123.12, monitor_address: 10.0.123.12 }
+#    n3: { ansible_host: 10.0.123.13, monitor_address: 10.0.123.13 }
 
 mgrs:
   hosts:
-    mgr1: { ansible_host: 10.0.123.11 }
-#    mgr2: { ansible_host: 10.0.123.12 }
-#    mgr3: { ansible_host: 10.0.123.13 }
+    n1: { ansible_host: 10.0.123.11 }
+#    n2: { ansible_host: 10.0.123.12 }
+#    n3: { ansible_host: 10.0.123.13 }
 
 osds:
   hosts:
-    osd1: 
+    n7: 
       ansible_host: 10.0.123.17
       devices:
         - /dev/vdc
         - /dev/vdd
-    osd2:
+    n8:
       ansible_host: 10.0.123.18
       devices:
         - /dev/vdc
         - /dev/vdd
-    osd3:
+    n9:
       ansible_host: 10.0.123.19
       devices:
         - /dev/vdc
