@@ -67,6 +67,18 @@ mgrs:
 
 osds:
   hosts:
-    osd1: { ansible_host: 10.0.123.17 }
-    osd2: { ansible_host: 10.0.123.18 }
-    osd3: { ansible_host: 10.0.123.19 }
+    osd1: 
+      ansible_host: 10.0.123.17
+      devices:
+        - /dev/vdc
+        - /dev/vdd
+    osd2:
+      ansible_host: 10.0.123.18
+      devices:
+        - /dev/vdc
+        - /dev/vdd
+    osd3:
+      ansible_host: 10.0.123.19
+      devices:
+        - /dev/vdc
+        - /dev/vdd
