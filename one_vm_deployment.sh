@@ -23,12 +23,12 @@ function ssh_to() {
     ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu "${ip}" "$@"
 }
 
-for i in {1..7}; do
+for i in {1..9}; do
     cat <<EOF | uvt-kvm create \
         --machine-type q35 \
-        --cpu 8 \
+        --cpu 6 \
         --host-passthrough \
-        --memory 32768 \
+        --memory 24576 \
         --disk 100 \
         --ephemeral-disk 100 \
         --ephemeral-disk 100 \
@@ -55,7 +55,7 @@ network:
 EOF
 done
 
-for i in {1..7}; do
+for i in {1..9}; do
     virsh detach-interface "n${i}" network --config
 
     virsh attach-interface "n${i}" network virbr-mgt \
@@ -65,7 +65,7 @@ for i in {1..7}; do
 done
 
 
-for i in {1..7}; do
+for i in {1..9}; do
     until ssh_to "${i}" -t -- cloud-init status --wait; do
         sleep 1
     done
@@ -91,6 +91,8 @@ ssh_to 1 -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.15 n5
 10.0.123.16 n6
 10.0.123.17 n7
+10.0.123.18 n8
+10.0.123.19 n9
 EOF'
 
 ssh_to 2 -- 'sudo tee -a /etc/hosts <<EOF
@@ -101,6 +103,8 @@ ssh_to 2 -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.15 n5
 10.0.123.16 n6
 10.0.123.17 n7
+10.0.123.18 n8
+10.0.123.19 n9
 EOF'
 
 ssh_to 3 -- 'sudo tee -a /etc/hosts <<EOF
@@ -111,6 +115,8 @@ ssh_to 3 -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.15 n5
 10.0.123.16 n6
 10.0.123.17 n7
+10.0.123.18 n8
+10.0.123.19 n9
 EOF'
 
 ssh_to 4 -- 'sudo tee -a /etc/hosts <<EOF
@@ -121,6 +127,8 @@ ssh_to 4 -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.15 n5
 10.0.123.16 n6
 10.0.123.17 n7
+10.0.123.18 n8
+10.0.123.19 n9
 EOF'
 
 ssh_to 5 -- 'sudo tee -a /etc/hosts <<EOF
@@ -131,6 +139,8 @@ ssh_to 5 -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.15 n5
 10.0.123.16 n6
 10.0.123.17 n7
+10.0.123.18 n8
+10.0.123.19 n9
 EOF'
 
 ssh_to 6 -- 'sudo tee -a /etc/hosts <<EOF
@@ -141,6 +151,8 @@ ssh_to 6 -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.15 n5
 10.0.123.16 n6
 10.0.123.17 n7
+10.0.123.18 n8
+10.0.123.19 n9
 EOF'
 
 ssh_to 7 -- 'sudo tee -a /etc/hosts <<EOF
@@ -151,9 +163,35 @@ ssh_to 7 -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.15 n5
 10.0.123.16 n6
 10.0.123.17 n7
+10.0.123.18 n8
+10.0.123.19 n9
 EOF'
 
-for i in {1..7}; do
+ssh_to 8 -- 'sudo tee -a /etc/hosts <<EOF
+10.0.123.11 n1
+10.0.123.12 n2
+10.0.123.13 n3
+10.0.123.14 n4
+10.0.123.15 n5
+10.0.123.16 n6
+10.0.123.17 n7
+10.0.123.18 n8
+10.0.123.19 n9
+EOF'
+
+ssh_to 9 -- 'sudo tee -a /etc/hosts <<EOF
+10.0.123.11 n1
+10.0.123.12 n2
+10.0.123.13 n3
+10.0.123.14 n4
+10.0.123.15 n5
+10.0.123.16 n6
+10.0.123.17 n7
+10.0.123.18 n8
+10.0.123.19 n9
+EOF'
+
+for i in {1..9}; do
 
     ssh_to "${i}" -t -- sudo reboot
 
