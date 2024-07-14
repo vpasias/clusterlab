@@ -2,6 +2,7 @@
 all:
   vars:
     ansible_user: root
+    ensure_keys_for: [root]    
 #    ansible_user: ubuntu
 #    ensure_keys_for: [ubuntu, root]
     one_pass: opennebula
