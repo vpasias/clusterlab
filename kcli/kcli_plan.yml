@@ -9,7 +9,7 @@ parameters:
  - 100
  - 100
 
-{% for number in range(0, nodes)|reverse %}
+{% for number in range(1, nodes)|reverse %}
 {{ plan }}-n{{ number }}:
  image: {{ image }}
  numcpus: {{ numcpus }}
