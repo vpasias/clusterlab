@@ -5,8 +5,6 @@ all:
     ensure_keys_for: [root]
     one_pass: opennebula
     one_version: '6.8'
-    features:
-      evpn: true
     ds:
       mode: ssh
     vn:
@@ -23,15 +21,10 @@ all:
           NETWORK_ADDRESS: 10.0.123.0
           NETWORK_MASK: 255.255.255.0
           GATEWAY: 10.0.123.1
-          DNS: 8.8.8.8
+          DNS: 10.0.123.1
     one_vip: 10.0.123.250
     one_vip_cidr: 24
     one_vip_if: eth0
-
-router:
-  hosts:
-    n1: { ansible_host: 10.0.123.11 }
-    n2: { ansible_host: 10.0.123.12 }
 
 frontend:
   hosts:
