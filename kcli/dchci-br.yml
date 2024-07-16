@@ -76,7 +76,7 @@ mgrs:
 
 osds:
   hosts:
-    n4: 
+    n4:
       ansible_host: 10.0.123.14
       devices:
         - /dev/sdb
