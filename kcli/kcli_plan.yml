@@ -1,0 +1,31 @@
+parameters:
+ nodes: 9
+ pool: default
+ network: service
+ numcpus: 6
+ memory: 24576
+ image: centos9stream
+ disks:
+ - 100
+ - 100
+
+{% for number in range(0, nodes)|reverse %}
+{{ plan }}-n{{ number }}:
+ image: {{ image }}
+ numcpus: {{ numcpus }}
+ memory: {{ memory }}
+ sharedkey: true
+ nets:
+ - {{ network }}
+ disks: {{ disks }}
+ pool: {{ pool or config_pool }}
+ cmds:
+ - dnf -y install python3 chrony lvm2
+ - sed -i "s/SELINUX=enforcing/SELINUX=permissive/" /etc/selinux/config
+ - setenforce 0
+{% if number == 0 %}
+ wait: true
+ scripts:
+ - bootstrap.sh
+{% endif %}
+{% endfor %}
