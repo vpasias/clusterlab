@@ -79,12 +79,12 @@ osds:
     n4: 
       ansible_host: 10.0.123.14
       devices:
-        - /dev/sdb
+        - /dev/sda
     n5:
       ansible_host: 10.0.123.15
       devices:
-        - /dev/sdb
+        - /dev/sda
     n6:
       ansible_host: 10.0.123.16
       devices:
-        - /dev/sdb
+        - /dev/sda
