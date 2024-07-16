@@ -14,7 +14,7 @@ all:
         managed: true
         template:
           VN_MAD: bridge
-          PHYDEV: eth0
+          PHYDEV: ens3
           BRIDGE: br0
           AR:
             TYPE: IP4
@@ -26,7 +26,7 @@ all:
           DNS: 10.0.123.1
     one_vip: 10.0.123.250
     one_vip_cidr: 24
-    one_vip_if: eth0
+    one_vip_if: ens3
 
 frontend:
   hosts:
@@ -79,12 +79,12 @@ osds:
     n4: 
       ansible_host: 10.0.123.14
       devices:
-        - /dev/sda
+        - /dev/sdb
     n5:
       ansible_host: 10.0.123.15
       devices:
-        - /dev/sda
+        - /dev/sdb
     n6:
       ansible_host: 10.0.123.16
       devices:
-        - /dev/sda
+        - /dev/sdb
