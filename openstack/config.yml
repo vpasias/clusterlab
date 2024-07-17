@@ -1,0 +1,99 @@
+vip_mgmt: 10.0.123.250
+vip_mgmt_cidr: 24
+vip_mgmt_nic: ens3
+
+vip_public: 10.0.123.250
+vip_public_cidr: 24
+vip_public_nic: ens3
+
+mysql_innodb_buffer_pool_size: 2G
+
+rabbitmq_hipe_compile: False
+
+#Openstack services log to syslog
+syslog_use: True
+
+#Keystone addresses should be domain names in case of SSL (when keystone_ssl: True)
+keystone_internal_address: "{{ vip_mgmt }}"
+keystone_admin_address: "{{ vip_mgmt }}"
+keystone_public_address: "{{ vip_public }}"
+
+keystone_region_name: RegionONE
+keystone_domain_name: Default
+keystone_token_provider: fernet
+
+#OpenStack service  addresses should be domain names in case of SSL (when os_ssl: True)
+os_internal_address: "{{ vip_mgmt }}"
+os_admin_address: "{{ vip_mgmt }}"
+os_public_address: "{{ vip_public }}"
+
+#Cert and key file for (optionally, but strongly recommended) enabling TLS
+#SSLCertificateFileSource:
+#SSLCertificateKeyFileSource:
+#SSLCACertificateKeyFileSource:
+#Don't check certificates if set to True:
+#ssl_insecure: False
+#Use TLS for keystone, too (without this, only Horizon will secured)
+#keystone_ssl: False
+#Use TLS for all OS services
+#os_ssl: False
+
+notifications_enable: True
+
+nova_filter_scheduler_enabled_filters: "ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter,SameHostFilter,DifferentHostFilter"
+
+neutron_flat_networks:
+neutron_physical_interface_mappings: flat:ens3
+neutron_vlan_ranges:
+neutron_ha_network_type:
+neutron_ha_network_physical_name:
+neutron_ha_routers: False
+neutron_mtu: 1400
+neutron_l2_population: False
+
+trove_net_name: trove-net
+trove_net_segmentation_id: 901
+trove_net_type: vxlan
+trove_physical_network:
+trove_subnet_cidr: 10.20.30.0/24
+trove_image_path: /etc/openstack_deploy/trove-mysql.qcow2
+
+#ceph os posix
+cinder_backup_backend: ceph
+cinder_backup_ceph_pool: backups
+cinder_backup_ceph_user: cinder-backup
+
+#ceph or lvm
+cinder_backend: ceph
+cinder_ceph_pool: volumes
+cinder_ceph_user: cinder
+cinder_volume_secret_uuid: d048aa33-c46c-4573-a0c9-dd014d56e2b4
+
+#ceph, swift or files
+glance_backend: ceph
+glance_ceph_pool: images
+glance_ceph_user: glance
+
+#ceph or local
+nova_ephemeral_backend: local
+nova_ephemeral_ceph_pool: vms
+
+external_net_name: ext-net
+external_net_type: vxlan
+external_physical_network:
+external_net_segmentation_id: 65535
+external_subnet_cidr: 10.97.37.0/25
+external_subnet_gateway_ip: 10.97.37.126
+external_subnet_allocation_start: 10.97.37.1
+external_subnet_allocation_end: 10.97.37.125
+
+tempest_dest: "{{ ansible_env.WORKSPACE | default(ansible_env.HOME) }}/tempest"
+tempest_lock_path: "{{ ansible_env.WORKSPACE | default(ansible_env.HOME) }}/tempest/lock"
+tempest_images_dest: "{{ ansible_env.WORKSPACE | default(ansible_env.HOME) }}/tempest_images"
+
+ceph_osd_journal_size: 1000
+ceph_osd_pool_default_pg_num: 32
+ceph_osd_pool_default_pgp_num: 32
+
+radosgw_keystone: False
+radosgw_port: 8083
