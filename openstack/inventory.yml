@@ -1,0 +1,170 @@
+controller:
+  controller1:
+    ip:
+      mgmt: 10.0.123.11
+      vxlan: 10.0.123.11
+    osd:
+      - { disk: "/dev/sdb" }
+    swift:
+      - { device: "/dev/sdc" }
+  controller2:
+    ip:
+      mgmt: 10.0.123.12
+      vxlan: 10.0.123.12
+    osd:
+      - { disk: "/dev/sdb" }
+    swift:
+      - { device: "/dev/sdc" }
+  controller3:
+    ip:
+      mgmt: 10.0.123.13
+      vxlan: 10.0.123.13
+    osd:
+      - { disk: "/dev/sdb" }
+    swift:
+      - { device: "/dev/sdc" }
+
+# -------- infrastructure --------
+pacemaker:
+  inherit: controller
+
+zookeeper:
+  inherit: controller
+
+haproxy:
+  inherit: pacemaker
+
+memcached:
+  inherit: controller
+
+rabbitmq:
+  inherit: controller
+
+galera:
+  inherit: pacemaker
+
+mongodb:
+#  inherit: controller
+
+rsyslog:
+  inherit:
+    - compute
+    - controller
+
+# -------- OpenStack ---------
+keystone:
+  inherit: controller
+
+swift_proxy:
+  inherit: controller
+
+swift_storage:
+  inherit: controller
+
+glance:
+  inherit: controller
+
+horizon:
+  inherit: controller
+
+placement:
+  inherit: controller
+
+nova_controller:
+  inherit: controller
+
+nova_compute:
+  inherit: compute
+
+neutron_controller:
+  inherit: controller
+
+neutron_compute:
+  inherit: compute
+
+gnocchi:
+  inherit: controller
+
+aodh:
+  inherit: controller
+
+ceilometer_controller:
+  inherit: controller
+
+ceilometer_compute:
+  inherit: compute
+
+heat:
+  inherit: controller
+
+cinder:
+  inherit: controller
+
+cinder_volume:
+  inherit: controller
+
+cinder_backup:
+  inherit: controller
+
+murano:
+  inherit: controller
+
+sahara:
+  inherit: controller
+
+trove:
+  inherit: controller
+
+barbican:
+  inherit: controller
+
+ironic:
+
+mistral:
+  inherit: controller
+
+manila:
+  inherit: controller
+
+powerdns:
+  inherit: controller
+
+designate:
+  inherit: controller
+
+magnum:
+  inherit: controller
+
+cloudkitty:
+  inherit: controller
+
+# -------- Tempest ------
+tempest:
+
+# -------- Ceph ---------
+ceph_monitor:
+  inherit: controller
+
+ceph_osd:
+  inherit: controller
+
+#The radosgw keystone authentication uses the certificates for signature checking,
+#which are local to the keystone instance
+#CI config doesn't use radosgw with keystone
+ceph_radosgw:
+  inherit: controller
+
+# -------- Compute --------
+compute:
+  compute1:
+    ip:
+      mgmt: 10.0.123.13
+      vxlan: 10.0.123.13
+  compute2:
+    ip:
+      mgmt: 10.0.123.14
+      vxlan: 10.0.123.14
+  compute3:
+    ip:
+      mgmt: 10.0.123.15
+      vxlan: 10.0.123.15
