@@ -158,13 +158,13 @@ ceph_radosgw:
 compute:
   compute1:
     ip:
-      mgmt: 10.0.123.13
-      vxlan: 10.0.123.13
-  compute2:
-    ip:
       mgmt: 10.0.123.14
       vxlan: 10.0.123.14
-  compute3:
+  compute2:
     ip:
       mgmt: 10.0.123.15
       vxlan: 10.0.123.15
+  compute3:
+    ip:
+      mgmt: 10.0.123.16
+      vxlan: 10.0.123.16
