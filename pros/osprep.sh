@@ -51,7 +51,6 @@ echo "enable_magnum: "yes"" >> globals.yml
 echo "enable_cluster_user_trust: true" >> globals.yml
 echo "enable_mariabackup: "yes"" >> globals.yml
 
-
 ## If you're having more than 3 controllers and compute, update the below details 
 sed -i '6,7 s/^/#/' multinode
 sed -i '5s/control01/controller[0:2]/' multinode
@@ -63,14 +62,11 @@ sed -i '23 i compute[0:1]' multinode
 sed -i '31s/storage01/controller[0:2]/' multinode
 sed -i '32 i compute[0:1]' multinode
 
-
-
 mkdir -p /etc/kolla/config/{glance,nova,cinder}
 mkdir -p /etc/kolla/config/cinder/cinder-backup
 mkdir -p /etc/kolla/config/cinder/cinder-volume
 mkdir -p /etc/cinder
 mkdir -p /etc/kolla/cinder
-
 
 cat << EOF > /etc/kolla/config/glance/glance-api.conf
 [DEFAULT]
@@ -84,7 +80,6 @@ rbd_store_user = glance
 rbd_store_ceph_conf = /etc/ceph/ceph.conf
 rbd_store_chunk_size = 8
 EOF
-
 
 cat << EOF > /etc/kolla/cinder/cinder.conf
 [DEFAULT]
@@ -103,7 +98,6 @@ rbd_max_clone_depth = 5
 rbd_store_chunk_size = 4
 rados_connect_timeout = -1
 EOF
-
 
 cat << EOF > /etc/cinder/cinder.conf
 [DEFAULT]
