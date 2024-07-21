@@ -55,12 +55,12 @@ echo "enable_mariabackup: "yes"" >> globals.yml
 sed -i '6,7 s/^/#/' multinode
 sed -i '5s/control01/controller[0:2]/' multinode
 sed -i '15s/network01/controller[0:2]/' multinode
-sed -i '16s/network02/compute[0:1]/' multinode
-sed -i '19s/compute01/compute[0:1]/' multinode
+sed -i '16s/network02/compute[0:2]/' multinode
+sed -i '19s/compute01/compute[0:2]/' multinode
 sed -i '22s/monitoring01/controller[0:2]/' multinode
-sed -i '23 i compute[0:1]' multinode
+sed -i '23 i compute[0:2]' multinode
 sed -i '31s/storage01/controller[0:2]/' multinode
-sed -i '32 i compute[0:1]' multinode
+sed -i '32 i compute[0:2]' multinode
 
 mkdir -p /etc/kolla/config/{glance,nova,cinder}
 mkdir -p /etc/kolla/config/cinder/cinder-backup
