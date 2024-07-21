@@ -14,4 +14,4 @@ curl --silent --remote-name --location https://github.com/ceph/ceph/raw/quincy/s
  chmod +x cephadm
  ./cephadm add-repo --release quincy
  ./cephadm install
- ./cephadm install  ceph-common
+ ./cephadm install ceph-common
