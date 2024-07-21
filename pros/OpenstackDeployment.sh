@@ -5,7 +5,7 @@ sed -i $'s/\t//g' /etc/kolla/config/nova/ceph.conf
 cd /etc/kolla 
 kolla-ansible -i /etc/kolla/multinode bootstrap-servers
 kolla-ansible -i /etc/kolla/multinode prechecks
-kolla-ansible /etc/kolla/multinode deploy
+kolla-ansible -i /etc/kolla/multinode deploy
 kolla-ansible -i /etc/kolla/multinode post-deploy
 pip install python-openstackclient -c https://releases.openstack.org/constraints/upper/$Openstack_Version
 pip install python-magnumclient
