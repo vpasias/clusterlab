@@ -38,3 +38,126 @@ kcli ssh ceph0 'sudo tee -a /etc/hosts <<EOF
 172.90.0.38 compute1.vipnet.vip compute1
 172.90.0.39 compute2.vipnet.vip compute2
 EOF'
+
+kcli ssh ceph1 'sudo tee -a /etc/hosts <<EOF
+172.90.0.30 ceph0.vipnet.vip ceph0
+172.90.0.31 ceph1.vipnet.vip ceph1
+172.90.0.32 ceph2.vipnet.vip ceph2
+172.90.0.33 infra.vipnet.vip infra
+172.90.0.34 controller0.vipnet.vip controller0
+172.90.0.35 controller1.vipnet.vip controller1
+172.90.0.36 controller2.vipnet.vip controller2
+172.90.0.37 compute0.vipnet.vip compute0
+172.90.0.38 compute1.vipnet.vip compute1
+172.90.0.39 compute2.vipnet.vip compute2
+EOF'
+
+kcli ssh ceph2 'sudo tee -a /etc/hosts <<EOF
+172.90.0.30 ceph0.vipnet.vip ceph0
+172.90.0.31 ceph1.vipnet.vip ceph1
+172.90.0.32 ceph2.vipnet.vip ceph2
+172.90.0.33 infra.vipnet.vip infra
+172.90.0.34 controller0.vipnet.vip controller0
+172.90.0.35 controller1.vipnet.vip controller1
+172.90.0.36 controller2.vipnet.vip controller2
+172.90.0.37 compute0.vipnet.vip compute0
+172.90.0.38 compute1.vipnet.vip compute1
+172.90.0.39 compute2.vipnet.vip compute2
+EOF'
+
+kcli ssh infra 'sudo tee -a /etc/hosts <<EOF
+172.90.0.30 ceph0.vipnet.vip ceph0
+172.90.0.31 ceph1.vipnet.vip ceph1
+172.90.0.32 ceph2.vipnet.vip ceph2
+172.90.0.33 infra.vipnet.vip infra
+172.90.0.34 controller0.vipnet.vip controller0
+172.90.0.35 controller1.vipnet.vip controller1
+172.90.0.36 controller2.vipnet.vip controller2
+172.90.0.37 compute0.vipnet.vip compute0
+172.90.0.38 compute1.vipnet.vip compute1
+172.90.0.39 compute2.vipnet.vip compute2
+EOF'
+
+kcli ssh controller0 'sudo tee -a /etc/hosts <<EOF
+172.90.0.30 ceph0.vipnet.vip ceph0
+172.90.0.31 ceph1.vipnet.vip ceph1
+172.90.0.32 ceph2.vipnet.vip ceph2
+172.90.0.33 infra.vipnet.vip infra
+172.90.0.34 controller0.vipnet.vip controller0
+172.90.0.35 controller1.vipnet.vip controller1
+172.90.0.36 controller2.vipnet.vip controller2
+172.90.0.37 compute0.vipnet.vip compute0
+172.90.0.38 compute1.vipnet.vip compute1
+172.90.0.39 compute2.vipnet.vip compute2
+EOF'
+
+kcli ssh controller1 'sudo tee -a /etc/hosts <<EOF
+172.90.0.30 ceph0.vipnet.vip ceph0
+172.90.0.31 ceph1.vipnet.vip ceph1
+172.90.0.32 ceph2.vipnet.vip ceph2
+172.90.0.33 infra.vipnet.vip infra
+172.90.0.34 controller0.vipnet.vip controller0
+172.90.0.35 controller1.vipnet.vip controller1
+172.90.0.36 controller2.vipnet.vip controller2
+172.90.0.37 compute0.vipnet.vip compute0
+172.90.0.38 compute1.vipnet.vip compute1
+172.90.0.39 compute2.vipnet.vip compute2
+EOF'
+
+kcli ssh controller2 'sudo tee -a /etc/hosts <<EOF
+172.90.0.30 ceph0.vipnet.vip ceph0
+172.90.0.31 ceph1.vipnet.vip ceph1
+172.90.0.32 ceph2.vipnet.vip ceph2
+172.90.0.33 infra.vipnet.vip infra
+172.90.0.34 controller0.vipnet.vip controller0
+172.90.0.35 controller1.vipnet.vip controller1
+172.90.0.36 controller2.vipnet.vip controller2
+172.90.0.37 compute0.vipnet.vip compute0
+172.90.0.38 compute1.vipnet.vip compute1
+172.90.0.39 compute2.vipnet.vip compute2
+EOF'
+
+kcli ssh compute0 'sudo tee -a /etc/hosts <<EOF
+172.90.0.30 ceph0.vipnet.vip ceph0
+172.90.0.31 ceph1.vipnet.vip ceph1
+172.90.0.32 ceph2.vipnet.vip ceph2
+172.90.0.33 infra.vipnet.vip infra
+172.90.0.34 controller0.vipnet.vip controller0
+172.90.0.35 controller1.vipnet.vip controller1
+172.90.0.36 controller2.vipnet.vip controller2
+172.90.0.37 compute0.vipnet.vip compute0
+172.90.0.38 compute1.vipnet.vip compute1
+172.90.0.39 compute2.vipnet.vip compute2
+EOF'
+
+kcli ssh compute1 'sudo tee -a /etc/hosts <<EOF
+172.90.0.30 ceph0.vipnet.vip ceph0
+172.90.0.31 ceph1.vipnet.vip ceph1
+172.90.0.32 ceph2.vipnet.vip ceph2
+172.90.0.33 infra.vipnet.vip infra
+172.90.0.34 controller0.vipnet.vip controller0
+172.90.0.35 controller1.vipnet.vip controller1
+172.90.0.36 controller2.vipnet.vip controller2
+172.90.0.37 compute0.vipnet.vip compute0
+172.90.0.38 compute1.vipnet.vip compute1
+172.90.0.39 compute2.vipnet.vip compute2
+EOF'
+
+kcli ssh compute2 'sudo tee -a /etc/hosts <<EOF
+172.90.0.30 ceph0.vipnet.vip ceph0
+172.90.0.31 ceph1.vipnet.vip ceph1
+172.90.0.32 ceph2.vipnet.vip ceph2
+172.90.0.33 infra.vipnet.vip infra
+172.90.0.34 controller0.vipnet.vip controller0
+172.90.0.35 controller1.vipnet.vip controller1
+172.90.0.36 controller2.vipnet.vip controller2
+172.90.0.37 compute0.vipnet.vip compute0
+172.90.0.38 compute1.vipnet.vip compute1
+172.90.0.39 compute2.vipnet.vip compute2
+EOF'
+
+kcli ssh ceph0 'echo "root:gprm8350" | sudo chpasswd'
+kcli ssh ceph0 "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config"
+kcli ssh ceph0 "sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config"
+kcli ssh ceph0 "sudo systemctl restart sshd"
+kcli ssh ceph0 "sudo rm -rf /root/.ssh/authorized_keys"
