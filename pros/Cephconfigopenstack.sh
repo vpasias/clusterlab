@@ -1,5 +1,5 @@
 #Update Deployment IP 
-DeploymentIP= "172.90.0.33"
+DeploymentIP = "172.90.0.33"
 ceph osd pool create volumes
 ceph osd pool create images
 ceph osd pool create backups
