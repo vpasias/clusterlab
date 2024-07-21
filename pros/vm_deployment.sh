@@ -26,7 +26,7 @@ kcli create vm -i centos9stream -P memory=24576 -P numcpus=6 -P disks=[100] -P n
 
 kcli create vm -i centos9stream -P memory=24576 -P numcpus=6 -P disks=[100] -P nets=['{"name":"service","ip":"172.90.0.39","netmask":"24","gateway":"172.90.0.1"}','{"name":"external"}'] -P cmds=['sudo yum -y update && sudo yum -y install vim chrony sshpass git'] compute2
 
-sleep 120
+sleep 150
 
 kcli ssh ceph0 'sudo tee -a /etc/hosts <<EOF
 172.90.0.30 ceph0.vipnet.vip ceph0
