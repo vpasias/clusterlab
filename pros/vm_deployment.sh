@@ -10,7 +10,7 @@ kcli create vm -i centos9stream -P memory=16384 -P numcpus=4 -P disks=[100,100,1
 
 kcli create vm -i centos9stream -P memory=16384 -P numcpus=4 -P disks=[100,100,100,100] -P nets=['{"name":"service","ip":"172.90.0.31","netmask":"24","gateway":"172.90.0.1"}','{"name":"external"}'] -P cmds=['sudo yum -y update && sudo yum -y install vim chrony sshpass'] ceph1
 
-kcli create vm -i centos9stream -P memory=16384 -P numcpus=4 -P disks=[100,100,100,100] -P nets=['{"name":"service","ip":"172.90.0.32","netmask":"24","gateway":"172.90.0.1"}','{"name":"external"}'] -P cmds=['sudo yum -y update && sudo yum -y install vim chrony sshpass'] ceph1
+kcli create vm -i centos9stream -P memory=16384 -P numcpus=4 -P disks=[100,100,100,100] -P nets=['{"name":"service","ip":"172.90.0.32","netmask":"24","gateway":"172.90.0.1"}','{"name":"external"}'] -P cmds=['sudo yum -y update && sudo yum -y install vim chrony sshpass'] ceph2
 
 kcli create vm -i centos9stream -P memory=16384 -P numcpus=4 -P disks=[100] -P nets=['{"name":"service","ip":"172.90.0.33","netmask":"24","gateway":"172.90.0.1"}','{"name":"external"}'] -P cmds=['sudo yum -y update && sudo yum -y install vim chrony sshpass'] infra
 
