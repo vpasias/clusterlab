@@ -1,0 +1,125 @@
+chmod +x cloudlab-setup-ubuntu-tl.sh && ./cloudlab-setup-ubuntu-tl.sh && \
+sudo apt-get install libvirt-daemon genisoimage libguestfs-tools libosinfo-bin virtinst qemu-kvm git vim net-tools wget curl bash-completion python-pip libvirt-daemon-system virt-manager bridge-utils libnss-libvirt libvirt-clients osinfo-db-tools intltool sshpass p7zip-full p7zip-rar uvtool dnsmasq -y && \
+sudo sed -i 's/hosts:          files dns/hosts:          files libvirt libvirt_guest dns/' /etc/nsswitch.conf && sudo lsmod | grep kvm && sudo reboot
+#sudo systemctl restart libvirtd && sudo systemctl status libvirtd
+
+screen
+# Press Return to continue
+# detach from session without killing it: Ctrl a d 
+# to see screen sessions: screen -ls
+# detach from closed session: screen -d -r 2066.pts-0.node0
+# enter session: screen -r 2066.pts-0.node0
+# exit a session and terminate it: exit
+
+sudo apt update -y && sudo apt install cockpit -y && sudo systemctl enable --now cockpit.socket && sudo apt install cockpit-machines -y && echo "root:gprm8350" | sudo chpasswd
+exit
+
+sudo -i
+
+cd /mnt/extra && cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && sudo virsh list --all && sudo brctl show && \
+wget -O "/mnt/extra/osinfo-db.tar.xz" https://releases.pagure.org/libosinfo/osinfo-db-20240523.tar.xz && sudo osinfo-db-import --local "/mnt/extra/osinfo-db.tar.xz"
+
+# Install dependencies
+sudo apt update -y && sudo apt-get install apt-transport-https ca-certificates curl gnupg python3-venv -y && \
+sudo usermod -aG libvirt `id -un` && sudo adduser `id -un` libvirt-qemu && sudo adduser `id -un` kvm && sudo adduser `id -un` libvirt-dnsmasq && sudo sed -i 's/0770/0777/' /etc/libvirt/libvirtd.conf && \
+echo 0 | sudo tee /sys/module/kvm/parameters/halt_poll_ns && echo 'security_driver = "none"' | sudo tee /etc/libvirt/qemu.conf && sudo chmod 0644 /boot/vmlinuz* && \
+sudo systemctl restart libvirtd && sudo systemctl status libvirtd
+
+exit
+
+sudo -i
+
+virsh list --all && virsh net-list --all && virsh pool-list && python3 --version && python --version
+
+########################################################################################################################################################################
+####################### kcli (https://github.com/karmab/kcli) ########################################################################################################
+####  https://www.linkedin.com/pulse/kcli-only-tool-you-need-create-kubernetes-openshift-banerjee?trk=pulse-article_more-articles_related-content-card ##########  
+########################################################################################################################################################################
+
+mkdir -p $HOME/.kcli
+
+ssh-keygen -t rsa -N '' -f $HOME/.ssh/id_rsa
+
+curl https://raw.githubusercontent.com/karmab/kcli/master/install.sh | sudo bash
+
+alias kcli='sudo kcli'
+
+mkdir -p /mnt/extra/virt && kcli create pool -p /mnt/extra/virt default && kcli list images && kcli list vms && kcli list pools && kcli list networks
+
+##################################################################################################################################################################################
+### Production Ready Openstack Cluster with External Ceph Cluster (https://github.com/vpasias/clusterlab/tree/main/pros) ###
+##################################################################################################################################################################################
+
+cd /mnt/extra && git clone https://github.com/vpasias/clusterlab.git && cd /mnt/extra/clusterlab/pros && chmod +x vm_deployment.sh && ./vm_deployment.sh
+
+### Install External Ceph Cluster
+
+kcli ssh ceph0
+
+sudo -i
+#cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && lsblk && ip a && uname -a && hostname
+
+ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
+
+sshpass -p gprm8350 ssh-copy-id -o StrictHostKeyChecking=no root@ceph0 && \
+sshpass -p gprm8350 ssh-copy-id -o StrictHostKeyChecking=no root@ceph1 && \
+sshpass -p gprm8350 ssh-copy-id -o StrictHostKeyChecking=no root@ceph2 && \
+sleep 10 && \
+git clone https://github.com/vpasias/clusterlab.git && cd /root/clusterlab/pros &&  chmod +x cephpreq.sh && ./cephpreq.sh && \
+ssh root@ceph1 'git clone https://github.com/vpasias/clusterlab.git && cd /root/clusterlab/pros &&  chmod +x cephpreq.sh && ./cephpreq.sh' && \
+ssh root@ceph2 'git clone https://github.com/vpasias/clusterlab.git && cd /root/clusterlab/pros &&  chmod +x cephpreq.sh && ./cephpreq.sh'
+
+cd /root/clusterlab/pros && chmod +x ceph.sh && ./ceph.sh
+
+ceph status && ceph osd tree && ceph df && ceph orch ps && ceph osd pool ls && ls -lh /etc/ceph/
+
+exit
+exit
+
+### Install Openstack Cluster
+
+kcli ssh infra
+
+sudo -i
+#cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && lsblk && ip a && uname -a && hostname
+
+git clone https://github.com/vpasias/clusterlab.git && cd /root/clusterlab/pros && chmod +x sshandntp.sh && ./sshandntp.sh
+#ssh root@compute2 'chronyc sources'
+
+chmod +x openstackmultinodeprep.sh && ./openstackmultinodeprep.sh
+
+exit
+exit
+
+#From another terminal
+kcli ssh ceph0
+
+sudo -i
+
+cd /root/clusterlab/pros && chmod +x Cephconfigopenstack.sh && ./Cephconfigopenstack.sh
+ceph status && ceph osd tree && ceph df && ceph orch ps && ceph osd pool ls && ls -lh /etc/ceph/
+
+exit
+exit
+
+kcli ssh infra
+
+sudo -i
+
+cd /root/clusterlab/pros && chmod +x OpenstackDeployment.sh && ./OpenstackDeployment.sh
+
+cat /etc/kolla/admin-openrc.sh
+
+openstack --version
+
+source /etc/kolla/admin-openrc.sh && \
+openstack endpoint list && openstack service list && openstack compute service list && openstack network agent list && openstack volume service list && cinder get-pools
+
+#############################################################################################################
+################ Delete ########################################################################################
+#############################################################################################################
+
+cd /mnt/extra && kcli delete vm ceph0 -y && kcli delete vm ceph1 -y && kcli delete vm ceph2 -y && kcli delete vm infra -y && 
+kcli delete vm controller0 -y && kcli delete vm controller1 -y && kcli delete vm controller2 -y && kcli delete vm compute0 -y && kcli delete vm compute1 -y && kcli delete vm compute2 -y && \
+kcli delete network service -y && kcli delete network storage -y && kcli delete network external -y && \
+rm -rf clusterlab && rm -rf /root/.ssh/known_hosts && touch /root/.ssh/known_hosts && sudo virsh list --all && sudo virsh net-list --all
