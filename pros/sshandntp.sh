@@ -15,9 +15,9 @@ scp -r /etc/chrony.conf root@controller2:/etc/chrony.conf
 scp -r /etc/chrony.conf root@compute0:/etc/chrony.conf
 scp -r /etc/chrony.conf root@compute1:/etc/chrony.conf
 scp -r /etc/chrony.conf root@compute2:/etc/chrony.conf
-ssh root@controller0 'systemctl enable chronyd&&systemctl restart chronyd'
-ssh root@controller1 'systemctl enable chronyd&&systemctl restart chronyd'
-ssh root@controller2 'systemctl enable chronyd&&systemctl restart chronyd'
-ssh root@compute0 'systemctl enable chronyd&&systemctl restart chronyd'
-ssh root@compute1 'systemctl enable chronyd&&systemctl restart chronyd'
-ssh root@compute2 'systemctl enable chronyd&&systemctl restart chronyd'
+ssh root@controller0 'systemctl enable chronyd && systemctl restart chronyd'
+ssh root@controller1 'systemctl enable chronyd && systemctl restart chronyd'
+ssh root@controller2 'systemctl enable chronyd && systemctl restart chronyd'
+ssh root@compute0 'systemctl enable chronyd && systemctl restart chronyd'
+ssh root@compute1 'systemctl enable chronyd && systemctl restart chronyd'
+ssh root@compute2 'systemctl enable chronyd && systemctl restart chronyd'
