@@ -1,5 +1,5 @@
 # SSH Key generation and copy ssh to other nodes 
-ssh-keygen
+ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
 sshpass -p gprm8350 ssh-copy-id -o StrictHostKeyChecking=no root@controller0
 sshpass -p gprm8350 ssh-copy-id -o StrictHostKeyChecking=no root@controller1
 sshpass -p gprm8350 ssh-copy-id -o StrictHostKeyChecking=no root@controller2
