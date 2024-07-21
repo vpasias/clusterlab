@@ -15,7 +15,7 @@ ceph auth get-or-create client.cinder mon 'profile rbd' osd 'profile rbd pool=vo
 
 ceph auth get-or-create client.cinder-backup mon 'profile rbd' osd 'profile rbd pool=backups' mgr 'profile rbd pool=backups'
 
-sshpass -p gprm8350 -o StrictHostKeyChecking=no ssh-copy-id root@$DeploymentIP
+sshpass -p gprm8350 ssh-copy-id -o StrictHostKeyChecking=no root@$DeploymentIP
 scp -r /etc/ceph/ceph.conf root@$DeploymentIP:/etc/kolla/config/cinder/cinder-backup/ceph.conf
 scp -r /etc/ceph/ceph.conf root@$DeploymentIP:/etc/kolla/config/cinder/cinder-volume/ceph.conf
 scp -r /etc/ceph/ceph.conf root@$DeploymentIP:/etc/kolla/config/glance/ceph.conf
