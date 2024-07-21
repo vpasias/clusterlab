@@ -220,6 +220,17 @@ kcli ssh compute2 "sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootL
 kcli ssh compute2 "sudo systemctl restart sshd"
 kcli ssh compute2 "sudo rm -rf /root/.ssh/authorized_keys"
 
+kcli ssh ceph0 "sudo hostnamectl set-hostname ceph0.vipnet.vip"
+kcli ssh ceph1 "sudo hostnamectl set-hostname ceph1.vipnet.vip"
+kcli ssh ceph2 "sudo hostnamectl set-hostname ceph2.vipnet.vip"
+kcli ssh infra "sudo hostnamectl set-hostname infra.vipnet.vip"
+kcli ssh controller0 "sudo hostnamectl set-hostname controller0.vipnet.vip"
+kcli ssh controller1 "sudo hostnamectl set-hostname controller1.vipnet.vip"
+kcli ssh controller2 "sudo hostnamectl set-hostname controller2.vipnet.vip"
+kcli ssh compute0 "sudo hostnamectl set-hostname compute0.vipnet.vip"
+kcli ssh compute1 "sudo hostnamectl set-hostname compute1.vipnet.vip"
+kcli ssh compute2 "sudo hostnamectl set-hostname compute2.vipnet.vip"
+
 kcli list images
 kcli list pools
 kcli list networks
