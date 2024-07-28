@@ -4,6 +4,20 @@ set -eux
 
 cd "$(dirname "$0")"
 
+cat <<EOF | virsh net-define /dev/stdin
+<network>
+  <name>virbr-sunbeam</name>
+  <bridge name='virbr-mgt' stp='off'/>
+  <forward mode='nat'/>
+  <ip address='10.0.123.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='10.0.123.101' end='10.0.123.254'/>
+    </dhcp>
+  </ip>
+</network>
+EOF
+virsh net-autostart virbr-mgt && virsh net-start virbr-mgt
+
 function ssh_to() {
     local ip="10.0.123.1${1}"
     shift
@@ -58,7 +72,7 @@ for i in {1..1}; do
     ssh_to "${i}" -t -- sudo apt update -y
     ssh_to "${i}" -t -- sudo apt upgrade -y
     ssh_to "${i}" -t -- sudo timedatectl set-timezone America/New_York
-    ssh_to "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils iperf iperf3 mtr traceroute netcat sshpass socat python3-pip python3 python2 python3-dev python2-dev
+    ssh_to "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils iperf iperf3 mtr traceroute netcat sshpass socat
 
     ssh_to "${i}" -t -- 'echo "root:gprm8350" | sudo chpasswd'
     ssh_to "${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
