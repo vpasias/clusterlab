@@ -10,7 +10,7 @@ systemctl restart chronyd
 
 #Ceph installation
 
-curl --silent --remote-name --location https://github.com/ceph/ceph/raw/reef/src/cephadm/cephadm
+curl --silent --remote-name --location https://download.ceph.com/rpm-18.2.4/el9/noarch/cephadm
 #curl --silent --remote-name --location https://github.com/ceph/ceph/raw/quincy/src/cephadm/cephadm
 chmod +x cephadm
 ./cephadm add-repo --release reef
