@@ -12,7 +12,7 @@ systemctl restart chronyd
 
 curl --silent --remote-name --location https://github.com/ceph/ceph/raw/quincy/src/cephadm/cephadm
 chmod +x cephadm
-#./cephadm add-repo --release reef
-./cephadm add-repo --release quincy
+./cephadm add-repo --release reef
+#./cephadm add-repo --release quincy
 ./cephadm install
 ./cephadm install ceph-common
