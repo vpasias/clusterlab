@@ -15,7 +15,6 @@ pip3 install -U pip
 pip install 'ansible-core>=2.14,<2.16'
 ansible --version
 pip3 install git+https://opendev.org/openstack/kolla-ansible@stable/$Openstack_Version --ignore-installed requests
-export PATH="/usr/local/bin:$PATH"
 source ~/.bash_profile
 sudo mkdir -p /etc/kolla
 sudo chown $USER:$USER /etc/kolla
