@@ -86,12 +86,12 @@ sudo -i
 git clone https://github.com/vpasias/clusterlab.git && cd /root/clusterlab/pros && chmod +x sshandntp.sh && ./sshandntp.sh
 #ssh root@compute2 'chronyc sources'
 
+export PATH="/usr/local/bin:$PATH"
 chmod +x openstackmultinodeprep.sh && ./openstackmultinodeprep.sh
-
-exit
-exit
+# ansible --version && kolla-ansible --version
 
 #From another terminal
+sudo -i
 kcli ssh ceph0
 
 sudo -i
@@ -102,9 +102,7 @@ ceph status && ceph osd tree && ceph df && ceph orch ps && ceph osd pool ls && l
 exit
 exit
 
-kcli ssh infra
-
-sudo -i
+#To infra machine
 
 cd /root/clusterlab/pros && chmod +x OpenstackDeployment.sh && ./OpenstackDeployment.sh
 
@@ -113,7 +111,22 @@ cat /etc/kolla/admin-openrc.sh
 openstack --version
 
 source /etc/kolla/admin-openrc.sh && \
-openstack endpoint list && openstack service list && openstack compute service list && openstack network agent list && openstack volume service list && cinder get-pools
+openstack endpoint list && openstack service list && openstack compute service list && openstack network agent list && openstack volume service list && cinder get-pools && \
+openstack service list && openstack server list && openstack catalog list && openstack image list && openstack flavor list && openstack network list && openstack subnet list && \
+openstack project list && openstack port list && openstack user list && openstack network agent list && openstack hypervisor list && openstack key list
+
+/usr/local/share/kolla-ansible/init-runonce
+
+openstack server create --image cirros --flavor m1.tiny --key-name mykey --network demo-net demo1
+
+openstack volume create --image cirros --size 3 boot-cirros && \
+sleep 30 && \
+openstack server create --volume boot-cirros --flavor m1.tiny --key-name mykey --network demo-net vm-cirros
+                   
+openstack network create testvn && openstack subnet create --subnet-range 192.168.100.0/24 --network testvn subnet1 && openstack flavor create --ram 64 --disk 1 --vcpus 1 m1.nano && \
+NET_ID=`openstack network list | grep testvn | awk -F '|' '{print $2}' | tr -d ' '`
+openstack server create --flavor m1.nano --image cirros --nic net-id=${NET_ID} test_vm1
+openstack server create --flavor m1.nano --image cirros --nic net-id=${NET_ID} test_vm2
 
 #############################################################################################################
 ################ Delete ########################################################################################
