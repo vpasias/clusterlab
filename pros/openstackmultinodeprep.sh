@@ -5,6 +5,7 @@ Internal_NIC_Name='eth0'
 External_NIC_Name='eth1'
 
 #openstack multi node deployment
+export PATH="/usr/local/bin:$PATH"
 yum update -y
 dnf install git python3-devel libffi-devel gcc openssl-devel python3-libselinux -y
 dnf install python3-pip -y
