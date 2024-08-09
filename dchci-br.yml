@@ -4,7 +4,7 @@ all:
     ansible_user: ubuntu
     ensure_keys_for: [ubuntu, root]
     one_pass: opennebula
-    one_version: '6.10'
+    one_version: '6.8'
     features:
       ceph: true
     ds:
