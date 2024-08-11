@@ -97,3 +97,6 @@ ceph_osd_pool_default_pgp_num: 32
 
 radosgw_keystone: False
 radosgw_port: 8083
+
+ceph_public_network: 10.0.123.0/24
+ceph_cluster_network: 10.0.124.0/24
