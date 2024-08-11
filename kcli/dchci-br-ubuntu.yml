@@ -64,30 +64,30 @@ ceph:
 
 mons:
   hosts:
-    n1: { ansible_host: 10.0.123.11, monitor_address: 10.0.123.11 }
-    n2: { ansible_host: 10.0.123.12, monitor_address: 10.0.123.12 }
-    n3: { ansible_host: 10.0.123.13, monitor_address: 10.0.123.13 }
+    n1: { ansible_host: 10.0.123.17, monitor_address: 10.0.123.17 }
+    n2: { ansible_host: 10.0.123.18, monitor_address: 10.0.123.18 }
+    n3: { ansible_host: 10.0.123.19, monitor_address: 10.0.123.19 }
 
 mgrs:
   hosts:
-    n1: { ansible_host: 10.0.123.11 }
-    n2: { ansible_host: 10.0.123.12 }
-    n3: { ansible_host: 10.0.123.13 }
+    n1: { ansible_host: 10.0.123.17 }
+    n2: { ansible_host: 10.0.123.18 }
+    n3: { ansible_host: 10.0.123.19 }
 
 osds:
   hosts:
-    n4:
-      ansible_host: 10.0.123.14
+    n7:
+      ansible_host: 10.0.123.17
       devices:
         - /dev/sda
         - /dev/sdb
-    n5:
-      ansible_host: 10.0.123.15
+    n8:
+      ansible_host: 10.0.123.18
       devices:
         - /dev/sda
         - /dev/sdb
-    n6:
-      ansible_host: 10.0.123.16
+    n9:
+      ansible_host: 10.0.123.19
       devices:
         - /dev/sda
         - /dev/sdb
