@@ -41,7 +41,8 @@ echo "nova_compute_virt_type: "kvm"" >> globals.yml
 #echo "enable_grafana: "yes"" >> globals.yml
 echo "enable_prometheus: "yes"" >> globals.yml
 echo "enable_skyline: "yes"" >> globals.yml
-echo "neutron_plugin_agent: "ovn"" >> globals.yml
+#echo "neutron_plugin_agent: "ovn"" >> globals.yml
+echo "neutron_plugin_agent: "openvswitch"" >> globals.yml
 echo "enable_hacluster: "yes"" >> globals.yml
 echo "glance_backend_ceph: "yes"" >> globals.yml
 echo "cinder_backend_ceph: "yes"" >> globals.yml
