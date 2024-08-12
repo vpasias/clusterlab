@@ -33,9 +33,9 @@ EOF
 kolla-genpwd
 cp /usr/local/share/kolla-ansible/ansible/inventory/* .
 cd /etc/kolla
-echo "kolla_internal_vip_address: "$Openstack_VIP"" >> globals.yml
-echo "network_interface: "$Internal_NIC_Name"" >> globals.yml
-echo "neutron_external_interface: "$External_NIC_Name"" >> globals.yml
+echo "kolla_internal_vip_address: "172.90.0.250"" >> globals.yml
+echo "network_interface: "eth0"" >> globals.yml
+echo "neutron_external_interface: "eth1"" >> globals.yml
 echo "enable_cinder: "yes"" >> globals.yml >> globals.yml
 echo "nova_compute_virt_type: "kvm"" >> globals.yml
 #echo "enable_grafana: "yes"" >> globals.yml
