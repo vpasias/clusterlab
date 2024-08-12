@@ -37,7 +37,7 @@ echo "kolla_internal_vip_address: "$Openstack_VIP"" >> globals.yml
 echo "network_interface: "$Internal_NIC_Name"" >> globals.yml
 echo "neutron_external_interface: "$External_NIC_Name"" >> globals.yml
 echo "enable_cinder: "yes"" >> globals.yml >> globals.yml
-echo "nova_compute_virt_type: "qemu"" >> globals.yml
+#echo "nova_compute_virt_type: "qemu"" >> globals.yml
 #echo "enable_grafana: "yes"" >> globals.yml
 echo "enable_prometheus: "yes"" >> globals.yml
 echo "enable_skyline: "yes"" >> globals.yml
