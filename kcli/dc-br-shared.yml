@@ -10,11 +10,11 @@ all:
       config:
         mounts:
         - type: system
-          path: /mnt/0
+          path: /sharedvol/0
         - type: image
-          path: /mnt/1
+          path: /sharedvol/1
         - type: file
-          path: /mnt/2
+          path: /sharedvol/2
     vn:
       admin_net:
         managed: true
