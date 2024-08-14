@@ -10,7 +10,7 @@ modinfo xfs
 
 mkdir -p /etc/apt/sources.list.d
 
-mkfs.xfs -f -i size=512 -L gluster-000 /dev/sda
+mkfs.xfs -f -i size=512 -L gluster-000 /dev/vdc
 
 mkdir -p /data/glusterfs/sharedvol/mybrick
 echo 'LABEL=gluster-000 /data/glusterfs/sharedvol/mybrick xfs defaults  0 0' >> /etc/fstab
