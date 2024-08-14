@@ -5,10 +5,14 @@ export LC_CTYPE="UTF-8",
 export LANG="en_US.UTF-8"
 
 echo 'run-conf.sh: Install sshpass & nfs-common'
-for i in {7..9}; do ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.1$i 'sudo apt -y install nfs-common sshpass'; done
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.17 'sudo apt -y install nfs-common sshpass'
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.18 'sudo apt -y install nfs-common sshpass'
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.19 'sudo apt -y install nfs-common sshpass'
 
 echo 'run-conf.sh: Running node setup'
-for i in {7..9}; do ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.1$i 'git clone https://github.com/vpasias/clusterlab.git && sudo bash /home/ubuntu/clusterlab/kcli/snode_setup.sh'; done
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.17 'git clone https://github.com/vpasias/clusterlab.git && sudo bash /home/ubuntu/clusterlab/kcli/snode_setup.sh'
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.18 'git clone https://github.com/vpasias/clusterlab.git && sudo bash /home/ubuntu/clusterlab/kcli/snode_setup.sh'
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.17 'git clone https://github.com/vpasias/clusterlab.git && sudo bash /home/ubuntu/clusterlab/kcli/snode_setup.sh'
 
 sleep 30
 
