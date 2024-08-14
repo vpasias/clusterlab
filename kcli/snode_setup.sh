@@ -18,8 +18,6 @@ mount /data/glusterfs/sharedvol/mybrick
 
 systemctl enable --now glusterd
 
-mv /etc/hosts /etc/old.hosts
-
 mv /etc/ganesha/ganesha.conf /etc/ganesha/old.ganesha.conf
 
 cat << EOF | tee /etc/ganesha/ganesha.conf
