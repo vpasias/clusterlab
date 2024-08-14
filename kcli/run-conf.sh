@@ -12,7 +12,7 @@ ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123
 echo 'run-conf.sh: Running node setup'
 ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.17 'git clone https://github.com/vpasias/clusterlab.git && sudo bash /home/ubuntu/clusterlab/kcli/snode_setup.sh'
 ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.18 'git clone https://github.com/vpasias/clusterlab.git && sudo bash /home/ubuntu/clusterlab/kcli/snode_setup.sh'
-ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.17 'git clone https://github.com/vpasias/clusterlab.git && sudo bash /home/ubuntu/clusterlab/kcli/snode_setup.sh'
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.19 'git clone https://github.com/vpasias/clusterlab.git && sudo bash /home/ubuntu/clusterlab/kcli/snode_setup.sh'
 
 sleep 30
 
