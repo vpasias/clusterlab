@@ -93,6 +93,7 @@ ssh_to 1 -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.17 n7
 10.0.123.18 n8
 10.0.123.19 n9
+10.0.123.5  nfs
 EOF'
 
 ssh_to 2 -- 'sudo tee -a /etc/hosts <<EOF
@@ -105,6 +106,7 @@ ssh_to 2 -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.17 n7
 10.0.123.18 n8
 10.0.123.19 n9
+10.0.123.5  nfs
 EOF'
 
 ssh_to 3 -- 'sudo tee -a /etc/hosts <<EOF
@@ -117,6 +119,7 @@ ssh_to 3 -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.17 n7
 10.0.123.18 n8
 10.0.123.19 n9
+10.0.123.5  nfs
 EOF'
 
 ssh_to 4 -- 'sudo tee -a /etc/hosts <<EOF
@@ -129,6 +132,7 @@ ssh_to 4 -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.17 n7
 10.0.123.18 n8
 10.0.123.19 n9
+10.0.123.5  nfs
 EOF'
 
 ssh_to 5 -- 'sudo tee -a /etc/hosts <<EOF
@@ -141,6 +145,7 @@ ssh_to 5 -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.17 n7
 10.0.123.18 n8
 10.0.123.19 n9
+10.0.123.5  nfs
 EOF'
 
 ssh_to 6 -- 'sudo tee -a /etc/hosts <<EOF
@@ -153,6 +158,7 @@ ssh_to 6 -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.17 n7
 10.0.123.18 n8
 10.0.123.19 n9
+10.0.123.5  nfs
 EOF'
 
 ssh_to 7 -- 'sudo tee -a /etc/hosts <<EOF
@@ -165,6 +171,7 @@ ssh_to 7 -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.17 n7
 10.0.123.18 n8
 10.0.123.19 n9
+10.0.123.5  nfs
 EOF'
 
 ssh_to 8 -- 'sudo tee -a /etc/hosts <<EOF
@@ -177,6 +184,7 @@ ssh_to 8 -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.17 n7
 10.0.123.18 n8
 10.0.123.19 n9
+10.0.123.5  nfs
 EOF'
 
 ssh_to 9 -- 'sudo tee -a /etc/hosts <<EOF
@@ -189,6 +197,7 @@ ssh_to 9 -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.17 n7
 10.0.123.18 n8
 10.0.123.19 n9
+10.0.123.5  nfs
 EOF'
 
 for i in {1..9}; do
