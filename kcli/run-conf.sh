@@ -5,6 +5,12 @@ export LC_CTYPE="UTF-8",
 export LANG="en_US.UTF-8"
 
 echo 'run-conf.sh: Install sshpass & nfs-common'
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.11 'sudo apt -y install nfs-common sshpass'
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.12 'sudo apt -y install nfs-common sshpass'
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.13 'sudo apt -y install nfs-common sshpass'
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.14 'sudo apt -y install nfs-common sshpass'
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.15 'sudo apt -y install nfs-common sshpass'
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.16 'sudo apt -y install nfs-common sshpass'
 ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.17 'sudo apt -y install nfs-common sshpass'
 ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.18 'sudo apt -y install nfs-common sshpass'
 ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.19 'sudo apt -y install nfs-common sshpass'
