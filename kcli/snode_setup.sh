@@ -1,6 +1,7 @@
 #! /bin/sh
 
 DEBIAN_FRONTEND=noninteractive apt update
+DEBIAN_FRONTEND=noninteractive apt -y install nfs-kernel-server 
 DEBIAN_FRONTEND=noninteractive apt install -y python3 python3-simplejson xfsprogs sshpass
 DEBIAN_FRONTEND=noninteractive apt install -y corosync glusterfs-server nfs-ganesha-gluster pacemaker pcs
 
@@ -9,6 +10,8 @@ grep xfs /proc/filesystems
 modinfo xfs
 
 mkdir -p /etc/apt/sources.list.d
+systemctl enable --now nfs-server
+systemctl restart nfs-server
 
 mkfs.xfs -f -i size=512 -L gluster-000 /dev/vdc
 
