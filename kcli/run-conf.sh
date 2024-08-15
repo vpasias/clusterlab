@@ -99,7 +99,7 @@ ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123
 sleep 5
 ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.17 "sudo pcs resource create nfs_server systemd:nfs-ganesha op monitor interval=10s"
 sleep 5
-ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.17 "sudo pcs resource create nfs_ip ocf:heartbeat:IPaddr2 ip=10.0.123.5 cidr_netmask=24 op monitor interval=10s"
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.17 "sudo pcs resource create nfs_ip ocf:heartbeat:IPaddr2 ip=10.0.123.5 cidr_netmask=24 nic=enp1s0 op monitor interval=10s"
 sleep 5
 ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.17 "sudo pcs resource group add nfs_group nfs_server nfs_ip"
 sleep 5
