@@ -84,120 +84,120 @@ for i in {1..9}; do
 done
 
 ssh_to 1 -- 'sudo tee -a /etc/hosts <<EOF
-10.0.123.11 n1
-10.0.123.12 n2
-10.0.123.13 n3
-10.0.123.14 n4
-10.0.123.15 n5
-10.0.123.16 n6
-10.0.123.17 n7
-10.0.123.18 n8
-10.0.123.19 n9
-10.0.123.5  nfs
+10.0.123.11  n1  n1.vipnet.vip
+10.0.123.12  n2  n2.vipnet.vip
+10.0.123.13  n3  n3.vipnet.vip
+10.0.123.14  n4  n4.vipnet.vip
+10.0.123.15  n5  n5.vipnet.vip
+10.0.123.16  n6  n6.vipnet.vip
+10.0.123.17  n7  n7.vipnet.vip
+10.0.123.18  n8  n8.vipnet.vip
+10.0.123.19  n9  n9.vipnet.vip
+10.0.123.5  nfs  nfs.vipnet.vip  
 EOF'
 
 ssh_to 2 -- 'sudo tee -a /etc/hosts <<EOF
-10.0.123.11 n1
-10.0.123.12 n2
-10.0.123.13 n3
-10.0.123.14 n4
-10.0.123.15 n5
-10.0.123.16 n6
-10.0.123.17 n7
-10.0.123.18 n8
-10.0.123.19 n9
-10.0.123.5  nfs
+10.0.123.11  n1  n1.vipnet.vip
+10.0.123.12  n2  n2.vipnet.vip
+10.0.123.13  n3  n3.vipnet.vip
+10.0.123.14  n4  n4.vipnet.vip
+10.0.123.15  n5  n5.vipnet.vip
+10.0.123.16  n6  n6.vipnet.vip
+10.0.123.17  n7  n7.vipnet.vip
+10.0.123.18  n8  n8.vipnet.vip
+10.0.123.19  n9  n9.vipnet.vip
+10.0.123.5  nfs  nfs.vipnet.vip
 EOF'
 
 ssh_to 3 -- 'sudo tee -a /etc/hosts <<EOF
-10.0.123.11 n1
-10.0.123.12 n2
-10.0.123.13 n3
-10.0.123.14 n4
-10.0.123.15 n5
-10.0.123.16 n6
-10.0.123.17 n7
-10.0.123.18 n8
-10.0.123.19 n9
-10.0.123.5  nfs
+10.0.123.11  n1  n1.vipnet.vip
+10.0.123.12  n2  n2.vipnet.vip
+10.0.123.13  n3  n3.vipnet.vip
+10.0.123.14  n4  n4.vipnet.vip
+10.0.123.15  n5  n5.vipnet.vip
+10.0.123.16  n6  n6.vipnet.vip
+10.0.123.17  n7  n7.vipnet.vip
+10.0.123.18  n8  n8.vipnet.vip
+10.0.123.19  n9  n9.vipnet.vip
+10.0.123.5  nfs  nfs.vipnet.vip
 EOF'
 
 ssh_to 4 -- 'sudo tee -a /etc/hosts <<EOF
-10.0.123.11 n1
-10.0.123.12 n2
-10.0.123.13 n3
-10.0.123.14 n4
-10.0.123.15 n5
-10.0.123.16 n6
-10.0.123.17 n7
-10.0.123.18 n8
-10.0.123.19 n9
-10.0.123.5  nfs
+10.0.123.11  n1  n1.vipnet.vip
+10.0.123.12  n2  n2.vipnet.vip
+10.0.123.13  n3  n3.vipnet.vip
+10.0.123.14  n4  n4.vipnet.vip
+10.0.123.15  n5  n5.vipnet.vip
+10.0.123.16  n6  n6.vipnet.vip
+10.0.123.17  n7  n7.vipnet.vip
+10.0.123.18  n8  n8.vipnet.vip
+10.0.123.19  n9  n9.vipnet.vip
+10.0.123.5  nfs  nfs.vipnet.vip
 EOF'
 
 ssh_to 5 -- 'sudo tee -a /etc/hosts <<EOF
-10.0.123.11 n1
-10.0.123.12 n2
-10.0.123.13 n3
-10.0.123.14 n4
-10.0.123.15 n5
-10.0.123.16 n6
-10.0.123.17 n7
-10.0.123.18 n8
-10.0.123.19 n9
-10.0.123.5  nfs
+10.0.123.11  n1  n1.vipnet.vip
+10.0.123.12  n2  n2.vipnet.vip
+10.0.123.13  n3  n3.vipnet.vip
+10.0.123.14  n4  n4.vipnet.vip
+10.0.123.15  n5  n5.vipnet.vip
+10.0.123.16  n6  n6.vipnet.vip
+10.0.123.17  n7  n7.vipnet.vip
+10.0.123.18  n8  n8.vipnet.vip
+10.0.123.19  n9  n9.vipnet.vip
+10.0.123.5  nfs  nfs.vipnet.vip
 EOF'
 
 ssh_to 6 -- 'sudo tee -a /etc/hosts <<EOF
-10.0.123.11 n1
-10.0.123.12 n2
-10.0.123.13 n3
-10.0.123.14 n4
-10.0.123.15 n5
-10.0.123.16 n6
-10.0.123.17 n7
-10.0.123.18 n8
-10.0.123.19 n9
-10.0.123.5  nfs
+10.0.123.11  n1  n1.vipnet.vip
+10.0.123.12  n2  n2.vipnet.vip
+10.0.123.13  n3  n3.vipnet.vip
+10.0.123.14  n4  n4.vipnet.vip
+10.0.123.15  n5  n5.vipnet.vip
+10.0.123.16  n6  n6.vipnet.vip
+10.0.123.17  n7  n7.vipnet.vip
+10.0.123.18  n8  n8.vipnet.vip
+10.0.123.19  n9  n9.vipnet.vip
+10.0.123.5  nfs  nfs.vipnet.vip
 EOF'
 
 ssh_to 7 -- 'sudo tee -a /etc/hosts <<EOF
-10.0.123.11 n1
-10.0.123.12 n2
-10.0.123.13 n3
-10.0.123.14 n4
-10.0.123.15 n5
-10.0.123.16 n6
-10.0.123.17 n7
-10.0.123.18 n8
-10.0.123.19 n9
-10.0.123.5  nfs
+10.0.123.11  n1  n1.vipnet.vip
+10.0.123.12  n2  n2.vipnet.vip
+10.0.123.13  n3  n3.vipnet.vip
+10.0.123.14  n4  n4.vipnet.vip
+10.0.123.15  n5  n5.vipnet.vip
+10.0.123.16  n6  n6.vipnet.vip
+10.0.123.17  n7  n7.vipnet.vip
+10.0.123.18  n8  n8.vipnet.vip
+10.0.123.19  n9  n9.vipnet.vip
+10.0.123.5  nfs  nfs.vipnet.vip
 EOF'
 
 ssh_to 8 -- 'sudo tee -a /etc/hosts <<EOF
-10.0.123.11 n1
-10.0.123.12 n2
-10.0.123.13 n3
-10.0.123.14 n4
-10.0.123.15 n5
-10.0.123.16 n6
-10.0.123.17 n7
-10.0.123.18 n8
-10.0.123.19 n9
-10.0.123.5  nfs
+10.0.123.11  n1  n1.vipnet.vip
+10.0.123.12  n2  n2.vipnet.vip
+10.0.123.13  n3  n3.vipnet.vip
+10.0.123.14  n4  n4.vipnet.vip
+10.0.123.15  n5  n5.vipnet.vip
+10.0.123.16  n6  n6.vipnet.vip
+10.0.123.17  n7  n7.vipnet.vip
+10.0.123.18  n8  n8.vipnet.vip
+10.0.123.19  n9  n9.vipnet.vip
+10.0.123.5  nfs  nfs.vipnet.vip
 EOF'
 
 ssh_to 9 -- 'sudo tee -a /etc/hosts <<EOF
-10.0.123.11 n1
-10.0.123.12 n2
-10.0.123.13 n3
-10.0.123.14 n4
-10.0.123.15 n5
-10.0.123.16 n6
-10.0.123.17 n7
-10.0.123.18 n8
-10.0.123.19 n9
-10.0.123.5  nfs
+10.0.123.11  n1  n1.vipnet.vip
+10.0.123.12  n2  n2.vipnet.vip
+10.0.123.13  n3  n3.vipnet.vip
+10.0.123.14  n4  n4.vipnet.vip
+10.0.123.15  n5  n5.vipnet.vip
+10.0.123.16  n6  n6.vipnet.vip
+10.0.123.17  n7  n7.vipnet.vip
+10.0.123.18  n8  n8.vipnet.vip
+10.0.123.19  n9  n9.vipnet.vip
+10.0.123.5  nfs  nfs.vipnet.vip
 EOF'
 
 for i in {1..9}; do
