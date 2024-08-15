@@ -107,9 +107,9 @@ ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123
 
 echo 'run-conf.sh: Pacemaker configuration finished'
 
-ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.11 'mkdir /home/ubuntu/sharedvol && sudo mount -t nfs nfs:/sharedvol /home/ubuntu/sharedvol && df -hT && df /home/ubuntu/sharedvol'
-ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.12 'mkdir /home/ubuntu/sharedvol && sudo mount -t nfs nfs:/sharedvol /home/ubuntu/sharedvol && df -hT && df /home/ubuntu/sharedvol'
-ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.13 'mkdir /home/ubuntu/sharedvol && sudo mount -t nfs nfs:/sharedvol /home/ubuntu/sharedvol && df -hT && df /home/ubuntu/sharedvol'
-ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.14 'mkdir /home/ubuntu/sharedvol && sudo mount -t nfs nfs:/sharedvol /home/ubuntu/sharedvol && df -hT && df /home/ubuntu/sharedvol'
-ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.15 'mkdir /home/ubuntu/sharedvol && sudo mount -t nfs nfs:/sharedvol /home/ubuntu/sharedvol && df -hT && df /home/ubuntu/sharedvol'
-ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.16 'mkdir /home/ubuntu/sharedvol && sudo mount -t nfs nfs:/sharedvol /home/ubuntu/sharedvol && df -hT && df /home/ubuntu/sharedvol'
+#ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.11 'mkdir /home/ubuntu/sharedvol && sudo mount -t nfs nfs:/sharedvol /home/ubuntu/sharedvol && df -hT && df /home/ubuntu/sharedvol'
+#ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.12 'mkdir /home/ubuntu/sharedvol && sudo mount -t nfs nfs:/sharedvol /home/ubuntu/sharedvol && df -hT && df /home/ubuntu/sharedvol'
+#ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.13 'mkdir /home/ubuntu/sharedvol && sudo mount -t nfs nfs:/sharedvol /home/ubuntu/sharedvol && df -hT && df /home/ubuntu/sharedvol'
+#ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.14 'mkdir /home/ubuntu/sharedvol && sudo mount -t nfs nfs:/sharedvol /home/ubuntu/sharedvol && df -hT && df /home/ubuntu/sharedvol'
+#ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.15 'mkdir /home/ubuntu/sharedvol && sudo mount -t nfs nfs:/sharedvol /home/ubuntu/sharedvol && df -hT && df /home/ubuntu/sharedvol'
+#ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 10.0.123.16 'mkdir /home/ubuntu/sharedvol && sudo mount -t nfs nfs:/sharedvol /home/ubuntu/sharedvol && df -hT && df /home/ubuntu/sharedvol'
