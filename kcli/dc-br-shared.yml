@@ -7,14 +7,6 @@ all:
     one_version: '6.8'
     ds:
       mode: shared
-      config:
-        mounts:
-        - type: system
-          path: /mnt/0
-        - type: image
-          path: /mnt/1
-        - type: file
-          path: /mnt/2
     vn:
       admin_net:
         managed: true
@@ -35,8 +27,7 @@ all:
     one_vip_if: enp1s0
     # Mount NFS share.
     fstab:
-      - src: n7.vipnet.vip:/home/nfsshare
-        path: /mnt
+      - src: "n7.vipnet.vip:/home/nfsshare"
 
 frontend:
   hosts:
