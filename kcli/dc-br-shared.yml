@@ -33,6 +33,10 @@ all:
     one_vip: 10.0.123.250
     one_vip_cidr: 24
     one_vip_if: enp1s0
+    # Mount NFS share.
+    fstab:
+      - src: n7.vipnet.vip:/home/nfsshare
+        path: /mnt
 
 frontend:
   hosts:
