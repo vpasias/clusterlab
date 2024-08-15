@@ -10,6 +10,7 @@ grep xfs /proc/filesystems
 modinfo xfs
 
 mkdir -p /etc/apt/sources.list.d
+
 systemctl enable --now nfs-server
 systemctl restart nfs-server
 
