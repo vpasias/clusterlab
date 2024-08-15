@@ -12,7 +12,7 @@ modinfo xfs
 mkdir -p /etc/apt/sources.list.d
 
 systemctl enable --now nfs-server
-systemctl restart nfs-server
+#systemctl restart nfs-server
 
 mkfs.xfs -f -i size=512 -L gluster-000 /dev/vdc
 
