@@ -1,1 +1,42 @@
+---
+all:
+  vars:
+    ansible_user: root
+    ensure_keys_for: [root]
+    one_pass: opennebula
+    one_version: '6.8'
+    ds:
+      mode: shared
+    vn:
+      admin_net:
+        managed: true
+        template:
+          VN_MAD: bridge
+          PHYDEV: enp1s0
+          BRIDGE: br0
+          AR:
+            TYPE: IP4
+            IP: 10.0.123.200
+            SIZE: 48
+          NETWORK_ADDRESS: 10.0.123.0
+          NETWORK_MASK: 255.255.255.0
+          GATEWAY: 10.0.123.1
+          DNS: 10.0.123.1
+    one_vip: 10.0.123.250
+    one_vip_cidr: 24
+    one_vip_if: enp1s0
+    # Mount NFS share.
+    fstab:
+      - src: "nfs.vipnet.vip:/home/nfsshare"
 
+frontend:
+  hosts:
+    n1: { ansible_host: 10.0.123.11 }
+    n2: { ansible_host: 10.0.123.12 }
+    n3: { ansible_host: 10.0.123.13 }
+
+node:
+  hosts:
+    n4: { ansible_host: 10.0.123.14 }
+    n5: { ansible_host: 10.0.123.15 }
+    n6: { ansible_host: 10.0.123.16 }
