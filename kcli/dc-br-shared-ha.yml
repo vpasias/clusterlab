@@ -27,7 +27,7 @@ all:
     one_vip_if: enp1s0
     # Mount NFS share.
     fstab:
-      - src: "nfs.vipnet.vip:/home/nfs-share/nfs-root/share01"
+      - src: "nfs.vipnet.vip:share01"
 
 frontend:
   hosts:
