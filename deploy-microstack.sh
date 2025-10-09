@@ -37,9 +37,9 @@ for i in {1..5}; do
         --cpu 16 \
         --host-passthrough \
         --memory 32768 \
-        --disk 100 \
-        --ephemeral-disk 100 \
-        --ephemeral-disk 100 \
+        --disk 200 \
+        --ephemeral-disk 200 \
+        --ephemeral-disk 200 \
         --unsafe-caching \
         --network-config /dev/stdin \
         --no-start \
