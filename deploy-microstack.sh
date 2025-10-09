@@ -91,7 +91,7 @@ for i in {1..5}; do
     ssh_to "${i}" -- sudo ip link set enp9s0 up
 done
 
-ssh_to 1 -- 'tee deployment_manifest.yaml' < manifest.yaml
+ssh_to 1 -- 'tee deployment_manifest.yaml' < umanifest.yaml
 ssh_to 1 -- 'tail -n+2 /snap/openstack/current/etc/manifests/edge.yml >> deployment_manifest.yaml'
 
 ssh_to 1 -t -- \
