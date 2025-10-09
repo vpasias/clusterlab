@@ -1,10 +1,15 @@
-deployment:
-  proxy:
-    proxy_required: false
+core:
+  config:
+    proxy:
+      proxy_required: False
+      http_proxy:
+      https_proxy:
+  database: single
+  region: MyRegionOne
   bootstrap:
     management_cidr: 10.0.123.0/24
-  addons:
-    metallb: 10.0.123.81-10.0.123.90
+  k8s-addons:
+    loadbalancer: 10.0.123.81-10.0.123.90
   microceph_config:
     node-1.localdomain:
       # LP: #2065470, LP: #2065698
