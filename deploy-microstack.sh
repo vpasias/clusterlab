@@ -43,6 +43,7 @@ for i in {1..5}; do
         --unsafe-caching \
         --bridge virbr-sunbeam \
         --network-config /dev/stdin \
+        --ssh-public-key-file ~/.ssh/id_ed25519.pub \
         --no-start \
         "node-${i}.localdomain" \
         release=jammy
