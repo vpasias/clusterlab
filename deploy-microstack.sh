@@ -102,21 +102,27 @@ ssh_to 1 -t -- \
 ssh_to 1 -- 'juju model-default --cloud sunbeam-microk8s logging-config="<root>=INFO;unit=DEBUG"'
 ssh_to 1 -- 'juju model-config -m openstack logging-config="<root>=INFO;unit=DEBUG"'
 
+ssh_to 1 -- sunbeam cluster add --name node-2.localdomain --output node-2.asc
+ssh_to 1 -- sunbeam cluster add --name node-3.localdomain --output node-3.asc
+ssh_to 1 -- sunbeam cluster add --name node-4.localdomain --output node-4.asc
+ssh_to 1 -- sunbeam cluster add --name node-4.localdomain --output node-5.asc
+
+scp node-1.localdomain:"node2.asc" "node-2.localdomain:"
+scp node-1.localdomain:"node3.asc" "node-3.localdomain:"
+scp node-1.localdomain:"node4.asc" "node-4.localdomain:"
+scp node-1.localdomain:"node5.asc" "node-5.localdomain:"
+
 ssh_to 2 -t -- \
-    time sunbeam cluster join --role control --role compute --role storage \
-        --token "$(ssh_to 1 -- sunbeam cluster add --name node-2.localdomain -f value)"
+    time "cat 'node-2.asc' | sunbeam cluster join --role control,compute,storage -"
 
 ssh_to 3 -t -- \
-    time sunbeam cluster join --role control --role compute --role storage \
-        --token "$(ssh_to 1 -- sunbeam cluster add --name node-3.localdomain -f value)"
+    time "cat 'node-3.asc' | sunbeam cluster join --role control,compute,storage -"
 
 ssh_to 4 -t -- \
-    time sunbeam cluster join --role compute --role storage \
-        --token "$(ssh_to 1 -- sunbeam cluster add --name node-4.localdomain -f value)"
+    time "cat 'node-4.asc' | sunbeam cluster join --role compute,storage -"
 
 ssh_to 5 -t -- \
-    time sunbeam cluster join --role compute --role storage \
-        --token "$(ssh_to 1 -- sunbeam cluster add --name node-5.localdomain -f value)"
+    time "cat 'node-5.asc' | sunbeam cluster join --role compute,storage -"
 
 ssh_to 1 -t -- \
     time sunbeam cluster resize
