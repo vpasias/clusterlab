@@ -159,7 +159,7 @@ done
 
 for i in {1..5}; do
 
-    ssh_to "${i}" -- 'sunbeam prepare-node-script | bash -x'
+    ssh_to "${i}" -- 'sunbeam prepare-node-script --bootstrap | bash -x && newgrp snap_daemon'
 
 done
 
