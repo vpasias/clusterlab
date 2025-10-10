@@ -150,12 +150,17 @@ EOF'
 
 for i in {1..5}; do
 
-    ssh_to "${i}" -t -- sudo snap install openstack --channel 2024.1/edge
-    ssh_to "${i}" -t -- 'sunbeam prepare-node-script | bash -x'
+    ssh_to "${i}" -- sudo snap install openstack --channel 2024.1/edge
 
 # LP: #2065911
 # TODO: make it permanent across reboots
 #    ssh_to "${i}" -t -- sudo ip link set enp9s0 up
+done
+
+for i in {1..5}; do
+
+    ssh_to "${i}" -- 'sunbeam prepare-node-script | bash -x'
+
 done
 
 ssh_to 1 -t -- 'tee deployment_manifest.yaml' < umanifest.yaml
