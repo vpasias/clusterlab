@@ -116,6 +116,38 @@ ssh_to 1 -t -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.15 node-5 node-5.localdomain
 EOF'
 
+ssh_to 2 -t -- 'sudo tee -a /etc/hosts <<EOF
+10.0.123.11 node-1 node-1.localdomain
+10.0.123.12 node-2 node-2.localdomain
+10.0.123.13 node-3 node-3.localdomain
+10.0.123.14 node-4 node-4.localdomain
+10.0.123.15 node-5 node-5.localdomain
+EOF'
+
+ssh_to 3 -t -- 'sudo tee -a /etc/hosts <<EOF
+10.0.123.11 node-1 node-1.localdomain
+10.0.123.12 node-2 node-2.localdomain
+10.0.123.13 node-3 node-3.localdomain
+10.0.123.14 node-4 node-4.localdomain
+10.0.123.15 node-5 node-5.localdomain
+EOF'
+
+ssh_to 4 -t -- 'sudo tee -a /etc/hosts <<EOF
+10.0.123.11 node-1 node-1.localdomain
+10.0.123.12 node-2 node-2.localdomain
+10.0.123.13 node-3 node-3.localdomain
+10.0.123.14 node-4 node-4.localdomain
+10.0.123.15 node-5 node-5.localdomain
+EOF'
+
+ssh_to 5 -t -- 'sudo tee -a /etc/hosts <<EOF
+10.0.123.11 node-1 node-1.localdomain
+10.0.123.12 node-2 node-2.localdomain
+10.0.123.13 node-3 node-3.localdomain
+10.0.123.14 node-4 node-4.localdomain
+10.0.123.15 node-5 node-5.localdomain
+EOF'
+
 for i in {1..5}; do
 
     ssh_to "${i}" -t -- sudo snap install openstack --channel 2024.1/edge
