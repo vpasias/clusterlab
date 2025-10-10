@@ -117,7 +117,7 @@ ssh_to 1 -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.15 node-5 node-5.localdomain
 EOF'
 
-ssh_to 1 -- 'ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ""'
+ssh_to 1 -- 'ssh-keygen -t rsa'
 
 ssh_to 1 -- 'sshpass -p kyax7344 ssh-copy-id ubuntu@node-1'
 ssh_to 1 -- 'sshpass -p kyax7344 ssh-copy-id ubuntu@node-2'
