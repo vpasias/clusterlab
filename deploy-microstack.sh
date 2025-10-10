@@ -11,7 +11,7 @@ cat <<EOF | virsh net-define /dev/stdin
   <forward mode='nat'/>
   <ip address='10.0.123.1' netmask='255.255.255.0'>
     <dhcp>
-      <range start='10.0.123.101' end='10.0.123.254'/>
+      <range start='10.0.123.241' end='10.0.123.254'/>
     </dhcp>
   </ip>
 </network>
