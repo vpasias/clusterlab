@@ -77,7 +77,7 @@ for i in {1..5}; do
 done
 
 for i in {1..5}; do
-     until ssh -oStrictHostKeyChecking=no "node-${i}.localdomain" -- 'systemctl is-system-running --wait; ip -br a; lsblk'; do
+     until ssh_to "${i}" -t -- 'systemctl is-system-running --wait; ip -br a; lsblk'; do
      sleep 5
      done
 done
