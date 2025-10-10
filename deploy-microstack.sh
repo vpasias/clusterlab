@@ -106,7 +106,6 @@ for i in {1..5}; do
                 accept-ra: false
           EOF
           sudo netplan apply'
-    done
     
 done
 
