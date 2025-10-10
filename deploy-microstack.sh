@@ -129,10 +129,10 @@ ssh_to 1 -- sunbeam cluster add --name node-3.localdomain --output node-3.asc
 ssh_to 1 -- sunbeam cluster add --name node-4.localdomain --output node-4.asc
 ssh_to 1 -- sunbeam cluster add --name node-4.localdomain --output node-5.asc
 
-ssh_to 1 -t -- scp node-1.localdomain:"node2.asc" "node-2.localdomain:"
-ssh_to 1 -t -- scp node-1.localdomain:"node3.asc" "node-3.localdomain:"
-ssh_to 1 -t -- scp node-1.localdomain:"node4.asc" "node-4.localdomain:"
-ssh_to 1 -t -- scp node-1.localdomain:"node5.asc" "node-5.localdomain:"
+ssh_to 1 -t -- scp "node2.asc" "10.0.123.12:"
+ssh_to 1 -t -- scp "node3.asc" "10.0.123.13:"
+ssh_to 1 -t -- scp "node4.asc" "10.0.123.14:"
+ssh_to 1 -t -- scp "node5.asc" "10.0.123.15:"
 
 ssh_to 2 -t -- \
     time "cat 'node-2.asc' | sunbeam cluster join --role control,compute,storage -"
