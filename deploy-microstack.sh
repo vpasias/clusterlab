@@ -119,11 +119,11 @@ EOF'
 
 ssh_to 1 -- 'ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ""'
 
-#ssh_to 1 -- sshpass -p kyax7344 ssh-copy-id ubuntu@node-1
-ssh_to 1 -- sshpass -p kyax7344 ssh-copy-id ubuntu@node-2
-ssh_to 1 -- sshpass -p kyax7344 ssh-copy-id ubuntu@node-3
-ssh_to 1 -- sshpass -p kyax7344 ssh-copy-id ubuntu@node-4
-ssh_to 1 -- sshpass -p kyax7344 ssh-copy-id ubuntu@node-5
+ssh_to 1 -- 'sshpass -p kyax7344 ssh-copy-id ubuntu@node-1'
+ssh_to 1 -- 'sshpass -p kyax7344 ssh-copy-id ubuntu@node-2'
+ssh_to 1 -- 'sshpass -p kyax7344 ssh-copy-id ubuntu@node-3'
+ssh_to 1 -- 'sshpass -p kyax7344 ssh-copy-id ubuntu@node-4'
+ssh_to 1 -- 'sshpass -p kyax7344 ssh-copy-id ubuntu@node-5'
 
 for i in {1..5}; do
 
