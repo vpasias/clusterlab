@@ -116,32 +116,12 @@ ssh_to 1 -t -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.15 node-5 node-5.localdomain
 EOF'
 
-ssh_to 1 -t -- 'ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ""'
-
-ssh_to 1 -t -- '
-set -ex
-sshpass -p kyax7344 ssh-copy-id ubuntu@node-1
-'
-
-ssh_to 1 -t -- '
-set -ex
-sshpass -p kyax7344 ssh-copy-id ubuntu@node-2
-'
-
-ssh_to 1 -t -- '
-set -ex
-sshpass -p kyax7344 ssh-copy-id ubuntu@node-3
-'
-
-ssh_to 1 -t -- '
-set -ex
-sshpass -p kyax7344 ssh-copy-id ubuntu@node-4
-'
-
-ssh_to 1 -t -- '
-set -ex
-sshpass -p kyax7344 ssh-copy-id ubuntu@node-5
-'
+#ssh_to 1 -t -- 'ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ""'
+#ssh_to 1 -t -- 'sshpass -p kyax7344 ssh-copy-id ubuntu@node-1'
+#ssh_to 1 -t -- 'sshpass -p kyax7344 ssh-copy-id ubuntu@node-2'
+#ssh_to 1 -t -- 'sshpass -p kyax7344 ssh-copy-id ubuntu@node-3'
+#ssh_to 1 -t -- 'sshpass -p kyax7344 ssh-copy-id ubuntu@node-4'
+#ssh_to 1 -t -- 'sshpass -p kyax7344 ssh-copy-id ubuntu@node-5'
 
 for i in {1..5}; do
 
@@ -174,11 +154,14 @@ ssh_to 1 -t -- sunbeam cluster add --name node-3.localdomain --output node-3.asc
 ssh_to 1 -t -- sunbeam cluster add --name node-4.localdomain --output node-4.asc
 ssh_to 1 -t -- sunbeam cluster add --name node-4.localdomain --output node-5.asc
 
-ssh_to 1 -t -- scp "node2.asc" "ubuntu@node-2:"
-# ssh_to 1 -t -- 'sshpass -p kyax7344 scp node2.asc ubuntu@node-2:/home/ubuntu'
-ssh_to 1 -t -- scp "node3.asc" "ubuntu@node-3:"
-ssh_to 1 -t -- scp "node4.asc" "ubuntu@node-4:"
-ssh_to 1 -t -- scp "node5.asc" "ubuntu@node-5:"
+ssh_to 1 -t -- 'sshpass -p kyax7344 scp node2.asc ubuntu@node-2:/home/ubuntu'
+ssh_to 1 -t -- 'sshpass -p kyax7344 scp node3.asc ubuntu@node-2:/home/ubuntu'
+ssh_to 1 -t -- 'sshpass -p kyax7344 scp node4.asc ubuntu@node-2:/home/ubuntu'
+ssh_to 1 -t -- 'sshpass -p kyax7344 scp node5.asc ubuntu@node-2:/home/ubuntu'
+#ssh_to 1 -t -- scp "node2.asc" "ubuntu@node-2:"
+#ssh_to 1 -t -- scp "node3.asc" "ubuntu@node-3:"
+#ssh_to 1 -t -- scp "node4.asc" "ubuntu@node-4:"
+#ssh_to 1 -t -- scp "node5.asc" "ubuntu@node-5:"
 
 ssh_to 2 -t -- \
     time "cat 'node-2.asc' | sunbeam cluster join --role control,compute,storage -"
