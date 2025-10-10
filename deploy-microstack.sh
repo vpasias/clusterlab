@@ -46,7 +46,7 @@ for i in {1..5}; do
         --ssh-public-key-file ~/.ssh/id_ed25519.pub \
         --no-start \
         "node-${i}.localdomain" \
-        release=jammy
+        release=noble
 network:
   version: 2
   ethernets:
