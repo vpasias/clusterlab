@@ -175,6 +175,7 @@ ssh_to 1 -t -- sunbeam cluster add --name node-4.localdomain --output node-4.asc
 ssh_to 1 -t -- sunbeam cluster add --name node-4.localdomain --output node-5.asc
 
 ssh_to 1 -t -- scp "node2.asc" "ubuntu@node-2:"
+# ssh_to 1 -t -- 'sshpass -p kyax7344 scp node2.asc ubuntu@node-2:/home/ubuntu'
 ssh_to 1 -t -- scp "node3.asc" "ubuntu@node-3:"
 ssh_to 1 -t -- scp "node4.asc" "ubuntu@node-4:"
 ssh_to 1 -t -- scp "node5.asc" "ubuntu@node-5:"
