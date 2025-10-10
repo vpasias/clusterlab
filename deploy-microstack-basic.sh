@@ -152,9 +152,9 @@ for i in {1..5}; do
 
     ssh_to "${i}" -t -- sudo snap install openstack --channel 2024.1/edge
     if [ "$i" = 1 ]; then
-        ssh_to "${i}" -t -- 'sunbeam prepare-node-script --bootstrap | bash -x && newgrp snap_daemon'
+        ssh_to "${i}" -- 'sunbeam prepare-node-script --bootstrap | bash -x && newgrp snap_daemon'
     else
-        ssh_to "${i}" -t -- 'sunbeam prepare-node-script | bash -x && newgrp snap_daemon'
+        ssh_to "${i}" -- 'sunbeam prepare-node-script | bash -x && newgrp snap_daemon'
     fi
     
 done
