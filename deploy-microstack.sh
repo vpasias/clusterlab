@@ -41,7 +41,6 @@ for i in {1..5}; do
         --ephemeral-disk 200 \
         --ephemeral-disk 200 \
         --unsafe-caching \
-        --bridge virbr-sunbeam \
         --network-config /dev/stdin \
         --ssh-public-key-file ~/.ssh/id_ed25519.pub \
         --no-start \
