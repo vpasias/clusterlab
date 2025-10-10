@@ -87,6 +87,11 @@ for i in {1..5}; do
         sleep 5
     done
 
+    ssh_to "${i}" -t -- sudo apt install sshpass -y
+    ssh_to "${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
+    ssh_to "${i}" -t -- sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+    ssh_to "${i}" -t -- sudo systemctl restart sshd
+
     ssh_to "${i}" -t -- 'sudo install -m 0600 /dev/stdin /etc/netplan/90-local-ovs-ext-port.yaml <<EOF
           network:
             version: 2
@@ -129,10 +134,10 @@ ssh_to 1 -- sunbeam cluster add --name node-3.localdomain --output node-3.asc
 ssh_to 1 -- sunbeam cluster add --name node-4.localdomain --output node-4.asc
 ssh_to 1 -- sunbeam cluster add --name node-4.localdomain --output node-5.asc
 
-ssh_to 1 -t -- scp "node2.asc" "10.0.123.12:"
-ssh_to 1 -t -- scp "node3.asc" "10.0.123.13:"
-ssh_to 1 -t -- scp "node4.asc" "10.0.123.14:"
-ssh_to 1 -t -- scp "node5.asc" "10.0.123.15:"
+ssh_to 1 -t -- sshpass -p kyax7344 scp "node2.asc" "ubuntu@10.0.123.12:"
+ssh_to 1 -t -- sshpass -p kyax7344 scp "node3.asc" "ubuntu@10.0.123.13:"
+ssh_to 1 -t -- sshpass -p kyax7344 scp "node4.asc" "ubuntu@10.0.123.14:"
+ssh_to 1 -t -- sshpass -p kyax7344 scp "node5.asc" "ubuntu@10.0.123.15:"
 
 ssh_to 2 -t -- \
     time "cat 'node-2.asc' | sunbeam cluster join --role control,compute,storage -"
