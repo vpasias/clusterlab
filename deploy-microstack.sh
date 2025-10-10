@@ -84,11 +84,16 @@ done
 
 for i in {1..5}; do
 
-    ssh_to "${i}" -t -- sudo apt-get update -y
-    ssh_to "${i}" -t -- sudo apt-get install sshpass -y
+    ssh_to "${i}" -t -- sudo apt update -y
+    ssh_to "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils iperf iperf3 mtr traceroute netcat sshpass socat
+
+    ssh_to "${i}" -t -- 'echo "root:gprm8350" | sudo chpasswd'
     ssh_to "${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
-    ssh_to "${i}" -t -- sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+    ssh_to "${i}" -t -- "sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config"
+    ssh_to "${i}" -t -- "sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config"
+    ssh_to "${i}" -t -- "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config.d/60-cloudimg-settings.conf"
     ssh_to "${i}" -t -- sudo systemctl restart sshd
+    ssh_to "${i}" -t -- sudo rm -rf /root/.ssh/authorized_keys
 
     ssh_to "${i}" -t -- 'sudo install -m 0600 /dev/stdin /etc/netplan/90-local-ovs-ext-port.yaml <<EOF
           network:
@@ -104,6 +109,14 @@ for i in {1..5}; do
     done
     
 done
+
+ssh_to 1 -- 'sudo tee -a /etc/hosts <<EOF
+10.0.123.11 node-1 node-1.localdomain
+10.0.123.12 node-2 node-2.localdomain
+10.0.123.13 node-3 node-3.localdomain
+10.0.123.14 node-4 node-4.localdomain
+10.0.123.15 node-5 node-5.localdomain
+EOF'
 
 for i in {1..5}; do
 
@@ -136,10 +149,10 @@ ssh_to 1 -- sunbeam cluster add --name node-3.localdomain --output node-3.asc
 ssh_to 1 -- sunbeam cluster add --name node-4.localdomain --output node-4.asc
 ssh_to 1 -- sunbeam cluster add --name node-4.localdomain --output node-5.asc
 
-ssh_to 1 -t -- sshpass -p kyax7344 scp "node2.asc" "ubuntu@10.0.123.12:"
-ssh_to 1 -t -- sshpass -p kyax7344 scp "node3.asc" "ubuntu@10.0.123.13:"
-ssh_to 1 -t -- sshpass -p kyax7344 scp "node4.asc" "ubuntu@10.0.123.14:"
-ssh_to 1 -t -- sshpass -p kyax7344 scp "node5.asc" "ubuntu@10.0.123.15:"
+ssh_to 1 -t -- sshpass -p kyax7344 scp "node2.asc" "ubuntu@node-2:"
+ssh_to 1 -t -- sshpass -p kyax7344 scp "node3.asc" "ubuntu@node-3:"
+ssh_to 1 -t -- sshpass -p kyax7344 scp "node4.asc" "ubuntu@node-4:"
+ssh_to 1 -t -- sshpass -p kyax7344 scp "node5.asc" "ubuntu@node-5:"
 
 ssh_to 2 -t -- \
     time "cat 'node-2.asc' | sunbeam cluster join --role control,compute,storage -"
