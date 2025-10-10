@@ -84,7 +84,8 @@ done
 
 for i in {1..5}; do
 
-    ssh_to "${i}" -t -- sudo apt install sshpass -y
+    ssh_to "${i}" -t -- sudo apt-get update -y
+    ssh_to "${i}" -t -- sudo apt-get install sshpass -y
     ssh_to "${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
     ssh_to "${i}" -t -- sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
     ssh_to "${i}" -t -- sudo systemctl restart sshd
