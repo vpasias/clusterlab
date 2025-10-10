@@ -83,9 +83,6 @@ for i in {1..5}; do
 done
 
 for i in {1..5}; do
-    until ssh_to "${i}" -t -- cloud-init status --wait; do
-        sleep 5
-    done
 
     ssh_to "${i}" -t -- sudo apt install sshpass -y
     ssh_to "${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
@@ -104,6 +101,10 @@ for i in {1..5}; do
           EOF
           sudo netplan apply'
     done
+    
+done
+
+for i in {1..5}; do
 
     ssh_to "${i}" -t -- sudo snap install openstack --channel 2024.1/edge
     ssh_to "${i}" -t -- 'sunbeam prepare-node-script | bash -x'
