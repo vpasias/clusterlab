@@ -77,10 +77,6 @@ for i in {1..5}; do
 done
 
 for i in {1..5}; do
-    sudo -g libvirt virsh -c qemu:///system start "node-${i}.localdomain"
-done
-
-for i in {1..5}; do
      until ssh -oStrictHostKeyChecking=no "node-${i}.localdomain" -- 'systemctl is-system-running --wait; ip -br a; lsblk'; do
      sleep 5
      done
