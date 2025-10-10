@@ -132,11 +132,11 @@ for i in {1..5}; do
 
 # LP: #2065911
 # TODO: make it permanent across reboots
-#    ssh_to "${i}" -- sudo ip link set enp9s0 up
+#    ssh_to "${i}" -t -- sudo ip link set enp9s0 up
 done
 
-ssh_to 1 -- 'tee deployment_manifest.yaml' < umanifest.yaml
-#ssh_to 1 -- 'tail -n+2 /snap/openstack/current/etc/manifests/edge.yml >> deployment_manifest.yaml'
+ssh_to 1 -t -- 'tee deployment_manifest.yaml' < umanifest.yaml
+#ssh_to 1 -t -- 'tail -n+2 /snap/openstack/current/etc/manifests/edge.yml >> deployment_manifest.yaml'
 
 ssh_to 1 -t -- \
     time sunbeam cluster bootstrap --manifest deployment_manifest.yaml \
@@ -147,14 +147,14 @@ ssh_to 1 -t -- lxc profile device remove default eth0
 ssh_to 1 -t -- lxc network delete sunbeambr0
 
 # LP: #2065490
-ssh_to 1 -- 'juju model-default --cloud sunbeam-microk8s logging-config="<root>=INFO;unit=DEBUG"'
-ssh_to 1 -- 'juju model-config -m openstack logging-config="<root>=INFO;unit=DEBUG"'
-ssh_to 1 -- sunbeam configure --openrc demo-openrc
+ssh_to 1 -t -- 'juju model-default --cloud sunbeam-microk8s logging-config="<root>=INFO;unit=DEBUG"'
+ssh_to 1 -t-- 'juju model-config -m openstack logging-config="<root>=INFO;unit=DEBUG"'
+ssh_to 1 -t -- sunbeam configure --openrc demo-openrc
 
-ssh_to 1 -- sunbeam cluster add --name node-2.localdomain --output node-2.asc
-ssh_to 1 -- sunbeam cluster add --name node-3.localdomain --output node-3.asc
-ssh_to 1 -- sunbeam cluster add --name node-4.localdomain --output node-4.asc
-ssh_to 1 -- sunbeam cluster add --name node-4.localdomain --output node-5.asc
+ssh_to 1 -t -- sunbeam cluster add --name node-2.localdomain --output node-2.asc
+ssh_to 1 -t -- sunbeam cluster add --name node-3.localdomain --output node-3.asc
+ssh_to 1 -t -- sunbeam cluster add --name node-4.localdomain --output node-4.asc
+ssh_to 1 -t -- sunbeam cluster add --name node-4.localdomain --output node-5.asc
 
 ssh_to 1 -t -- scp "node2.asc" "ubuntu@node-2:"
 ssh_to 1 -t -- scp "node3.asc" "ubuntu@node-3:"
