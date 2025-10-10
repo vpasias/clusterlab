@@ -85,14 +85,14 @@ done
 for i in {1..5}; do
 
     ssh_to "${i}" -t -- sudo apt update -y
-    ssh_to "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils iperf iperf3 mtr traceroute netcat-traditional sshpass socat
+    ssh_to "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils iperf mtr traceroute netcat-traditional sshpass socat
 
     ssh_to "${i}" -t -- 'echo "root:gprm8350" | sudo chpasswd'
     ssh_to "${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
     ssh_to "${i}" -t -- "sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config"
     ssh_to "${i}" -t -- "sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config"
     ssh_to "${i}" -t -- "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config.d/60-cloudimg-settings.conf"
-    ssh_to "${i}" -t -- sudo systemctl restart sshd
+    ssh_to "${i}" -t -- sudo systemctl restart ssh
     ssh_to "${i}" -t -- sudo rm -rf /root/.ssh/authorized_keys
 
     ssh_to "${i}" -t -- 'sudo install -m 0600 /dev/stdin /etc/netplan/90-local-ovs-ext-port.yaml <<EOF
