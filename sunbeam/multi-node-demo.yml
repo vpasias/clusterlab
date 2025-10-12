@@ -141,7 +141,7 @@ jobs:
       - name: Clean up previous machines
         if: ${{ env.ACT }}
         run: |
-          for i in {1..3}; do
+          for i in {1..5}; do
               # FIXME: the requirement of FQDN is not documented well in each tutorial
               sudo -g libvirt uvt-kvm destroy "sunbeam-multi-node-${i}.localdomain" || true
               ssh-keygen -R "192.168.124.3${i}" || true
@@ -161,7 +161,7 @@ jobs:
         run: |
           sudo -g libvirt uvt-simplestreams-libvirt sync release=noble arch=amd64
           sudo -g libvirt uvt-simplestreams-libvirt query
-          for i in {1..3}; do
+          for i in {1..5}; do
               sudo -g libvirt uvt-kvm create \
                   --machine-type q35 \
                   --cpu "$CPU" \
@@ -196,7 +196,7 @@ jobs:
           done
 
           # secondary NIC
-          for i in {1..3}; do
+          for i in {1..5}; do
               sudo -g libvirt virsh -c qemu:///system attach-interface "sunbeam-multi-node-${i}.localdomain" \
                   network sunbeam-virbr0 \
                   --model virtio --config
@@ -205,7 +205,7 @@ jobs:
           # LP: #2095570
           if [ "$USE_WORKAROUND" = true ]; then
               echo '- https://launchpad.net/bugs/2095570' >> "$GITHUB_STEP_SUMMARY"
-              for i in {1..3}; do
+              for i in {1..5}; do
                   sudo -g libvirt virsh -c qemu:///system vol-create-as uvtool --format qcow2 \
                       "sunbeam-multi-node-${i}-sata1.qcow" "$((EXTRA_DISK * 1024**3))"
                   sudo -g libvirt virsh -c qemu:///system attach-disk "sunbeam-multi-node-${i}.localdomain" \
@@ -216,11 +216,11 @@ jobs:
               done
           fi
 
-          for i in {1..3}; do
+          for i in {1..5}; do
               sudo -g libvirt virsh -c qemu:///system start "sunbeam-multi-node-${i}.localdomain"
           done
 
-          for i in {1..3}; do
+          for i in {1..5}; do
               until ssh -oStrictHostKeyChecking=no "sunbeam-multi-node-${i}" -- 'systemctl is-system-running --wait; ip -br a; lsblk'; do
                   sleep 5
               done
@@ -229,7 +229,7 @@ jobs:
           # LP: #2065911
           if [ "$USE_WORKAROUND" = true ]; then
               echo '- https://launchpad.net/bugs/2065911' >> "$GITHUB_STEP_SUMMARY"
-              for i in {1..3}; do
+              for i in {1..5}; do
                   ssh "sunbeam-multi-node-${i}" -- 'sudo install -m 0600 /dev/stdin /etc/netplan/90-local-ovs-ext-port.yaml <<EOF
           network:
             version: 2
@@ -302,22 +302,26 @@ jobs:
       - name: Sunbeam - Configure the cloud
         run: |
           ssh sunbeam-multi-node-1 -t -- sunbeam configure --openrc demo-openrc
-      - name: Sunbeam - Create registration tokens for the second and the third machines
+      - name: Sunbeam - Create registration tokens for the machines no. 2 - 5
         run: |
-          for i in {2..3}; do
+          for i in {2..5}; do
               ssh sunbeam-multi-node-1 -t -- sunbeam cluster add "sunbeam-multi-node-${i}.localdomain" --output "sunbeam-multi-node-${i}.asc"
           done
-      - name: Sunbeam - Prepare the second and the third machines
+      - name: Sunbeam - Prepare the machines no. 2 - 5
         run: |
-          for i in {2..3}; do
+          for i in {2..5}; do
               ssh "sunbeam-multi-node-${i}" -- sudo snap install openstack
               ssh "sunbeam-multi-node-${i}" -- 'sunbeam prepare-node-script | bash -x'
           done
-      - name: Sunbeam - Add the second and the third machines
+      - name: Sunbeam - Add the machines no. 2 - 5
         run: |
           for i in {2..3}; do
               scp sunbeam-multi-node-1:"sunbeam-multi-node-${i}.asc" "sunbeam-multi-node-${i}:"
               ssh "sunbeam-multi-node-${i}" -t -- "cat 'sunbeam-multi-node-${i}.asc' | sunbeam cluster join --role control,compute,storage -"
+          done
+          for i in {4..5}; do
+              scp sunbeam-multi-node-1:"sunbeam-multi-node-${i}.asc" "sunbeam-multi-node-${i}:"
+              ssh "sunbeam-multi-node-${i}" -t -- "cat 'sunbeam-multi-node-${i}.asc' | sunbeam cluster join --role compute,storage -"
           done
       - name: Sunbeam - Resize the control plane
         run: |
@@ -338,7 +342,7 @@ jobs:
           '
       - name: Save admin-openrc and kube/config
         run: |
-          for i in {1..3}; do
+          for i in {1..5}; do
               ssh "sunbeam-multi-node-${i}" -t -- '
                   set -ex
                   sunbeam openrc > admin-openrc
@@ -366,7 +370,7 @@ jobs:
         if: ${{ !cancelled() }}
         run: |
           set +e
-          for i in {1..3}; do
+          for i in {1..5}; do
               ssh "sunbeam-multi-node-${i}" -- '
                   set -x
                   mkdir logs
