@@ -104,6 +104,8 @@ core:
         sunbeam-multi-node-1.localdomain: enp9s0
         sunbeam-multi-node-2.localdomain: enp9s0
         sunbeam-multi-node-3.localdomain: enp9s0
+        sunbeam-multi-node-4.localdomain: enp9s0
+        sunbeam-multi-node-5.localdomain: enp9s0
     # MicroCeph config
     microceph_config:
       sunbeam-multi-node-1.localdomain:
@@ -125,6 +127,24 @@ core:
         osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
         {% endif %}
       sunbeam-multi-node-3.localdomain:
+        # Ceph devices
+        # Comma separated list of devices to be used by Ceph OSDs. `/dev/disk/by-id/<id>` are preferred, as they are stable given the same device.
+        {% if not use_workaround %}
+        osd_devices: '/dev/disk/by-path/virtio-pci-0000:06:00.0'  # /dev/vdc
+        {% else %}
+        # https://github.com/canonical/microceph/issues/506
+        osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
+        {% endif %}
+      sunbeam-multi-node-4.localdomain:
+        # Ceph devices
+        # Comma separated list of devices to be used by Ceph OSDs. `/dev/disk/by-id/<id>` are preferred, as they are stable given the same device.
+        {% if not use_workaround %}
+        osd_devices: '/dev/disk/by-path/virtio-pci-0000:06:00.0'  # /dev/vdc
+        {% else %}
+        # https://github.com/canonical/microceph/issues/506
+        osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
+        {% endif %}
+      sunbeam-multi-node-5.localdomain:
         # Ceph devices
         # Comma separated list of devices to be used by Ceph OSDs. `/dev/disk/by-id/<id>` are preferred, as they are stable given the same device.
         {% if not use_workaround %}
