@@ -83,9 +83,6 @@ done
 
 
 for i in {1..1}; do
-    until ssh_to "${i}" -t -- cloud-init status --wait; do
-        sleep 1
-    done
 
     ssh_to "${i}" -t -- sudo apt update -y
     ssh_to "${i}" -t -- sudo apt upgrade -y
