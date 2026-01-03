@@ -81,6 +81,7 @@ for i in {1..1}; do
     virsh start "node-${i}.localdomain"
 done
 
+sleep 60
 
 for i in {1..1}; do
 
