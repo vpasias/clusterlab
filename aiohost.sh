@@ -103,7 +103,7 @@ for i in {1..1}; do
 done
 
 ssh_to 1 -- 'sudo tee -a /etc/hosts <<EOF
-10.0.123.11 node-1 node-1.localdomain
+172.16.1.11 node-1 node-1.localdomain
 EOF'
 
 for i in {1..1}; do
