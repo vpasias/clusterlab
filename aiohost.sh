@@ -63,7 +63,7 @@ network:
       nameservers:
         addresses:
           - 8.8.8.8
-    enp9s0:
+    enp7s0:
       dhcp4: false
       dhcp6: false
       accept-ra: false
