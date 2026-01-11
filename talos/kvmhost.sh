@@ -62,6 +62,8 @@ ip a && sudo virsh net-list --all
 
 sleep 20
 
-virt-install --virt-type kvm --name ${VM1} --ram 32768 --vcpus 8 --disk path=/mnt/extra/${VM1}.qcow2,bus=virtio,size=40,format=qcow2 --cdrom metal-amd64.iso --os-variant=linux2022 \
+virt-install --virt-type kvm --name ${VM1} --ram 32768 --vcpus 8 --disk path=/mnt/extra/virt/vms/${VM1}.qcow2,bus=virtio,size=40,format=qcow2 --cdrom metal-amd64.iso --os-variant=linux2022 \
+  --network network=management,mac=${MAC_ADDRESS1} --boot hd,cdrom --noautoconsole
+virt-install --virt-type kvm --name ${VM2} --ram 32768 --vcpus 8 --disk path=/mnt/extra/virt/vms/${VM2}.qcow2,bus=virtio,size=40,format=qcow2 --cdrom metal-amd64.iso --os-variant=linux2022 \
   --network network=management,mac=${MAC_ADDRESS1} --boot hd,cdrom --noautoconsole
 
