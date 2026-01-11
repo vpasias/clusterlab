@@ -1,5 +1,7 @@
 #!/bin/bash
 #
+# https://docs.siderolabs.com/talos/v1.12/platform-specific-installations/virtualized-platforms/kvm
+# https://gist.github.com/cyrenity/67469dce33cf4eb4483486637c06d7be
 HOME=/mnt/extra/
 
 cat > /mnt/extra/management.xml <<EOF
