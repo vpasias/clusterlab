@@ -2,6 +2,7 @@
 #
 # https://docs.siderolabs.com/talos/v1.12/platform-specific-installations/virtualized-platforms/kvm
 # https://gist.github.com/cyrenity/67469dce33cf4eb4483486637c06d7be
+# https://github.com/joshrnoll/talos-scripts
 HOME=/mnt/extra/
 
 cat > /mnt/extra/management.xml <<EOF
@@ -62,8 +63,15 @@ ip a && sudo virsh net-list --all
 
 sleep 20
 
-virt-install --virt-type kvm --name ${VM1} --ram 32768 --vcpus 8 --disk path=/mnt/extra/virt/vms/${VM1}.qcow2,bus=virtio,size=40,format=qcow2 --cdrom metal-amd64.iso --os-variant=linux2022 \
-  --network network=management,mac=${MAC_ADDRESS1} --boot hd,cdrom --noautoconsole
-virt-install --virt-type kvm --name ${VM2} --ram 32768 --vcpus 8 --disk path=/mnt/extra/virt/vms/${VM2}.qcow2,bus=virtio,size=40,format=qcow2 --cdrom metal-amd64.iso --os-variant=linux2022 \
-  --network network=management,mac=${MAC_ADDRESS1} --boot hd,cdrom --noautoconsole
-
+virt-install --virt-type kvm --name ${VM1} --ram 32768 --vcpus 8 --disk path=/mnt/extra/virt/vms/${VM1}.qcow2,bus=virtio,size=100,format=qcow2 --cdrom /mnt/extra/virt/images/metal-amd64.iso --os-variant=linux2022 \
+  --network network=management,mac=${MAC_ADDRESS1} --cpu host-passthrough,cache.mode=passthrough --boot hd,cdrom --noautoconsole
+virt-install --virt-type kvm --name ${VM2} --ram 32768 --vcpus 8 --disk path=/mnt/extra/virt/vms/${VM2}.qcow2,bus=virtio,size=100,format=qcow2 --cdrom /mnt/extra/virt/images/metal-amd64.iso --os-variant=linux2022 \
+  --network network=management,mac=${MAC_ADDRESS3} --cpu host-passthrough,cache.mode=passthrough --boot hd,cdrom --noautoconsole
+virt-install --virt-type kvm --name ${VM3} --ram 32768 --vcpus 8 --disk path=/mnt/extra/virt/vms/${VM3}.qcow2,bus=virtio,size=100,format=qcow2 --cdrom /mnt/extra/virt/images/metal-amd64.iso --os-variant=linux2022 \
+  --network network=management,mac=${MAC_ADDRESS3} --cpu host-passthrough,cache.mode=passthrough --boot hd,cdrom --noautoconsole
+virt-install --virt-type kvm --name ${VM4} --ram 32768 --vcpus 8 --disk path=/mnt/extra/virt/vms/${VM4}.qcow2,bus=virtio,size=100,format=qcow2 --cdrom /mnt/extra/virt/images/metal-amd64.iso --os-variant=linux2022 \
+  --network network=management,mac=${MAC_ADDRESS4} --cpu host-passthrough,cache.mode=passthrough --boot hd,cdrom --noautoconsole
+virt-install --virt-type kvm --name ${VM5} --ram 32768 --vcpus 8 --disk path=/mnt/extra/virt/vms/${VM5}.qcow2,bus=virtio,size=100,format=qcow2 --cdrom /mnt/extra/virt/images/metal-amd64.iso --os-variant=linux2022 \
+  --network network=management,mac=${MAC_ADDRESS5} --cpu host-passthrough,cache.mode=passthrough --boot hd,cdrom --noautoconsole
+virt-install --virt-type kvm --name ${VM6} --ram 32768 --vcpus 8 --disk path=/mnt/extra/virt/vms/${VM6}.qcow2,bus=virtio,size=100,format=qcow2 --cdrom /mnt/extra/virt/images/metal-amd64.iso --os-variant=linux2022 \
+  --network network=management,mac=${MAC_ADDRESS6} --cpu host-passthrough,cache.mode=passthrough --boot hd,cdrom --noautoconsole
