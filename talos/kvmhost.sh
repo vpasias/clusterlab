@@ -23,10 +23,10 @@ EOF
 cat > /mnt/extra/service.xml <<EOF
 <network>
   <name>service</name>
-  <bridge name="virbr101" stp='off' macTableManager="kernel"/>
+  <bridge name="service" stp="on" delay="0"/>
   <mtu size="9216"/>
   <mac address='52:54:00:9a:9a:9a'/>
-  <ip address='172.16.2.1' netmask='255.255.255.0'/>
+  <ip address='172.16.254.1' netmask='255.255.255.0'/>
 </network>
 EOF
 
@@ -75,3 +75,5 @@ virt-install --virt-type kvm --name ${VM5} --ram 32768 --vcpus 8 --disk path=/mn
   --network network=management,mac=${MAC_ADDRESS5} --cpu host-passthrough,cache.mode=passthrough --boot hd,cdrom --noautoconsole
 virt-install --virt-type kvm --name ${VM6} --ram 32768 --vcpus 8 --disk path=/mnt/extra/virt/vms/${VM6}.qcow2,bus=virtio,size=100,format=qcow2 --cdrom /mnt/extra/virt/images/metal-amd64.iso --os-variant=linux2022 \
   --network network=management,mac=${MAC_ADDRESS6} --cpu host-passthrough,cache.mode=passthrough --boot hd,cdrom --noautoconsole
+
+for i in {1..6}; do virsh attach-interface --domain node$i --type network --source service --model virtio --mac 02:00:aa:0a:01:1$i --config --live; done
