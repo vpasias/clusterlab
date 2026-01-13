@@ -82,8 +82,9 @@ if [[ "$RESPONSE" == "Y" ]];then
             if nc -z -w5 $NODE_IP 50000; then
                 echo
                 echo "Cluster ready! Bootstrapping and retrieving kubeconfig..."
-                talosctl bootstrap -n $NODE_IP -e $NODE_IP --talosconfig=./talosconfig
-                talosctl kubeconfig -n $NODE_IP -e $NODE_IP --talosconfig=./talosconfig
+                talosctl config endpoints --nodes $NODE_IP -e $NODE_IP --talosconfig=./talosconfig
+                talosctl bootstrap --nodes $NODE_IP -e $NODE_IP --talosconfig=./talosconfig
+                talosctl kubeconfig --nodes $NODE_IP -e $NODE_IP --talosconfig=./talosconfig
                 break
             else
                 echo "Cluster not ready for bootstrap. Will continue to retry until timeout..."
