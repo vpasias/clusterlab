@@ -1,1 +1,132 @@
+chmod +x cloudlab-setup-ubuntu-tl.sh && ./cloudlab-setup-ubuntu-tl.sh && \
+sudo apt-get install libvirt-daemon genisoimage libguestfs-tools libosinfo-bin virtinst qemu-kvm git vim net-tools wget curl bash-completion python-pip libvirt-daemon-system virt-manager bridge-utils libnss-libvirt libvirt-clients osinfo-db-tools intltool sshpass p7zip-full p7zip-rar uvtool -y && \
+sudo sed -i 's/hosts:          files dns/hosts:          files libvirt libvirt_guest dns/' /etc/nsswitch.conf && sudo lsmod | grep kvm && sudo reboot
+#sudo systemctl restart libvirtd && sudo systemctl status libvirtd
 
+screen
+# Press Return to continue
+# detach from session without killing it: Ctrl a d 
+# to see screen sessions: screen -ls
+# detach from closed session: screen -d -r 2014.pts-0.node0
+# enter session: screen -r 2014.pts-0.node0
+# exit a session and terminate it: exit
+
+sudo -i
+
+cd /mnt/extra && cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && sudo virsh list --all && sudo brctl show && \
+wget -O "/mnt/extra/osinfo-db.tar.xz" https://releases.pagure.org/libosinfo/osinfo-db-20250606.tar.xz && sudo osinfo-db-import --local "/mnt/extra/osinfo-db.tar.xz"
+
+# Install dependencies
+sudo apt update -y && sudo apt-get install apt-transport-https ca-certificates curl gnupg python3-venv -y && \
+sudo usermod -aG libvirt `id -un` && sudo adduser `id -un` libvirt-qemu && sudo adduser `id -un` kvm && sudo adduser `id -un` libvirt-dnsmasq && sudo sed -i 's/0770/0777/' /etc/libvirt/libvirtd.conf && \
+echo 0 | sudo tee /sys/module/kvm/parameters/halt_poll_ns && echo 'security_driver = "none"' | sudo tee /etc/libvirt/qemu.conf && sudo chmod 0644 /boot/vmlinuz* && \
+sudo sed -i -E 's,#?(security_driver)\s*=.*,\1 = "none",g' /etc/libvirt/qemu.conf && \
+sudo systemctl restart libvirtd && sudo systemctl status libvirtd && \
+sudo apt-get install -y docker.io unzip && \
+sudo usermod -aG libvirt $USER && sudo usermod -aG docker $USER && \
+virsh pool-define-as default dir --target "/var/lib/libvirt/images" && virsh pool-build default && virsh pool-start default && virsh pool-autostart default && \
+mkdir -p /mnt/extra/virt/images && mkdir -p /mnt/extra/virt/vms
+
+exit
+
+sudo -i
+
+virsh list --all && virsh net-list --all && virsh pool-list 
+
+##############################################################################################################################################
+####################### Talos Linux Kubernetes cluster in libvirt KVM Virtual Machines #################################################
+##############################################################################################################################################
+###### https://docs.siderolabs.com/talos/v1.12/platform-specific-installations/virtualized-platforms/kvm
+###### https://gist.github.com/cyrenity/67469dce33cf4eb4483486637c06d7be
+###### https://github.com/joshrnoll/talos-scripts
+##############################################################################################################################################
+##############################################################################################################################################
+
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && chmod +x kubectl && sudo mv kubectl /usr/local/bin
+
+#Install talosctl:
+# see https://github.com/siderolabs/talos/releases
+# renovate: datasource=github-releases depName=siderolabs/talos
+talos_version='1.12.1' && git clone https://github.com/vpasias/clusterlab.git && cd /mnt/extra/clusterlab/talos && \
+wget https://github.com/siderolabs/talos/releases/download/v$talos_version/talosctl-linux-amd64 && \
+sudo install talosctl-linux-amd64 /usr/local/bin/talosctl && rm talosctl-linux-amd64 && \
+wget https://github.com/siderolabs/talos/releases/download/v$talos_version/metal-amd64.iso && mv metal-amd64.iso /mnt/extra/virt/images/metal-amd64.iso && \
+chmod +x ./kvmhost.sh && ./kvmhost.sh
+
+c0=192.168.254.21 && talosctl get disks --nodes $c0 --insecure
+
+MY_VIP=192.168.254.254 && cp EXAMPLE-network-config.yaml network-config.yaml && sed -i -e s/placeholder/$MY_VIP/ network-config.yaml && \
+chmod +x ./gen-cluster.sh && ./gen-cluster.sh
+#CLUSTER_NAME=athena
+#NODE_IP=192.168.254.21
+#VIP=192.168.254.254
+
+#Once the cluster is bootstrapped, add additional control plane nodes:
+talosctl apply-config --file controlplane.yaml --insecure --nodes 192.168.254.22
+talosctl apply-config --file controlplane.yaml --insecure --nodes 192.168.254.23
+
+#Add worker nodes:
+talosctl apply-config --file worker.yaml --insecure --nodes 192.168.254.24
+talosctl apply-config --file worker.yaml --insecure --nodes 192.168.254.25
+talosctl apply-config --file worker.yaml --insecure --nodes 192.168.254.26
+
+#Show kubernetes information:
+talosctl -n 192.168.254.21 kubeconfig $PWD/kubeconfig && \
+export KUBECONFIG=$PWD/kubeconfig && kubectl version && kubectl cluster-info && kubectl get nodes -o wide && kubectl get pods -o wide --all-namespaces
+
+##############################################################################################################################################
+### Troubleshoot ###
+##############################################################################################################################################
+
+#Talos:
+# see https://www.talos.dev/v1.2/advanced/troubleshooting-control-plane/
+
+talosctl -n $c0 service etcd status
+talosctl -n $c0 etcd members
+talosctl -n $c0 get members
+talosctl -n $c0 health --control-plane-nodes $controllers --worker-nodes $workers
+talosctl -n $c0 dashboard
+talosctl -n $c0 logs controller-runtime
+talosctl -n $c0 logs kubelet
+talosctl -n $c0 disks
+talosctl -n $c0 mounts | sort
+talosctl -n $c0 get resourcedefinitions
+talosctl -n $c0 get machineconfigs -o yaml
+talosctl -n $c0 get staticpods -o yaml
+talosctl -n $c0 get staticpodstatus
+talosctl -n $c0 get manifests
+talosctl -n $c0 get services
+talosctl -n $c0 get extensions
+talosctl -n $c0 get addresses
+talosctl -n $c0 get nodeaddresses
+talosctl -n $c0 list -l -r -t f /etc
+talosctl -n $c0 list -l -r -t f /system
+talosctl -n $c0 list -l -r -t f /var
+talosctl -n $c0 list -l /sys/fs/cgroup
+talosctl -n $c0 read /proc/cmdline | tr ' ' '\n'
+talosctl -n $c0 read /proc/mounts | sort
+talosctl -n $c0 read /etc/resolv.conf
+talosctl -n $c0 read /etc/containerd/config.toml
+talosctl -n $c0 read /etc/cri/containerd.toml
+talosctl -n $c0 read /etc/cri/conf.d/cri.toml
+talosctl -n $c0 read /etc/kubernetes/kubelet.yaml
+talosctl -n $c0 read /etc/kubernetes/bootstrap-kubeconfig
+talosctl -n $c0 ps
+talosctl -n $c0 containers -k
+
+#Kubernetes:
+
+kubectl get events --all-namespaces --watch
+kubectl --namespace kube-system get events --watch
+kubectl run busybox -it --rm --restart=Never --image=busybox:1.36 -- nslookup -type=a talos.dev
+
+##############################################################################################################################################
+### Delete Infrastructure ###
+##############################################################################################################################################
+
+#for i in {1..6}; do virsh shutdown node$i; done && sleep 10 && virsh list --all && for i in {1..3}; do virsh start node$i; done && sleep 10 && virsh list --all
+
+cd /mnt/extra/ && for i in {1..6}; do virsh shutdown node$i; done && sleep 10 && for i in {1..6}; do virsh destroy node$i; done && sleep 10 && \
+for i in {1..6}; do virsh undefine node$i --remove-all-storage; done && sleep 10 && rm -rf vbdnode1* && virsh net-destroy management && \
+rm -rf /mnt/extra/management.xml && virsh net-destroy service && rm -rf /mnt/extra/service.xml && virsh net-undefine management && virsh net-undefine service && \
+rm -rf /root/.ssh/known_hosts && touch /root/.ssh/known_hosts && sudo virsh list --all && sudo brctl show && sudo virsh net-list --all && rm -rf /mnt/extra/clusterlab 
