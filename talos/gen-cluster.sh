@@ -48,7 +48,7 @@ if [[ "$RESPONSE" == "Y" ]];then
         # Get schematic ID and generate initial config file
         SCHEMATIC=$(curl -sX POST --data-binary @schematic.yaml https://factory.talos.dev/schematics)
         SCHEMATIC=$(echo "$SCHEMATIC" | jq '.id' | tr -d '"')
-        talosctl gen config $CLUSTER_NAME https://$NODE_IP:6443 --install-image=factory.talos.dev/installer/$SCHEMATIC:$TALOS_VERSION
+        talosctl gen config $CLUSTER_NAME https://$NODE_IP:6443 --install-disk /dev/vda --install-image=factory.talos.dev/installer/$SCHEMATIC:$TALOS_VERSION
 
         # Append extension-config.yaml (tailscale config) to controlplane.yaml
         cat controlplane.yaml extension-config.yaml > temp.txt
@@ -69,7 +69,7 @@ if [[ "$RESPONSE" == "Y" ]];then
         sed -i -E "s/(endpoint: https:\/\/)[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+(:6443)/\1$VIP\2/" worker.yaml
 
         # Apply config, bootstrap the cluster and retrieve kubeconfig
-        talosctl apply-config -f controlplane.yaml --insecure -n $NODE_IP -e $NODE_IP
+        talosctl apply-config --file controlplane.yaml --insecure --nodes $NODE_IP -e $NODE_IP
         
         #########################
         # BOOTSTRAP THE CLUSTER #
