@@ -1,7 +1,6 @@
 network:
     interfaces:
-        - deviceSelector:
-            physical: true
+        - interface: eth0
           dhcp: true
           vip:
             ip: placeholder
