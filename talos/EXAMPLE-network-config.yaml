@@ -1,6 +1,7 @@
-network:
+machine:
+  network:
     interfaces:
-        - interface: eth0
-          dhcp: true
-          vip:
-            ip: placeholder
+    - interface: eth0
+      dhcp: true
+      vip:
+        ip: placeholder
