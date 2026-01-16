@@ -41,23 +41,23 @@ virsh list --all && virsh net-list --all && virsh pool-list
 ###### https://github.com/joshrnoll/talos-scripts
 ##############################################################################################################################################
 ##############################################################################################################################################
-# Getting the code
+### Getting the code
 cd /mnt/extra && git clone --recurse-submodules -j4 https://github.com/rackerlabs/genestack /opt/genestack && \
 /opt/genestack/bootstrap.sh
 
-#Install kubectl
+###Install kubectl
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
-#Install the convert plugin
+###Install the convert plugin
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl-convert" && \
 sudo install -o root -g root -m 0755 kubectl-convert /usr/local/bin/kubectl-convert
 
-#Install the ko plugin
+###Install the ko plugin
 curl -LO https://raw.githubusercontent.com/kubeovn/kube-ovn/release-1.12/dist/images/kubectl-ko && \
 sudo install -o root -g root -m 0755 kubectl-ko /usr/local/bin/kubectl-ko
 
-#Install talosctl:
+###Install talosctl:
 # see https://github.com/siderolabs/talos/releases
 # renovate: datasource=github-releases depName=siderolabs/talos
 talos_version='1.12.1' && git clone https://github.com/vpasias/clusterlab.git && cd /mnt/extra/clusterlab/talos && \
@@ -87,7 +87,7 @@ talosctl apply-config --file worker.yaml --insecure --nodes 192.168.254.26
 talosctl -n 192.168.254.21 kubeconfig $PWD/kubeconfig && \
 export KUBECONFIG=$PWD/kubeconfig && kubectl version && kubectl cluster-info && kubectl get nodes -o wide && kubectl get pods -o wide --all-namespaces
 
-#Install Kube OVN
+###Install Kube OVN
 #https://docs.rackspacecloud.com/k8s-cni-kube-ovn/#prerequisites
 
 cat > /etc/genestack/helm-configs/kube-ovn/kube-ovn-helm-overrides.yaml <<EOF
@@ -115,7 +115,7 @@ kubectl label node -l ovn.kubernetes.io/ovs_dp_type!=userspace ovn.kubernetes.io
 
 kubectl get subnets.kubeovn.io
 
-#Label all of the nodes in the environment
+###Label all of the nodes in the environment
 
 # Label the openstack controllers
 kubectl label node $(kubectl get nodes | awk '/controller/ {print $1}') openstack-control-plane=enabled
@@ -138,15 +138,15 @@ kubectl label node $(kubectl get nodes | awk '/worker/ {print $1}')  node-role.k
 # Verify the nodes are operational and labeled.
 kubectl get nodes -o json | jq '[.items[] | {"NAME": .metadata.name, "LABELS": .metadata.labels}]'
 
-# Remote taint from control-plane nodes
+###Remote taint from control-plane nodes
 kubectl taint nodes -l node-role.kubernetes.io/control-plane node-role.kubernetes.io/control-plane:NoSchedule-
 
-#Install the Prometheus Stack
+###Install the Prometheus Stack
 /opt/genestack/bin/install-kube-prometheus-stack.sh
 
 kubectl -n prometheus get pods -l "release=kube-prometheus-stack"
 
-#Deploy the Rook operator
+###Deploy the Rook operator
 
 kubectl apply -k /etc/genestack/kustomize/rook-operator/base
 
