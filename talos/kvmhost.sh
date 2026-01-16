@@ -77,5 +77,5 @@ virt-install --virt-type kvm --name ${VM6} --ram 32768 --vcpus 8 --disk path=/mn
   --network network=management,mac=${MAC_ADDRESS6} --cpu host-passthrough,cache.mode=passthrough --boot hd,cdrom --noautoconsole
 
 for i in {1..6}; do qemu-img create -f qcow2 vbdnode1$i 100G; done
-# for i in {1..6}; do virsh attach-disk node$i --source vbdnode1$i --target vdb --persistent; done
+for i in {1..6}; do virsh attach-disk node$i --source vbdnode1$i --target vdb --persistent; done
 for i in {1..6}; do virsh attach-interface --domain node$i --type network --source service --model virtio --mac 02:00:aa:0a:01:1$i --config --live; done
