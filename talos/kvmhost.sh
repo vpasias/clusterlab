@@ -52,12 +52,12 @@ MAC_ADDRESS5="52:54:00:f2:d3:25"
 IP_ADDRESS6="192.168.254.26"
 MAC_ADDRESS6="52:54:00:f2:d3:26" 
 
-virsh net-update --network management --command add-last --section ip-dhcp-host --xml "<host mac='${MAC_ADDRESS1}' name='${VM}' ip='${IP_ADDRESS1}'/>" --live --config
-virsh net-update --network management --command add-last --section ip-dhcp-host --xml "<host mac='${MAC_ADDRESS2}' name='${VM}' ip='${IP_ADDRESS2}'/>" --live --config
-virsh net-update --network management --command add-last --section ip-dhcp-host --xml "<host mac='${MAC_ADDRESS3}' name='${VM}' ip='${IP_ADDRESS3}'/>" --live --config
-virsh net-update --network management --command add-last --section ip-dhcp-host --xml "<host mac='${MAC_ADDRESS4}' name='${VM}' ip='${IP_ADDRESS4}'/>" --live --config
-virsh net-update --network management --command add-last --section ip-dhcp-host --xml "<host mac='${MAC_ADDRESS5}' name='${VM}' ip='${IP_ADDRESS5}'/>" --live --config
-virsh net-update --network management --command add-last --section ip-dhcp-host --xml "<host mac='${MAC_ADDRESS6}' name='${VM}' ip='${IP_ADDRESS6}'/>" --live --config
+virsh net-update --network management --command add-last --section ip-dhcp-host --xml "<host mac='${MAC_ADDRESS1}' name='${VM1}' ip='${IP_ADDRESS1}'/>" --live --config
+virsh net-update --network management --command add-last --section ip-dhcp-host --xml "<host mac='${MAC_ADDRESS2}' name='${VM2}' ip='${IP_ADDRESS2}'/>" --live --config
+virsh net-update --network management --command add-last --section ip-dhcp-host --xml "<host mac='${MAC_ADDRESS3}' name='${VM3}' ip='${IP_ADDRESS3}'/>" --live --config
+virsh net-update --network management --command add-last --section ip-dhcp-host --xml "<host mac='${MAC_ADDRESS4}' name='${VM4}' ip='${IP_ADDRESS4}'/>" --live --config
+virsh net-update --network management --command add-last --section ip-dhcp-host --xml "<host mac='${MAC_ADDRESS5}' name='${VM5}' ip='${IP_ADDRESS5}'/>" --live --config
+virsh net-update --network management --command add-last --section ip-dhcp-host --xml "<host mac='${MAC_ADDRESS6}' name='${VM6}' ip='${IP_ADDRESS6}'/>" --live --config
 
 ip a && sudo virsh net-list --all
 
@@ -66,7 +66,7 @@ sleep 20
 virt-install --virt-type kvm --name ${VM1} --ram 32768 --vcpus 8 --disk path=/mnt/extra/virt/vms/${VM1}.qcow2,bus=virtio,size=100,format=qcow2 --cdrom /mnt/extra/virt/images/metal-amd64.iso --os-variant=linux2022 \
   --network network=management,mac=${MAC_ADDRESS1} --cpu host-passthrough,cache.mode=passthrough --boot hd,cdrom --noautoconsole
 virt-install --virt-type kvm --name ${VM2} --ram 32768 --vcpus 8 --disk path=/mnt/extra/virt/vms/${VM2}.qcow2,bus=virtio,size=100,format=qcow2 --cdrom /mnt/extra/virt/images/metal-amd64.iso --os-variant=linux2022 \
-  --network network=management,mac=${MAC_ADDRESS3} --cpu host-passthrough,cache.mode=passthrough --boot hd,cdrom --noautoconsole
+  --network network=management,mac=${MAC_ADDRESS2} --cpu host-passthrough,cache.mode=passthrough --boot hd,cdrom --noautoconsole
 virt-install --virt-type kvm --name ${VM3} --ram 32768 --vcpus 8 --disk path=/mnt/extra/virt/vms/${VM3}.qcow2,bus=virtio,size=100,format=qcow2 --cdrom /mnt/extra/virt/images/metal-amd64.iso --os-variant=linux2022 \
   --network network=management,mac=${MAC_ADDRESS3} --cpu host-passthrough,cache.mode=passthrough --boot hd,cdrom --noautoconsole
 virt-install --virt-type kvm --name ${VM4} --ram 32768 --vcpus 8 --disk path=/mnt/extra/virt/vms/${VM4}.qcow2,bus=virtio,size=100,format=qcow2 --cdrom /mnt/extra/virt/images/metal-amd64.iso --os-variant=linux2022 \
