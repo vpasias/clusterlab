@@ -1,6 +1,9 @@
 #!/bin/bash
 
 TALOS_VERSION="v1.12.1"
+CLUSTER_NAME=athena
+NODE_IP=192.168.254.21
+VIP=192.168.254.254
 
 if [ -f ./controlplane.yaml ] || [ -f ./worker.yaml ] || [ -f ./talosconfig ]; then
     echo "ERROR: Existing configuration detected. 
