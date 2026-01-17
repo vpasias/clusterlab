@@ -75,7 +75,7 @@ if [[ "$RESPONSE" == "Y" ]];then
 
         #Bootstrap Your Etcd Cluster
         talosctl bootstrap --nodes 192.168.254.21 --talosconfig=./talosconfig
-
+    fi
 else
     echo "Exiting script..."
     exit 1
