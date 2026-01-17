@@ -58,7 +58,20 @@ if [[ "$RESPONSE" == "Y" ]];then
         sed -i -E "s/(endpoint: https:\/\/)[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+(:6443)/\1$VIP\2/" worker.yaml
 
         # Apply config, bootstrap the cluster and retrieve kubeconfig
-        talosctl apply-config --file controlplane.yaml --insecure --nodes $NODE_IP
+        talosctl apply-config --file controlplane.yaml --insecure --nodes 192.168.254.21
+        talosctl apply-config --file controlplane.yaml --insecure --nodes 192.168.254.22
+        talosctl apply-config --file controlplane.yaml --insecure --nodes 192.168.254.23
+
+        #Add worker nodes:
+        talosctl apply-config --file worker.yaml --insecure --nodes 192.168.254.24
+        talosctl apply-config --file worker.yaml --insecure --nodes 192.168.254.25
+        talosctl apply-config --file worker.yaml --insecure --nodes 192.168.254.26
+
+        #Set your endpoints
+        talosctl --talosconfig=./talosconfig config endpoints 192.168.254.21
+
+        #Bootstrap Your Etcd Cluster
+        talosctl bootstrap --nodes 192.168.254.21 --talosconfig=./talosconfig
 
 else
     echo "Exiting script..."
