@@ -58,44 +58,7 @@ if [[ "$RESPONSE" == "Y" ]];then
         sed -i -E "s/(endpoint: https:\/\/)[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+(:6443)/\1$VIP\2/" worker.yaml
 
         # Apply config, bootstrap the cluster and retrieve kubeconfig
-        talosctl apply-config --file controlplane.yaml --insecure --nodes $NODE_IP -e $NODE_IP
-        
-        #########################
-        # BOOTSTRAP THE CLUSTER #
-        #########################
-
-        TIMEOUT=180 # Set the timeout in seconds (e.g., 5 minutes)
-        INTERVAL=5 # Interval between retries in seconds
-        START_TIME=$(date +%s)
-        while true; do
-            if nc -z -w5 $NODE_IP 50000; then
-                echo
-                echo "Cluster ready! Bootstrapping and retrieving kubeconfig..."
-                talosctl config endpoints --nodes $NODE_IP -e $NODE_IP --talosconfig=./talosconfig
-                talosctl bootstrap --nodes $NODE_IP -e $NODE_IP --talosconfig=./talosconfig
-                talosctl kubeconfig --nodes $NODE_IP -e $NODE_IP --talosconfig=./talosconfig
-                break
-            else
-                echo "Cluster not ready for bootstrap. Will continue to retry until timeout..."
-            fi
-            
-            sleep $INTERVAL
-
-            # Check if timeout has been reached
-            CURRENT_TIME=$(date +%s)
-            ELAPSED=$((CURRENT_TIME - START_TIME))
-            if [ $ELAPSED -ge $TIMEOUT ]; then
-                echo "Timeout reached while checking connection to cluster. Unable to bootstrap. Try running -- talosctl bootstrap -n $NODE_IP -e $NODE_IP --talosconfig=./talosconfig"
-                break
-            fi
-        done
-    else
-        echo
-        echo "No connection to node. Exiting script..."
-        exit 1
-    fi
-
-echo "Cluster deployed. Try running -- kubectl get nodes"
+        talosctl apply-config --file controlplane.yaml --insecure --nodes $NODE_IP
 
 else
     echo "Exiting script..."
