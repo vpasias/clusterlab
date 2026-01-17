@@ -76,6 +76,6 @@ virt-install --virt-type kvm --name ${VM5} --ram 32768 --vcpus 8 --disk path=/mn
 virt-install --virt-type kvm --name ${VM6} --ram 32768 --vcpus 8 --disk path=/mnt/extra/virt/vms/${VM6}.qcow2,bus=virtio,size=100,format=qcow2 --cdrom /mnt/extra/virt/images/metal-amd64.iso --os-variant=linux2022 \
   --network network=management,mac=${MAC_ADDRESS6} --cpu host-passthrough,cache.mode=passthrough --boot hd,cdrom --noautoconsole
 
-for i in {1..6}; do qemu-img create -f qcow2 vbdnode1$i 100G; done
-for i in {1..6}; do virsh attach-disk node$i --source vbdnode1$i --target vdb --persistent; done
+for i in {1..6}; do qemu-img create -f qcow2 /mnt/extra/vbdnode1$i 100G; done
+for i in {1..6}; do virsh attach-disk node$i --source /mnt/extra/vbdnode1$i --target vdb --persistent; done
 for i in {1..6}; do virsh attach-interface --domain node$i --type network --source service --model virtio --mac 02:00:aa:0a:01:1$i --config --live; done
