@@ -1,6 +1,6 @@
 network:
   interfaces:
-  - interface: eth0
+  - interface: enp1s0
     dhcp: true
     vip:
       ip: placeholder
