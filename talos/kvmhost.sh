@@ -61,7 +61,7 @@ virsh net-update --network management --command add-last --section ip-dhcp-host 
 
 ip a && sudo virsh net-list --all
 
-sleep 20
+sleep 5
 
 virt-install --virt-type kvm --name ${VM1} --ram 32768 --vcpus 8 --disk path=/mnt/extra/virt/vms/${VM1}.qcow2,bus=virtio,size=100,format=qcow2 --cdrom /mnt/extra/virt/images/metal-amd64.iso --os-variant=linux2022 \
   --network network=management,mac=${MAC_ADDRESS1} --cpu host-passthrough,cache.mode=passthrough --boot hd,cdrom --noautoconsole
