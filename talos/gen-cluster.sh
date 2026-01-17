@@ -51,7 +51,7 @@ if [[ "$RESPONSE" == "Y" ]];then
         # Get schematic ID and generate initial config file
         SCHEMATIC=$(curl -sX POST --data-binary @schematic.yaml https://factory.talos.dev/schematics)
         SCHEMATICID=$(echo "$SCHEMATIC" | jq '.id' | tr -d '"')
-        talosctl gen config $CLUSTER_NAME https://$NODE_IP:6443 --install-disk /dev/vda --install-image=factory.talos.dev/installer/$SCHEMATICID:$TALOS_VERSION --force
+        talosctl gen config $CLUSTER_NAME https://$NODE_IP:6443 --install-disk /dev/vda --install-image=factory.talos.dev/metal-installer/$SCHEMATICID:$TALOS_VERSION --force
 
         # Add VIP config to controlplane.yaml
         sed -i '/network: {}/r network-config.yaml' controlplane.yaml && sed -i '/network: {}/d' controlplane.yaml
