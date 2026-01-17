@@ -47,19 +47,8 @@ if [[ "$RESPONSE" == "Y" ]];then
     
         # Get schematic ID and generate initial config file
         SCHEMATIC=$(curl -sX POST --data-binary @schematic.yaml https://factory.talos.dev/schematics)
-        SCHEMATIC=$(echo "$SCHEMATIC" | jq '.id' | tr -d '"')
-        talosctl gen config $CLUSTER_NAME https://$NODE_IP:6443 --install-disk /dev/vda --install-image=factory.talos.dev/installer/$SCHEMATIC:$TALOS_VERSION
-
-        # Append extension-config.yaml (tailscale config) to controlplane.yaml
-        cat controlplane.yaml extension-config.yaml > temp.txt
-        mv temp.txt controlplane.yaml -f
-
-        # Append extension-config.yaml (tailscale config) to controlplane and worker files
-        cat worker.yaml extension-config.yaml > temp.txt
-        mv temp.txt worker.yaml -f
-
-        # TODO - Add longhorn mounts to configs
-        # sed '0,/kubelet:/r longhorn-mounts.yaml' controlplane.yaml
+        SCHEMATICID=$(echo "$SCHEMATIC" | jq '.id' | tr -d '"')
+        talosctl gen config $CLUSTER_NAME https://$NODE_IP:6443 --install-disk /dev/vda --install-image=factory.talos.dev/installer/$SCHEMATICID:$TALOS_VERSION
 
         # Add VIP config to controlplane.yaml
         sed -i '/network: {}/r network-config.yaml' controlplane.yaml && sed -i '/network: {}/d' controlplane.yaml
