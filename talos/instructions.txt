@@ -162,6 +162,7 @@ sudo /opt/genestack/bin/install-kube-ovn.sh
 kubectl get subnets.kubeovn.io
 
 ###Deploy the Rook operator
+#https://docs.rackspacecloud.com/storage-ceph-rook-internal/#talos-linux
 
 kubectl apply -k /etc/genestack/kustomize/rook-operator/base
 
