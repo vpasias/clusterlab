@@ -43,7 +43,7 @@ virsh list --all && virsh net-list --all && virsh pool-list
 ##############################################################################################################################################
 ### Getting the code
 cd /mnt/extra && git clone --recurse-submodules -j4 https://github.com/rackerlabs/genestack /opt/genestack && \
-/opt/genestack/bootstrap.sh
+sudo /opt/genestack/bootstrap.sh && sudo chown \${USER}:\${USER} -R /etc/genestack
 
 ###Install kubectl
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
@@ -57,7 +57,8 @@ sudo install -o root -g root -m 0755 kubectl-convert /usr/local/bin/kubectl-conv
 curl -LO https://raw.githubusercontent.com/kubeovn/kube-ovn/release-1.12/dist/images/kubectl-ko && \
 sudo install -o root -g root -m 0755 kubectl-ko /usr/local/bin/kubectl-ko
 
-sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 && sudo chmod a+x /usr/local/bin/yq
+sudo wget https://github.com/mikefarah/yq/releases/download/v4.2.0/yq_linux_amd64.tar.gz -q -O - | tar xz && \
+sudo mv yq_linux_amd64 /usr/local/bin/yq
 
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && chmod 700 get_helm.sh && ./get_helm.sh
 
@@ -156,7 +157,7 @@ kubectl label node -l beta.kubernetes.io/os=linux kubernetes.io/os=linux
 kubectl label node -l node-role.kubernetes.io/control-plane kube-ovn/role=master
 kubectl label node -l ovn.kubernetes.io/ovs_dp_type!=userspace ovn.kubernetes.io/ovs_dp_type=kernel
 
-/opt/genestack/bin/install-kube-ovn.sh
+sudo /opt/genestack/bin/install-kube-ovn.sh
 
 kubectl get subnets.kubeovn.io
 
@@ -167,7 +168,10 @@ kubectl apply -k /etc/genestack/kustomize/rook-operator/base
 kubectl label node node4 role=storage-node && kubectl label node node5 role=storage-node && \
 kubectl label node node6 role=storage-node
 
-cat > /etc/genestack/kustomize/rook-operator/base/talos.yaml <<EOF
+# Configure Rook-Ceph namespace with Talos privileged permissions
+mkdir -p /etc/genestack/kustomize/rook-operator/overlay
+
+cat > /etc/genestack/kustomize/rook-operator/overlay/namespace-talos.yaml <<EOF
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -182,7 +186,13 @@ metadata:
   name: rook-ceph
 EOF
 
-kubectl apply -f /etc/genestack/kustomize/rook-operator/base/talos.yaml
+cat > /etc/genestack/kustomize/rook-operator/overlay/kustomization.yaml <<EOF
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../base
+  - namespace-talos.yaml
+EOF
 
 #Deploy the Rook cluster
 kubectl apply -k /etc/genestack/kustomize/rook-cluster/overlay
@@ -190,10 +200,15 @@ kubectl apply -k /etc/genestack/kustomize/rook-cluster/overlay
 #Validate the cluster is operational
 kubectl --namespace rook-ceph get cephclusters.ceph.rook.io
 
+kubectl --namespace rook-ceph get pods -w
+
 #Create Storage Classes
 kubectl apply -k /etc/genestack/kustomize/rook-defaults/base
 
 kubectl -n rook-ceph patch CephCluster rook-ceph  --type=merge -p "{\"spec\": {\"monitoring\": {\"enabled\": true}}}"
+
+###Installing cert-manager
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.yaml
 
 ###Label all of the nodes in the environment
 
