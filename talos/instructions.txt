@@ -160,40 +160,6 @@ kubectl label node -l ovn.kubernetes.io/ovs_dp_type!=userspace ovn.kubernetes.io
 
 kubectl get subnets.kubeovn.io
 
-###Label all of the nodes in the environment
-
-# Label the openstack controllers
-kubectl label node $(kubectl get nodes | awk '/control-plane/ {print $1}') openstack-control-plane=enabled
-
-# Label the openstack compute nodes
-kubectl label node node4 openstack-compute-node=enabled && kubectl label node node5 openstack-compute-node=enabled && \
-kubectl label node node6 openstack-compute-node=enabled
-
-# Label the openstack network nodes
-kubectl label node $(kubectl get nodes | awk '/control-plane/ {print $1}') openstack-network-node=enabled
-
-# Label the openstack storage nodes
-kubectl label node node4 openstack-storage-node=enabled && kubectl label node node5 openstack-storage-node=enabled && \
-kubectl label node node6 openstack-storage-node=enabled
-
-# Label all workers - Recommended and used when deploying Kubernetes specific services
-kubectl label node node4 node-role.kubernetes.io/worker=worker && kubectl label node node5 node-role.kubernetes.io/worker=worker && \
-kubectl label node node6 node-role.kubernetes.io/worker=worker
-
-# With OVN we need the compute nodes to be "network" nodes as well. While they will be configured for networking, they wont be gateways.
-kubectl label node $(kubectl get nodes | awk '/worker/ {print $1}') openstack-network-node=enabled
-
-# Verify the nodes are operational and labeled.
-kubectl get nodes -o json | jq '[.items[] | {"NAME": .metadata.name, "LABELS": .metadata.labels}]'
-
-###Remove taint from control-plane nodes
-kubectl taint nodes -l node-role.kubernetes.io/control-plane node-role.kubernetes.io/control-plane:NoSchedule-
-
-###Install the Prometheus Stack
-/opt/genestack/bin/install-kube-prometheus-stack.sh
-
-kubectl -n prometheus get pods -l "release=kube-prometheus-stack"
-
 ###Deploy the Rook operator
 
 kubectl apply -k /etc/genestack/kustomize/rook-operator/base
@@ -228,6 +194,40 @@ kubectl --namespace rook-ceph get cephclusters.ceph.rook.io
 kubectl apply -k /etc/genestack/kustomize/rook-defaults/base
 
 kubectl -n rook-ceph patch CephCluster rook-ceph  --type=merge -p "{\"spec\": {\"monitoring\": {\"enabled\": true}}}"
+
+###Label all of the nodes in the environment
+
+# Label the openstack controllers
+kubectl label node $(kubectl get nodes | awk '/control-plane/ {print $1}') openstack-control-plane=enabled
+
+# Label the openstack compute nodes
+kubectl label node node4 openstack-compute-node=enabled && kubectl label node node5 openstack-compute-node=enabled && \
+kubectl label node node6 openstack-compute-node=enabled
+
+# Label the openstack network nodes
+kubectl label node $(kubectl get nodes | awk '/control-plane/ {print $1}') openstack-network-node=enabled
+
+# Label the openstack storage nodes
+kubectl label node node4 openstack-storage-node=enabled && kubectl label node node5 openstack-storage-node=enabled && \
+kubectl label node node6 openstack-storage-node=enabled
+
+# Label all workers - Recommended and used when deploying Kubernetes specific services
+kubectl label node node4 node-role.kubernetes.io/worker=worker && kubectl label node node5 node-role.kubernetes.io/worker=worker && \
+kubectl label node node6 node-role.kubernetes.io/worker=worker
+
+# With OVN we need the compute nodes to be "network" nodes as well. While they will be configured for networking, they wont be gateways.
+kubectl label node $(kubectl get nodes | awk '/worker/ {print $1}') openstack-network-node=enabled
+
+# Verify the nodes are operational and labeled.
+kubectl get nodes -o json | jq '[.items[] | {"NAME": .metadata.name, "LABELS": .metadata.labels}]'
+
+###Remove taint from control-plane nodes
+kubectl taint nodes -l node-role.kubernetes.io/control-plane node-role.kubernetes.io/control-plane:NoSchedule-
+
+###Install the Prometheus Stack
+/opt/genestack/bin/install-kube-prometheus-stack.sh
+
+kubectl -n prometheus get pods -l "release=kube-prometheus-stack"
 
 ##############################################################################################################################################
 ### Troubleshoot ###
