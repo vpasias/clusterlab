@@ -11,13 +11,10 @@ screen
 # enter session: screen -r 1257473.pts-0.node0
 # exit a session and terminate it: exit
 
-sudo apt update -y && sudo apt install cockpit -y && sudo systemctl enable --now cockpit.socket && sudo apt install cockpit-machines -y && echo "root:gprm8350" | sudo chpasswd
-exit
-
 sudo -i
 
 cd /mnt/extra && cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && sudo virsh list --all && sudo brctl show && \
-wget -O "/mnt/extra/osinfo-db.tar.xz" https://releases.pagure.org/libosinfo/osinfo-db-20240523.tar.xz && sudo osinfo-db-import --local "/mnt/extra/osinfo-db.tar.xz"
+wget -O "/mnt/extra/osinfo-db.tar.xz" https://releases.pagure.org/libosinfo/osinfo-db-20250606.tar.xz && sudo osinfo-db-import --local "/mnt/extra/osinfo-db.tar.xz"
 
 # Install dependencies
 sudo apt update -y && sudo apt-get install apt-transport-https ca-certificates curl gnupg python3-venv -y && \
@@ -31,15 +28,15 @@ virsh pool-define-as default dir --target "/var/lib/libvirt/images" && virsh poo
 
 exit
 
-virsh list --all && virsh net-list --all && virsh pool-list 
-
 sudo -i
 
-#######################################################################################################################################################################
-####################### Talos Linux Kubernetes cluster in libvirt QEMU/KVM Virtual Machines using terraform #################################################
+virsh list --all && virsh net-list --all && virsh pool-list 
+
+#################################################################################################################################
+####################### Talos Linux Kubernetes cluster in libvirt QEMU/KVM Virtual Machines using terraform 
 ########################  https://github.com/rgl/terraform-libvirt-talos ########################  
-#######################################################################################################################################################################
-################################################################################################################################################
+#################################################################################################################################
+#################################################################################################################################
 
 cd /mnt/extra && mkdir -p tf && cd /mnt/extra/tf
 
@@ -49,31 +46,10 @@ cd /mnt/extra && mkdir -p tf && cd /mnt/extra/tf
 wget 'https://releases.hashicorp.com/terraform/1.14.3/terraform_1.14.3_linux_amd64.zip' && \
 unzip "terraform_1.14.3_linux_amd64.zip" && sudo install terraform /usr/local/bin && rm terraform terraform_*_linux_amd64.zip
 
-#Install cilium cli:
-# see https://github.com/cilium/cilium-cli/releases
-# renovate: datasource=github-releases depName=cilium/cilium-cli
-cilium_version='0.18.9' && cilium_url="https://github.com/cilium/cilium-cli/releases/download/v$cilium_version/cilium-linux-amd64.tar.gz" && \
-wget -O- "$cilium_url" | tar xzf - cilium && sudo install cilium /usr/local/bin/cilium && rm cilium
-
-#Install cilium hubble:
-# see https://github.com/cilium/hubble/releases
-# renovate: datasource=github-releases depName=cilium/hubble
-hubble_version='1.18.3' && hubble_url="https://github.com/cilium/hubble/releases/download/v$hubble_version/hubble-linux-amd64.tar.gz" && \
-wget -O- "$hubble_url" | tar xzf - hubble && sudo install hubble /usr/local/bin/hubble && rm hubble
-
-#Install kubectl-linstor:
-# NB kubectl linstor storage-pool list is equivalent to:
-#    kubectl -n piraeus-datastore exec deploy/linstor-controller -- linstor storage-pool list
-# see https://github.com/piraeusdatastore/kubectl-linstor/releases
-# renovate: datasource=github-releases depName=piraeusdatastore/kubectl-linstor
-kubectl_linstor_version='0.3.2' && \
-kubectl_linstor_url="https://github.com/piraeusdatastore/kubectl-linstor/releases/download/v${kubectl_linstor_version}/kubectl-linstor_v${kubectl_linstor_version}_linux_amd64.tar.gz" && \
-wget -O- "$kubectl_linstor_url" | tar xzf - kubectl-linstor && sudo install kubectl-linstor /usr/local/bin/kubectl-linstor && rm kubectl-linstor
-
 #Install talosctl:
 # see https://github.com/siderolabs/talos/releases
 # renovate: datasource=github-releases depName=siderolabs/talos
-talos_version='1.11.6' && wget https://github.com/siderolabs/talos/releases/download/v$talos_version/talosctl-linux-amd64 && \
+talos_version='1.12.1' && wget https://github.com/siderolabs/talos/releases/download/v$talos_version/talosctl-linux-amd64 && \
 sudo install talosctl-linux-amd64 /usr/local/bin/talosctl && rm talosctl-linux-amd64
 
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && chmod +x kubectl && sudo mv kubectl /usr/local/bin
@@ -92,16 +68,7 @@ sudo install -o root -g root -m 0755 kubectl-ko /usr/local/bin/kubectl-ko
 
 #Initialize terraform:
 
-git clone https://github.com/rgl/terraform-libvirt-talos.git && cd /mnt/extra/tf/terraform-libvirt-talos && \
-sed -i 's/40GiB/100GiB/' libvirt.tf && sed -i 's/32GiB/100GiB/' libvirt.tf && sed -i 's/vcpu   = 4/vcpu   = 8/' libvirt.tf && sed -i 's/40/100/' libvirt.tf && sed -i 's/32/100/' libvirt.tf && \
-sed -i 's/memory = 4/memory = 48/' libvirt.tf && sed -i 's/default     = 130/default     = 200/' variables.tf && sed -i 's/default = 1/default = 3/' variables.tf && sed -i 's/"1"/"3"/' do && \
 sed -i 's/raw.zst/raw.xz/' do && sed -i 's/unzstd/xz -d/' do && sed -i 's/--output/-fsSL --output/' do
-
-#sed -i 's/1.11.6/1.12.1/' do
-#nano do
-#insert in line 128:
-#    - siderolabs/iscsi-tools
-#    - siderolabs/util-linux-tools
 
 ./do init
 
@@ -117,16 +84,6 @@ all="$controllers,$workers" && c0="$(echo $controllers | cut -d , -f 1)" && talo
 #Show kubernetes information:
 export KUBECONFIG=$PWD/kubeconfig.yml && kubectl version && kubectl cluster-info && kubectl get nodes -o wide && kubectl get pods -o wide --all-namespaces
 
-#Show Cilium information:
-export KUBECONFIG=$PWD/kubeconfig.yml && cilium status --wait && kubectl -n kube-system exec ds/cilium -- cilium-dbg status --verbose
-
-# Deploying Metrics Server
-
-kubectl apply -f https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/main/deploy/standalone-install.yaml
-kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
-kubectl get pods -n kube-system
-kubectl top node && kubectl top pod -n kube-system
-
 # Create Service Network - Attach 2nd network interface to VMs
 cat > /mnt/extra/service.xml <<EOF
 <network>
@@ -140,9 +97,9 @@ EOF
 
 virsh net-define /mnt/extra/service.xml && virsh net-autostart service && virsh net-start service
 
-for i in {0..2}; do virsh attach-interface --domain terraform_talos_example_c$i --type network --source service --model virtio --mac 02:00:aa:0a:01:1$i --config --live; done
+for i in {0..2}; do virsh attach-interface --domain athena_talos_c$i --type network --source service --model virtio --mac 02:00:aa:0a:01:1$i --config --live; done
 
-for i in {0..2}; do virsh attach-interface --domain terraform_talos_example_w$i --type network --source service --model virtio --mac 02:00:aa:0a:01:2$i --config --live; done
+for i in {0..2}; do virsh attach-interface --domain  athena_talos_w$i --type network --source service --model virtio --mac 02:00:aa:0a:01:2$i --config --live; done
 
 #################################################################################################################################################################
 ### Troubleshoot ###
@@ -192,167 +149,24 @@ kubectl get events --all-namespaces --watch
 kubectl --namespace kube-system get events --watch
 kubectl run busybox -it --rm --restart=Never --image=busybox:1.36 -- nslookup -type=a talos.dev
 
-#################################################################################################################################################################
-### Installation of KubeVirt ###
-### https://www.talos.dev/v1.11/advanced/install-kubevirt/ ###
-#################################################################################################################################################################
-
-export VERSION=$(curl https://storage.googleapis.com/kubevirt-prow/release/kubevirt/kubevirt/stable.txt) && \
-wget https://github.com/kubevirt/kubevirt/releases/download/${VERSION}/virtctl-${VERSION}-linux-amd64 && mv virtctl-${VERSION}-linux-amd64 virtctl && \
-chmod +x virtctl && sudo install virtctl /usr/local/bin && virtctl version
-
-# Point at latest release
-export RELEASE=$(curl https://storage.googleapis.com/kubevirt-prow/release/kubevirt/kubevirt/stable.txt)
-# Deploy the KubeVirt operator
-kubectl apply -f https://github.com/kubevirt/kubevirt/releases/download/${RELEASE}/kubevirt-operator.yaml
-
-tee > /tmp/kubevirt-cr.yaml <<EOF
----
-apiVersion: kubevirt.io/v1
-kind: KubeVirt
-metadata:
-  name: kubevirt
-  namespace: kubevirt
-spec:
-  certificateRotateStrategy: {}
-  configuration:
-    developerConfiguration:
-      featureGates: []
-    smbios:
-      sku: "TalosCloud"
-      version: "v0.1.0"
-      manufacturer: "Talos Virtualization"
-      product: "talosvm"
-      family: "ccio"
-  customizeComponents: {}
-  imagePullPolicy: IfNotPresent
-  workloadUpdateStrategy: {}
-EOF
-
-kubectl apply -f /tmp/kubevirt-cr.yaml
-kubectl get pods -n kubevirt
-
-# Create example VM
-
-tee > /tmp/tvm.yaml <<EOF
-apiVersion: kubevirt.io/v1alpha3
-kind: VirtualMachine
-metadata:
-  name: testvm
-spec:
-  running: false
-  template:
-    metadata:
-      labels:
-        kubevirt.io/size: small
-        kubevirt.io/domain: ubuntu-noble
-    spec:
-      domain:
-        cpu:
-          cores: 1
-        devices:
-          disks:
-            - name: containervolume
-              disk:
-                bus: virtio
-            - name: cloudinitvolume
-              disk:
-                bus: virtio
-          interfaces:
-          - name: default
-            masquerade: {}
-        resources:
-          requests:
-            memory: 2048M
-      networks:
-      - name: default
-        pod: {}
-      volumes:
-        - name: containervolume
-          containerDisk:
-            image: tedezed/ubuntu-container-disk:24.04
-        - name: cloudinitvolume
-          cloudInitNoCloud:
-            userData: |-
-              #cloud-config
-              chpasswd:
-                list: |
-                  ubuntu:ubuntu
-                  root:toor
-                expire: False
-EOF
-
-kubectl create ns vm
-kubectl apply -f /tmp/tvm.yaml -n vm
-
-kubectl get vms -n vm
-kubectl get vms -o yaml testvm -n vm
-virtctl start testvm -n vm
-
-kubectl get vmis -n vm
-
-virtctl console testvm -n vm
-cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && uname -a
-Ctrl + ]
-
-# Delete VM
-virtctl stop testvm -n vm && kubectl delete vm testvm -n vm
-
-#################################################################################################################################################################
-### Monitoring based on Prometheus stack ###
-### https://spacelift.io/blog/prometheus-kubernetes ### 
-#################################################################################################################################################################
-
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo update
-helm install kube-prometheus-stack --create-namespace --namespace kube-prometheus-stack prometheus-community/kube-prometheus-stack
-kubectl -n kube-prometheus-stack get pods
-
-# Expose Prometheus UI
-kubectl port-forward -n kube-prometheus-stack svc/kube-prometheus-stack-prometheus 9090:9090
-
-# Expose Graphana UI
- kubectl port-forward -n kube-prometheus-stack svc/kube-prometheus-stack-grafana 8080:80
-
-#################################################################################################################################################################
-### Install the Kubeflow AI/ML stack ###
-### https://dagshub.com/blog/how-to-install-kubeflow-locally/ ###
-### https://medium.com/@heisash24/deploy-kubeflow-on-kubernetes-faf168b478c8 ###
-#################################################################################################################################################################
-
-curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
-sudo install kustomize /usr/local/bin/kustomize && kustomize version
-
-git clone https://github.com/kubeflow/manifests.git && cd manifests
-
-while ! kustomize build example | awk '!/well-defined/' | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done
-
-kubectl get ns && kubectl get pods -A
-
-kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80
-
-# Remove Kubeflow
-#kubectl get profile
-#kubectl delete profile --all
-#while ! kustomize build example | kubectl delete -f -; do echo "Retrying to delete resources"; sleep 10; done
-
-#################################################################################################################################################################
+#################################################################################################################################
 ### Delete Infrastructure ###
-#################################################################################################################################################################
+#################################################################################################################################
 
 #terraform destroy -auto-approve
 cd /mnt/extra/tf/terraform-libvirt-talos/ && ./do destroy
-virsh net-destroy terraform_talos_example && virsh net-undefine terraform_talos_example && \
-virsh destroy terraform_talos_example_c0 && \
-virsh destroy terraform_talos_example_c1 && \
-virsh destroy terraform_talos_example_c2 && \
-virsh destroy terraform_talos_example_w0 && \
-virsh destroy terraform_talos_example_w1 && \
-virsh destroy terraform_talos_example_w2 && \
-virsh undefine terraform_talos_example_c0 --nvram && \
-virsh undefine terraform_talos_example_c1 --nvram && \
-virsh undefine terraform_talos_example_c2 --nvram && \
-virsh undefine terraform_talos_example_w0 --nvram && \
-virsh undefine terraform_talos_example_w1 --nvram && \
-virsh undefine terraform_talos_example_w2 --nvram && \
+virsh net-destroy service && virsh net-undefine service && \
+virsh net-destroy athena_talos && virsh net-undefine athena_talos && \
+virsh destroy athena_talos_c0 && \
+virsh destroy athena_talos_c1 && \
+virsh destroy athena_talos_c2 && \
+virsh destroy athena_talos_w0 && \
+virsh destroy athena_talos_w1 && \
+virsh destroy athena_talos_w2 && \
+virsh undefine athena_talos_c0 --nvram && \
+virsh undefine athena_talos_c1 --nvram && \
+virsh undefine athena_talos_c2 --nvram && \
+virsh undefine athena_talos_w0 --nvram && \
+virsh undefine athena_talos_w1 --nvram && \
+virsh undefine athena_talos_w2 --nvram && \
 virsh net-list && virsh list
