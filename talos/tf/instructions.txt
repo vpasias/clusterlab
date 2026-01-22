@@ -7,8 +7,8 @@ screen
 # Press Return to continue
 # detach from session without killing it: Ctrl a d 
 # to see screen sessions: screen -ls
-# detach from closed session: screen -d -r 1257473.pts-0.node0
-# enter session: screen -r 1257473.pts-0.node0
+# detach from closed session: screen -d -r 2018.pts-0.node0
+# enter session: screen -r 2018.pts-0.node0
 # exit a session and terminate it: exit
 
 sudo -i
