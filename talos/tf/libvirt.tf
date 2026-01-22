@@ -14,7 +14,7 @@ resource "libvirt_network" "talos" {
 }
 
 resource "libvirt_network" "service" {
-  name      = var.prefix
+  name      = var.prefix1
   mode      = "nat"
   domain    = var.service_node_domain
   addresses = [var.service_node_network]
