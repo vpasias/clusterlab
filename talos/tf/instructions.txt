@@ -98,8 +98,7 @@ for i in {0..2}; do virsh attach-interface --domain athena_talos_c$i --type netw
 for i in {0..2}; do virsh attach-interface --domain  athena_talos_w$i --type network --source service --model virtio --mac 02:00:aa:0a:01:2$i --config --live; done
 
 ### Getting the code
-cd /mnt/extra && git clone --recurse-submodules -j4 https://github.com/rackerlabs/genestack /opt/genestack && \
-sudo /opt/genestack/bootstrap.sh && sudo chown \${USER}:\${USER} -R /etc/genestack
+cd /mnt/extra && git clone --recurse-submodules -j4 https://github.com/rackerlabs/genestack /opt/genestack && sudo /opt/genestack/bootstrap.sh
 
 ###Install Kube OVN
 #https://docs.rackspacecloud.com/k8s-cni-kube-ovn/#prerequisites
