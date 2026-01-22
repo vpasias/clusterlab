@@ -127,13 +127,6 @@ data "talos_machine_configuration" "controller" {
         cluster = {
           inlineManifests = [
             {
-              name = "cilium"
-              contents = join("---\n", [
-                data.helm_template.cilium.manifest,
-                "# Source cilium.tf\n${local.cilium_external_lb_manifest}",
-              ])
-            },
-            {
               name = "cert-manager"
               contents = join("---\n", [
                 yamlencode({
