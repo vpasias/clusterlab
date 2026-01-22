@@ -46,6 +46,12 @@ variable "cluster_node_network" {
   default     = "10.17.3.0/24"
 }
 
+variable "service_node_network" {
+  description = "The service IP network"
+  type        = string
+  default     = "172.16.254.0/24"
+}
+
 variable "cluster_node_network_first_controller_hostnum" {
   description = "The hostnum of the first controller host"
   type        = number
@@ -80,6 +86,12 @@ variable "ingress_domain" {
   description = "the DNS domain of the ingress resources"
   type        = string
   default     = "example.test"
+}
+
+variable "service_node_domain" {
+  description = "the DNS domain of service"
+  type        = string
+  default     = "service.test"
 }
 
 variable "controller_count" {
