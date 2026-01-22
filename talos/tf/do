@@ -130,7 +130,7 @@ EOF
     echo "ERROR: Failed to create the image schematic."
     exit 1
   fi
-  local image_url="https://factory.talos.dev/image/$schematic_id/$talos_version_tag/nocloud-amd64.raw.zst"
+  local image_url="https://factory.talos.dev/image/$schematic_id/$talos_version_tag/nocloud-amd64.raw.xz"
   echo "downloading image from $image_url..."
   rm -f tmp/talos/nocloud-amd64.raw.xz
   curl \
