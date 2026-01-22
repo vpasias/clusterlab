@@ -132,13 +132,13 @@ EOF
   fi
   local image_url="https://factory.talos.dev/image/$schematic_id/$talos_version_tag/nocloud-amd64.raw.zst"
   echo "downloading image from $image_url..."
-  rm -f tmp/talos/nocloud-amd64.raw.zst
+  rm -f tmp/talos/nocloud-amd64.raw.xz
   curl \
     --silent \
-    --output tmp/talos/nocloud-amd64.raw.zst \
+    --output tmp/talos/nocloud-amd64.raw.xz \
     "$image_url"
   echo "extracting image..."
-  unzstd tmp/talos/nocloud-amd64.raw.zst
+  xz -d tmp/talos/nocloud-amd64.raw.xz
 }
 
 function build_talos_image {
