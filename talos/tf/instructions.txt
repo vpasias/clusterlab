@@ -21,10 +21,9 @@ sudo apt update -y && sudo apt-get install apt-transport-https ca-certificates c
 sudo usermod -aG libvirt `id -un` && sudo adduser `id -un` libvirt-qemu && sudo adduser `id -un` kvm && sudo adduser `id -un` libvirt-dnsmasq && sudo sed -i 's/0770/0777/' /etc/libvirt/libvirtd.conf && \
 echo 0 | sudo tee /sys/module/kvm/parameters/halt_poll_ns && echo 'security_driver = "none"' | sudo tee /etc/libvirt/qemu.conf && sudo chmod 0644 /boot/vmlinuz* && \
 sudo sed -i -E 's,#?(security_driver)\s*=.*,\1 = "none",g' /etc/libvirt/qemu.conf && \
-sudo systemctl restart libvirtd && sudo systemctl status libvirtd && \
-sudo apt-get install -y docker.io unzip && \
-sudo usermod -aG libvirt $USER && sudo usermod -aG docker $USER && \
-virsh pool-define-as default dir --target "/var/lib/libvirt/images" && virsh pool-build default && virsh pool-start default && virsh pool-autostart default
+sudo systemctl restart libvirtd && sudo apt-get install -y docker.io unzip && sudo usermod -aG libvirt $USER && sudo usermod -aG docker $USER && \
+virsh pool-define-as default dir --target "/var/lib/libvirt/images" && virsh pool-build default && virsh pool-start default && virsh pool-autostart default && \
+sudo systemctl status libvirtd
 
 exit
 
