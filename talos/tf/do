@@ -17,6 +17,13 @@ talos_version="1.12.1"
 # see https://github.com/siderolabs/extensions/tree/main/guest-agents/qemu-guest-agent
 talos_qemu_guest_agent_extension_tag="10.2.0@sha256:b2843f69e3cd31ba813c1164f290ebbfddd239d53b3a0eeb19eb2f91fec6fed7"
 
+# see https://github.com/siderolabs/extensions/pkgs/container/iscsi-tools
+# see https://github.com/siderolabs/extensions/tree/main/storage/iscsi-tools
+talos_iscsi-tools_extension_tag="v0.2.0@sha256:1011cc9acc7f30a78893185a75d107689a0d7735e7041a1d5e1c913135c32fc2"
+                                               
+# see https://github.com/siderolabs/extensions/pkgs/container/util-linux-tools
+talos_util-linux-tools_extension_tag="v2.41.2@sha256:bcaf485539d7d07ee2988d1f189df74c54f8ad818017bcebe88207618e54b86c"
+
 export CHECKPOINT_DISABLE='1'
 export TF_LOG='DEBUG' # TRACE, DEBUG, INFO, WARN or ERROR.
 export TF_LOG_PATH='terraform.log'
@@ -49,6 +56,8 @@ function update-talos-extensions {
   step "updating the talos extensions"
   local images="$(crane export "ghcr.io/siderolabs/extensions:v$talos_version" | tar x -O image-digests)"
   update-talos-extension talos_qemu_guest_agent_extension_tag ghcr.io/siderolabs/qemu-guest-agent "$images"
+  update-talos-extension talos_iscsi-tools_extension_tag ghcr.io/siderolabs/iscsi-tools "$images"
+  update-talos-extension talos_util-linux-tools_extension_tag ghcr.io/siderolabs/util-linux-tools "$images"
 }
 
 function build_talos_image__imager {
@@ -75,8 +84,8 @@ input:
     imageRef: ghcr.io/siderolabs/installer:$talos_version_tag
   systemExtensions:
     - imageRef: ghcr.io/siderolabs/qemu-guest-agent:$talos_qemu_guest_agent_extension_tag
-    - imageRef: ghcr.io/siderolabs/drbd:$talos_drbd_extension_tag
-    - imageRef: ghcr.io/siderolabs/spin:$talos_spin_extension_tag
+    - imageRef: ghcr.io/siderolabs/iscsi-tools:$talos_iscsi-tools_extension_tag
+    - imageRef: ghcr.io/siderolabs/util-linux-tools:$talos_util-linux-tools_extension_tag
 output:
   kind: image
   imageOptions:
