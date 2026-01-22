@@ -277,3 +277,4 @@ case $1 in
     echo $"Usage: $0 {init|plan|apply|plan-apply|health|info}"
     exit 1
     ;;
+esac
