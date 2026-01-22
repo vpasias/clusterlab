@@ -54,7 +54,17 @@ sudo install talosctl-linux-amd64 /usr/local/bin/talosctl && rm talosctl-linux-a
 
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && chmod +x kubectl && sudo mv kubectl /usr/local/bin
 
-sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 && sudo chmod a+x /usr/local/bin/yq
+###Install the convert plugin
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl-convert" && \
+sudo install -o root -g root -m 0755 kubectl-convert /usr/local/bin/kubectl-convert
+
+###Install the ko plugin
+curl -LO https://raw.githubusercontent.com/kubeovn/kube-ovn/release-1.12/dist/images/kubectl-ko && \
+sudo install -o root -g root -m 0755 kubectl-ko /usr/local/bin/kubectl-ko
+
+###Install yq
+sudo wget https://github.com/mikefarah/yq/releases/download/v4.2.0/yq_linux_amd64.tar.gz -q -O - | tar xz && \
+sudo mv yq_linux_amd64 /usr/local/bin/yq
 
 ###Install the convert plugin
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl-convert" && \
@@ -99,6 +109,90 @@ virsh net-define /mnt/extra/service.xml && virsh net-autostart service && virsh 
 for i in {0..2}; do virsh attach-interface --domain athena_talos_c$i --type network --source service --model virtio --mac 02:00:aa:0a:01:1$i --config --live; done
 
 for i in {0..2}; do virsh attach-interface --domain  athena_talos_w$i --type network --source service --model virtio --mac 02:00:aa:0a:01:2$i --config --live; done
+
+### Getting the code
+cd /mnt/extra && git clone --recurse-submodules -j4 https://github.com/rackerlabs/genestack /opt/genestack && \
+sudo /opt/genestack/bootstrap.sh && sudo chown \${USER}:\${USER} -R /etc/genestack
+
+###Install Kube OVN
+#https://docs.rackspacecloud.com/k8s-cni-kube-ovn/#prerequisites
+
+cat > /etc/genestack/helm-configs/kube-ovn/kube-ovn-helm-overrides.yaml <<EOF
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+---
+global:
+  registry:
+    address: docker.io/kubeovn
+    imagePullSecrets: []
+networking:
+  IFACE: eth0
+  vlan:
+    VLAN_INTERFACE_NAME: eth0
+OPENVSWITCH_DIR: /var/lib/openvswitch
+OVN_DIR: /var/lib/ovn
+DISABLE_MODULES_MANAGEMENT: true
+EOF
+
+kubectl label node -l beta.kubernetes.io/os=linux kubernetes.io/os=linux
+kubectl label node -l node-role.kubernetes.io/control-plane kube-ovn/role=master
+kubectl label node -l ovn.kubernetes.io/ovs_dp_type!=userspace ovn.kubernetes.io/ovs_dp_type=kernel
+
+sudo /opt/genestack/bin/install-kube-ovn.sh
+
+kubectl get subnets.kubeovn.io
+
+###Deploy the Rook operator
+#https://docs.rackspacecloud.com/storage-ceph-rook-internal/#talos-linux
+
+kubectl apply -k /etc/genestack/kustomize/rook-operator/base
+
+kubectl label node athena_talos_w0 role=storage-node && kubectl label node athena_talos_w1 role=storage-node && \
+kubectl label node athena_talos_w2 role=storage-node
+
+# Configure Rook-Ceph namespace with Talos privileged permissions
+mkdir -p /etc/genestack/kustomize/rook-operator/overlay
+
+cat > /etc/genestack/kustomize/rook-operator/overlay/namespace-talos.yaml <<EOF
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    kubernetes.io/metadata.name: rook-ceph
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/audit-version: latest
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/enforce-version: latest
+    pod-security.kubernetes.io/warn: privileged
+    pod-security.kubernetes.io/warn-version: latest
+  name: rook-ceph
+EOF
+
+cat > /etc/genestack/kustomize/rook-operator/overlay/kustomization.yaml <<EOF
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../base
+  - namespace-talos.yaml
+EOF
+
+kubectl apply -k /etc/genestack/kustomize/rook-operator/overlay
+
+sed -i 's/useAllDevices: true/useAllDevices: false/g' /etc/genestack/kustomize/rook-cluster/rook-cluster.yaml && \
+sed -i 's/# deviceFilter: "^vd."/deviceFilter: sdb/g' /etc/genestack/kustomize/rook-cluster/rook-cluster.yaml
+
+#Deploy the Rook cluster
+kubectl apply -k /etc/genestack/kustomize/rook-cluster/overlay
+
+#Validate the cluster is operational
+kubectl --namespace rook-ceph get cephclusters.ceph.rook.io
+
+kubectl --namespace rook-ceph get pods -w
+
+#Create Storage Classes
+kubectl apply -k /etc/genestack/kustomize/rook-defaults/base
+
+kubectl -n rook-ceph patch CephCluster rook-ceph  --type=merge -p "{\"spec\": {\"monitoring\": {\"enabled\": true}}}"
 
 #################################################################################################################################
 ### Troubleshoot ###
