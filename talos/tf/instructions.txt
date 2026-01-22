@@ -79,7 +79,7 @@ sudo install -o root -g root -m 0755 kubectl-ko /usr/local/bin/kubectl-ko
 #Initialize terraform:
 #sed -i 's/raw.zst/raw.xz/' do && sed -i 's/unzstd/xz -d/' do && sed -i 's/--output/-fsSL --output/' do
 
-./do init
+chmod +x do && ./do init
 
 #Create the infrastructure:
 
