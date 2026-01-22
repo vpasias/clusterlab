@@ -135,7 +135,7 @@ EOF
   rm -f tmp/talos/nocloud-amd64.raw.xz
   curl \
     --silent \
-    --output tmp/talos/nocloud-amd64.raw.xz \
+    -fsSL --output tmp/talos/nocloud-amd64.raw.xz \
     "$image_url"
   echo "extracting image..."
   xz -d tmp/talos/nocloud-amd64.raw.xz
