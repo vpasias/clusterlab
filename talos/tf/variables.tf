@@ -125,3 +125,8 @@ variable "prefix" {
   type    = string
   default = "athena_talos"
 }
+
+variable "prefix1" {
+  type    = string
+  default = "service"
+}
