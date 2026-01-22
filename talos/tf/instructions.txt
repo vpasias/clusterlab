@@ -37,6 +37,9 @@ virsh list --all && virsh net-list --all && virsh pool-list
 #################################################################################################################################
 #################################################################################################################################
 
+### Getting the code
+cd /mnt/extra && git clone --recurse-submodules -j4 https://github.com/rackerlabs/genestack /opt/genestack && sudo /opt/genestack/bootstrap.sh
+
 cd /mnt/extra && git clone https://github.com/vpasias/clusterlab.git && cd /mnt/extra/clusterlab/talos/tf
 
 #Install Terraform:
@@ -96,9 +99,6 @@ export KUBECONFIG=$PWD/kubeconfig.yml && kubectl version && kubectl cluster-info
 for i in {0..2}; do virsh attach-interface --domain athena_talos_c$i --type network --source service --model virtio --mac 02:00:aa:0a:01:1$i --config --live; done
 
 for i in {0..2}; do virsh attach-interface --domain  athena_talos_w$i --type network --source service --model virtio --mac 02:00:aa:0a:01:2$i --config --live; done
-
-### Getting the code
-cd /mnt/extra && git clone --recurse-submodules -j4 https://github.com/rackerlabs/genestack /opt/genestack && sudo /opt/genestack/bootstrap.sh
 
 ###Install Kube OVN
 #https://docs.rackspacecloud.com/k8s-cni-kube-ovn/#prerequisites
