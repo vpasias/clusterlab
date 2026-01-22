@@ -67,8 +67,7 @@ sudo install -o root -g root -m 0755 kubectl-ko /usr/local/bin/kubectl-ko
 #curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && chmod 700 get_helm.sh && ./get_helm.sh
 
 #Initialize terraform:
-
-sed -i 's/raw.zst/raw.xz/' do && sed -i 's/unzstd/xz -d/' do && sed -i 's/--output/-fsSL --output/' do
+#sed -i 's/raw.zst/raw.xz/' do && sed -i 's/unzstd/xz -d/' do && sed -i 's/--output/-fsSL --output/' do
 
 ./do init
 
