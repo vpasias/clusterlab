@@ -92,19 +92,7 @@ all="$controllers,$workers" && c0="$(echo $controllers | cut -d , -f 1)" && talo
 #Show kubernetes information:
 export KUBECONFIG=$PWD/kubeconfig.yml && kubectl version && kubectl cluster-info && kubectl get nodes -o wide && kubectl get pods -o wide --all-namespaces
 
-# Create Service Network - Attach 2nd network interface to VMs
-cat > /mnt/extra/service.xml <<EOF
-<network>
-  <name>service</name>
-  <bridge name="service" stp="on" delay="0"/>
-  <mtu size="9216"/>
-  <mac address='52:54:00:9a:9a:9a'/>
-  <ip address='172.16.254.1' netmask='255.255.255.0'/>
-</network>
-EOF
-
-virsh net-define /mnt/extra/service.xml && virsh net-autostart service && virsh net-start service
-
+# Attach 2nd network interface to VMs
 for i in {0..2}; do virsh attach-interface --domain athena_talos_c$i --type network --source service --model virtio --mac 02:00:aa:0a:01:1$i --config --live; done
 
 for i in {0..2}; do virsh attach-interface --domain  athena_talos_w$i --type network --source service --model virtio --mac 02:00:aa:0a:01:2$i --config --live; done
