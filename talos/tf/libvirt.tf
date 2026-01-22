@@ -16,7 +16,7 @@ resource "libvirt_network" "talos" {
 resource "libvirt_network" "service" {
   name      = var.prefix
   mode      = "nat"
-  domain    = var.cluster_node_domain
+  domain    = var.service_node_domain
   addresses = [var.service_node_network]
   dhcp {
     enabled = false
