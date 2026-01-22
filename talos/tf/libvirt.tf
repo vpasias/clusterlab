@@ -13,7 +13,7 @@ resource "libvirt_network" "talos" {
   }
 }
 
-resource "libvirt_network" "service" {
+resource "libvirt_network1" "service" {
   name      = var.prefix
   mode      = "nat"
   domain    = var.service_node_domain
