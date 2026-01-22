@@ -247,7 +247,7 @@ kubectl run busybox -it --rm --restart=Never --image=busybox:1.36 -- nslookup -t
 
 #cd /mnt/extra && rm -rf /mnt/extra/clusterlab 
 #terraform destroy -auto-approve
-cd /mnt/extra/tf/terraform-libvirt-talos/ && ./do destroy
+cd /mnt/extra/clusterlab/tf/ && ./do destroy
 virsh net-destroy service && virsh net-undefine service && \
 virsh net-destroy athena_talos && virsh net-undefine athena_talos && \
 virsh destroy athena_talos_c0 && \
