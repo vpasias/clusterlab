@@ -34,6 +34,7 @@ locals {
             forwardKubeDNSToHost = true
           }
         }
+      }
       cluster = {
         # disable kubernetes discovery as its no longer compatible with k8s 1.32+.
         # NB we actually disable the discovery altogether, at the other discovery
