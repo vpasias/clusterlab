@@ -13,6 +13,20 @@ resource "libvirt_network" "talos" {
   }
 }
 
+resource "libvirt_network" "service" {
+  name      = var.prefix
+  mode      = "nat"
+  domain    = var.cluster_node_domain
+  addresses = [var.service_node_network]
+  dhcp {
+    enabled = false
+  }
+  dns {
+    enabled    = true
+    local_only = false
+  }
+}
+
 # see https://github.com/dmacvicar/terraform-provider-libvirt/blob/v0.8.3/website/docs/r/volume.html.markdown
 resource "libvirt_volume" "controller" {
   count            = var.controller_count
