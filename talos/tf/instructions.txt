@@ -51,6 +51,7 @@ unzip "terraform_1.14.3_linux_amd64.zip" && sudo install terraform /usr/local/bi
 talos_version='1.12.1' && wget https://github.com/siderolabs/talos/releases/download/v$talos_version/talosctl-linux-amd64 && \
 sudo install talosctl-linux-amd64 /usr/local/bin/talosctl && rm talosctl-linux-amd64
 
+#Install kubectl
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && chmod +x kubectl && sudo mv kubectl /usr/local/bin
 
 ###Install the convert plugin
