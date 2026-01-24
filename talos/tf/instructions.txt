@@ -162,8 +162,8 @@ EOF
 
 kubectl apply -k /etc/genestack/kustomize/rook-operator/overlay
 
-sed -i 's/useAllDevices: true/useAllDevices: false/g' /etc/genestack/kustomize/rook-cluster/rook-cluster.yaml && \
-sed -i 's/# deviceFilter: "^vd."/deviceFilter: sdb/g' /etc/genestack/kustomize/rook-cluster/rook-cluster.yaml
+sed -i 's/useAllDevices: true/useAllDevices: false/g' /etc/genestack/kustomize/rook-cluster/base/rook-cluster.yaml && \
+sed -i 's/# deviceFilter: "^vd."/deviceFilter: sdb/g' /etc/genestack/kustomize/rook-cluster/base/rook-cluster.yaml
 
 #Deploy the Rook cluster
 kubectl apply -k /etc/genestack/kustomize/rook-cluster/overlay
