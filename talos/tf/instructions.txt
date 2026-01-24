@@ -91,7 +91,7 @@ chmod +x do && ./do init
 #Show talos information:
 
 export TALOSCONFIG=$PWD/talosconfig.yml && controllers="$(terraform output -raw controllers)" && workers="$(terraform output -raw workers)" && \
-all="$controllers,$workers" && c0="$(echo $controllers | cut -d , -f 1)" && talosctl -n $all version && talosctl -n $all dashboard
+all="$controllers,$workers" && c0="$(echo $controllers | cut -d , -f 1)" && w0="$(echo $workers | cut -d , -f 1)" && talosctl -n $all version && talosctl -n $all dashboard
 
 #Show kubernetes information:
 export KUBECONFIG=$PWD/kubeconfig.yml && kubectl version && kubectl cluster-info && kubectl get nodes -o wide && kubectl get pods -o wide --all-namespaces
