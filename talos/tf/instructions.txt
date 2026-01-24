@@ -80,7 +80,7 @@ curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scrip
 
 #Initialize terraform - Create the infrastructure:
 
-cd /mnt/extra && git clone https://github.com/vpasias/clusterlab.git && cd /mnt/extra/clusterlab/talos/tf && chmod +x do && ./do init && ./do plan-apply
+cd /mnt/extra && git clone https://github.com/vpasias/clusterlab.git && cd /mnt/extra/clusterlab/talos/tf && chmod +x do && ./do init && sleep 5 && ./do plan-apply
 
 #Show talos information:
 
