@@ -122,8 +122,7 @@ kubectl get subnets.kubeovn.io
 ###Deploy the Rook operator
 #https://docs.rackspacecloud.com/storage-ceph-rook-internal/#talos-linux
 
-kubectl apply -k /etc/genestack/kustomize/rook-operator/base
-
+kubectl apply -k /etc/genestack/kustomize/rook-operator/base && sleep 5 && \
 kubectl label node w0 role=storage-node && kubectl label node w1 role=storage-node && kubectl label node w2 role=storage-node
 
 # Configure Rook-Ceph namespace with Talos privileged permissions
