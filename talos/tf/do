@@ -188,7 +188,7 @@ function apply {
   terraform output -raw talosconfig >talosconfig.yml
   terraform output -raw kubeconfig >kubeconfig.yml
   health
-  export-kubernetes-ingress-ca-crt
+#  export-kubernetes-ingress-ca-crt
   info
 }
 
