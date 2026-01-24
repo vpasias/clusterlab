@@ -135,6 +135,26 @@ kubectl apply -k /etc/genestack/kustomize/rook-defaults/base
 #kubectl apply -f blog-post-resource/opentofu-talos-cilium-proxmox-module/v0.1.1/rook-ceph/rbd.yaml
 kubectl get cephfilesystems,storageclass -n rook-ceph && kubectl get cephblockpool,storageclass -n rook-ceph
 
+kubectl taint nodes -l node-role.kubernetes.io/control-plane node-role.kubernetes.io/control-plane:NoSchedule-
+
+kubectl label node w0 role=worker && kubectl label node w1 role=worker && kubectl label node w2 role=worker && \
+kubectl label node w0 node-role.kubernetes.io/worker=worker && kubectl label node w1 node-role.kubernetes.io/worker=worker && \
+kubectl label node w2 node-role.kubernetes.io/worker=worker
+
+# Label the openstack controllers - Label the openstack compute nodes - Label the openstack network nodes - Label the openstack storage nodes - With OVN we need the compute nodes to be "network" nodes as well.
+kubectl label node $(kubectl get nodes | awk '/control-plane/ {print $1}') openstack-control-plane=enabled && \
+kubectl label node $(kubectl get nodes | awk '/worker/ {print $1}') openstack-compute-node=enabled && \
+kubectl label node $(kubectl get nodes | awk '/control-plane/ {print $1}') openstack-network-node=enabled && \
+kubectl label node $(kubectl get nodes | awk '/worker/ {print $1}') openstack-storage-node=enabled && \
+kubectl label node $(kubectl get nodes | awk '/worker/ {print $1}') openstack-network-node=enabled
+
+kubectl get nodes -o wide --show-labels=true
+kubectl get nodes -o json | jq '[.items[] | {"NAME": .metadata.name, "LABELS": .metadata.labels}]'
+
+#Install the Prometheus Stack
+sudo /opt/genestack/bin/install-kube-prometheus-stack.sh
+kubectl -n prometheus get pods -l "release=kube-prometheus-stack"
+
 kubectl -n rook-ceph patch CephCluster rook-ceph  --type=merge -p "{\"spec\": {\"monitoring\": {\"enabled\": true}}}"
 
 #################################################################################################################################
