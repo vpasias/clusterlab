@@ -190,6 +190,7 @@ function apply {
 #  health
 #  export-kubernetes-ingress-ca-crt
   info
+  sleep 120
   ovn
 }
 
