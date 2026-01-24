@@ -40,8 +40,6 @@ virsh list --all && virsh net-list --all && virsh pool-list
 ### Getting the code
 cd /mnt/extra && git clone --recurse-submodules -j4 https://github.com/rackerlabs/genestack /opt/genestack && sudo /opt/genestack/bootstrap.sh
 
-cd /mnt/extra && git clone https://github.com/vpasias/clusterlab.git && cd /mnt/extra/clusterlab/talos/tf
-
 #Install Terraform:
 # see https://github.com/hashicorp/terraform/releases
 # renovate: datasource=github-releases depName=hashicorp/terraform
@@ -82,7 +80,7 @@ curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scrip
 
 #Initialize terraform:
 
-chmod +x do && ./do init
+cd /mnt/extra && git clone https://github.com/vpasias/clusterlab.git && cd /mnt/extra/clusterlab/talos/tf && chmod +x do && ./do init
 
 #Create the infrastructure:
 
