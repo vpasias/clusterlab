@@ -208,7 +208,9 @@ function ovn {
   step 'ovn'
   ###Install Kube OVN
   #https://docs.rackspacecloud.com/k8s-cni-kube-ovn/#prerequisites
-  
+  # Attach 2nd network interface to VMs
+  for i in {0..2}; do virsh attach-interface --domain athena_talos_c$i --type network --source service --model virtio --mac 02:00:aa:0a:01:1$i --config --live; done
+  for i in {0..2}; do virsh attach-interface --domain  athena_talos_w$i --type network --source service --model virtio --mac 02:00:aa:0a:01:2$i --config --live; done
   cat > /etc/genestack/helm-configs/kube-ovn/kube-ovn-helm-overrides.yaml <<EOF
   # This is a YAML-formatted file.
   # Declare variables to be passed into your templates.
