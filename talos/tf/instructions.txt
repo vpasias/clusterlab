@@ -132,52 +132,8 @@ kubectl get pods -o wide --namespace rook-ceph
 kubectl --namespace rook-ceph get cephcluster rook-ceph
 kubectl apply -k /etc/genestack/kustomize/rook-defaults/base
 #kubectl apply -f blog-post-resource/opentofu-talos-cilium-proxmox-module/v0.1.1/rook-ceph/cephfs.yaml
-#kubectl get cephfilesystems,storageclass -n rook-ceph
 #kubectl apply -f blog-post-resource/opentofu-talos-cilium-proxmox-module/v0.1.1/rook-ceph/rbd.yaml
-#kubectl get cephblockpool,storageclass -n rook-ceph
-
-kubectl apply -k /etc/genestack/kustomize/rook-operator/base && sleep 5 && \
-kubectl label node w0 role=storage-node && kubectl label node w1 role=storage-node && kubectl label node w2 role=storage-node
-
-# Configure Rook-Ceph namespace with Talos privileged permissions
-mkdir -p /etc/genestack/kustomize/rook-operator/overlay
-
-cat > /etc/genestack/kustomize/rook-operator/overlay/namespace-talos.yaml <<EOF
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    kubernetes.io/metadata.name: rook-ceph
-    pod-security.kubernetes.io/audit: privileged
-    pod-security.kubernetes.io/audit-version: latest
-    pod-security.kubernetes.io/enforce: privileged
-    pod-security.kubernetes.io/enforce-version: latest
-    pod-security.kubernetes.io/warn: privileged
-    pod-security.kubernetes.io/warn-version: latest
-  name: rook-ceph
-EOF
-
-cat > /etc/genestack/kustomize/rook-operator/overlay/kustomization.yaml <<EOF
-sortOptions:
-  order: fifo
-resources:
-  - namespace-talos.yaml
-EOF
-
-kubectl apply -k /etc/genestack/kustomize/rook-operator/overlay
-
-sed -i 's/# deviceFilter: "^vd."/deviceFilter: sdb/g' /etc/genestack/kustomize/rook-cluster/base/rook-cluster.yaml
-
-#Deploy the Rook cluster
-kubectl apply -k /etc/genestack/kustomize/rook-cluster/overlay
-
-#Validate the cluster is operational
-kubectl --namespace rook-ceph get cephclusters.ceph.rook.io
-
-kubectl --namespace rook-ceph get pods -w
-
-#Create Storage Classes
-kubectl apply -k /etc/genestack/kustomize/rook-defaults/base
+kubectl get cephfilesystems,storageclass -n rook-ceph && kubectl get cephblockpool,storageclass -n rook-ceph
 
 kubectl -n rook-ceph patch CephCluster rook-ceph  --type=merge -p "{\"spec\": {\"monitoring\": {\"enabled\": true}}}"
 
