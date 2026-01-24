@@ -19,11 +19,6 @@ locals {
         #    (which we do not do). instead, its preferred to create a custom
         #    talos image, which is created in the installed state.
         #install = {}
-        sysctls = {
-          net.core.somaxconn   = "65535"
-          net.ipv4.ip_forward  = "1"
-          vm.max_map_count     = "262144"
-        }
         features = {
           # see https://docs.siderolabs.com/kubernetes-guides/advanced-guides/kubeprism
           # see talosctl -n $c0 read /etc/kubernetes/kubeconfig-kubelet | yq .clusters[].cluster.server
@@ -37,6 +32,11 @@ locals {
           hostDNS = {
             enabled              = true
             forwardKubeDNSToHost = true
+          }
+          sysctls = {
+            net.core.somaxconn   = "65535"
+            net.ipv4.ip_forward  = "1"
+            vm.max_map_count     = "262144"
           }
         }
       }
