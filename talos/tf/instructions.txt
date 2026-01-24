@@ -123,15 +123,11 @@ kubectl get subnets.kubeovn.io
 #https://docs.rackspacecloud.com/storage-ceph-rook-internal/#talos-linux
 # https://docs.siderolabs.com/kubernetes-guides/csi/ceph-with-rook
 
-helm repo add rook-release https://charts.rook.io/release
-
-helm install --create-namespace --namespace rook-ceph rook-ceph rook-release/rook-ceph
-
-kubectl label namespace rook-ceph pod-security.kubernetes.io/enforce=privileged
-
-helm install --create-namespace --namespace rook-ceph rook-ceph-cluster --set operatorNamespace=rook-ceph rook-release/rook-ceph-cluster
-
-kubectl --namespace rook-ceph get cephcluster rook-ceph
+#helm repo add rook-release https://charts.rook.io/release
+#helm install --create-namespace --namespace rook-ceph rook-ceph rook-release/rook-ceph
+#kubectl label namespace rook-ceph pod-security.kubernetes.io/enforce=privileged
+#helm install --create-namespace --namespace rook-ceph rook-ceph-cluster --set operatorNamespace=rook-ceph rook-release/rook-ceph-cluster
+#kubectl --namespace rook-ceph get cephcluster rook-ceph
 
 kubectl apply -k /etc/genestack/kustomize/rook-operator/base && sleep 5 && \
 kubectl label node w0 role=storage-node && kubectl label node w1 role=storage-node && kubectl label node w2 role=storage-node
