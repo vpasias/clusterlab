@@ -133,8 +133,7 @@ kubectl get subnets.kubeovn.io
 
 kubectl apply -k /etc/genestack/kustomize/rook-operator/base
 
-kubectl label node athena_talos_w0 role=storage-node && kubectl label node athena_talos_w1 role=storage-node && \
-kubectl label node athena_talos_w2 role=storage-node
+kubectl label node w0 role=storage-node && kubectl label node w1 role=storage-node && kubectl label node w2 role=storage-node
 
 # Configure Rook-Ceph namespace with Talos privileged permissions
 mkdir -p /etc/genestack/kustomize/rook-operator/overlay
