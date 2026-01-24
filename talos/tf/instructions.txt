@@ -137,9 +137,12 @@ kubectl get cephfilesystems,storageclass -n rook-ceph && kubectl get cephblockpo
 
 kubectl taint nodes -l node-role.kubernetes.io/control-plane node-role.kubernetes.io/control-plane:NoSchedule-
 
+kubectl label node c0 role=master && kubectl label node c1 role=master && kubectl label node c2 role=master
 kubectl label node w0 role=worker && kubectl label node w1 role=worker && kubectl label node w2 role=worker && \
-kubectl label node w0 node-role.kubernetes.io/worker=worker && kubectl label node w1 node-role.kubernetes.io/worker=worker && \
-kubectl label node w2 node-role.kubernetes.io/worker=worker
+kubectl label node w0 node-role.kubernetes.io/worker= && kubectl label node w1 node-role.kubernetes.io/worker=  && \
+kubectl label node w2 node-role.kubernetes.io/worker= && \
+kubectl label node c0 node-role.kubernetes.io/control-plane=enabled && kubectl label node c1 node-role.kubernetes.io/control-planer=enabled && \
+kubectl label node c2 node-role.kubernetes.io/control-plane=enabled
 
 # Label the openstack controllers - Label the openstack compute nodes - Label the openstack network nodes - Label the openstack storage nodes - With OVN we need the compute nodes to be "network" nodes as well.
 kubectl label node $(kubectl get nodes | awk '/control-plane/ {print $1}') openstack-control-plane=enabled && \
@@ -152,6 +155,7 @@ kubectl get nodes -o wide --show-labels=true
 kubectl get nodes -o json | jq '[.items[] | {"NAME": .metadata.name, "LABELS": .metadata.labels}]'
 
 #Install the Prometheus Stack
+kubectl label namespace prometheus pod-security.kubernetes.io/enforce=privileged
 sudo /opt/genestack/bin/install-kube-prometheus-stack.sh
 kubectl -n prometheus get pods -l "release=kube-prometheus-stack"
 
