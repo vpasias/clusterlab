@@ -123,11 +123,16 @@ kubectl get subnets.kubeovn.io
 #https://docs.rackspacecloud.com/storage-ceph-rook-internal/#talos-linux
 # https://docs.siderolabs.com/kubernetes-guides/csi/ceph-with-rook
 
-#helm repo add rook-release https://charts.rook.io/release
-#helm install --create-namespace --namespace rook-ceph rook-ceph rook-release/rook-ceph
-#kubectl label namespace rook-ceph pod-security.kubernetes.io/enforce=privileged
-#helm install --create-namespace --namespace rook-ceph rook-ceph-cluster --set operatorNamespace=rook-ceph rook-release/rook-ceph-cluster
-#kubectl --namespace rook-ceph get cephcluster rook-ceph
+helm repo add rook-release https://charts.rook.io/release 
+helm install --create-namespace --namespace rook-ceph rook-ceph rook-release/rook-ceph --version 1.18.8
+kubectl label namespace rook-ceph pod-security.kubernetes.io/enforce=privileged
+git clone https://github.com/egrosdou01/blog-post-resources.git
+kubectl apply -f blog-post-resource/opentofu-talos-cilium-proxmox-module/v0.1.1/rook-ceph/ceph_cluster.yaml
+kubectl --namespace rook-ceph get cephcluster rook-ceph
+kubectl apply -f blog-post-resource/opentofu-talos-cilium-proxmox-module/v0.1.1/rook-ceph/cephfs.yaml
+kubectl get cephfilesystems,storageclass -n rook-ceph
+kubectl apply -f blog-post-resource/opentofu-talos-cilium-proxmox-module/v0.1.1/rook-ceph/rbd.yaml
+kubectl get cephblockpool,storageclass -n rook-ceph
 
 kubectl apply -k /etc/genestack/kustomize/rook-operator/base && sleep 5 && \
 kubectl label node w0 role=storage-node && kubectl label node w1 role=storage-node && kubectl label node w2 role=storage-node
