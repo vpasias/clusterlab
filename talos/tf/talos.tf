@@ -33,11 +33,11 @@ locals {
             enabled              = true
             forwardKubeDNSToHost = true
           }
-          sysctls = {
-            net.core.somaxconn   = "65535"
-            net.ipv4.ip_forward  = "1"
-            vm.max_map_count     = "262144"
-          }
+          #sysctls = {
+          #  net.core.somaxconn   = "65535"
+          #  net.ipv4.ip_forward  = "1"
+          #  vm.max_map_count     = "262144"
+          #}
         }
       }
       cluster = {
