@@ -114,11 +114,8 @@ OVN_DIR: /var/lib/ovn
 DISABLE_MODULES_MANAGEMENT: true
 EOF
 
-kubectl label node -l beta.kubernetes.io/os=linux kubernetes.io/os=linux && \
-kubectl label node -l node-role.kubernetes.io/control-plane kube-ovn/role=master && \
-kubectl label node -l ovn.kubernetes.io/ovs_dp_type!=userspace ovn.kubernetes.io/ovs_dp_type=kernel
-
-sudo /opt/genestack/bin/install-kube-ovn.sh
+kubectl label node -l beta.kubernetes.io/os=linux kubernetes.io/os=linux && kubectl label node -l node-role.kubernetes.io/control-plane kube-ovn/role=master && \
+kubectl label node -l ovn.kubernetes.io/ovs_dp_type!=userspace ovn.kubernetes.io/ovs_dp_type=kernel && sleep 5 && sudo /opt/genestack/bin/install-kube-ovn.sh
 
 kubectl get subnets.kubeovn.io
 
