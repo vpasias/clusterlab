@@ -121,6 +121,17 @@ kubectl get subnets.kubeovn.io
 
 ###Deploy the Rook operator
 #https://docs.rackspacecloud.com/storage-ceph-rook-internal/#talos-linux
+# https://docs.siderolabs.com/kubernetes-guides/csi/ceph-with-rook
+
+helm repo add rook-release https://charts.rook.io/release
+
+helm install --create-namespace --namespace rook-ceph rook-ceph rook-release/rook-ceph
+
+kubectl label namespace rook-ceph pod-security.kubernetes.io/enforce=privileged
+
+helm install --create-namespace --namespace rook-ceph rook-ceph-cluster --set operatorNamespace=rook-ceph rook-release/rook-ceph-cluster
+
+kubectl --namespace rook-ceph get cephcluster rook-ceph
 
 kubectl apply -k /etc/genestack/kustomize/rook-operator/base && sleep 5 && \
 kubectl label node w0 role=storage-node && kubectl label node w1 role=storage-node && kubectl label node w2 role=storage-node
@@ -152,7 +163,6 @@ EOF
 
 kubectl apply -k /etc/genestack/kustomize/rook-operator/overlay
 
-sed -i 's/useAllDevices: true/useAllDevices: false/g' /etc/genestack/kustomize/rook-cluster/base/rook-cluster.yaml && \
 sed -i 's/# deviceFilter: "^vd."/deviceFilter: sdb/g' /etc/genestack/kustomize/rook-cluster/base/rook-cluster.yaml
 
 #Deploy the Rook cluster
