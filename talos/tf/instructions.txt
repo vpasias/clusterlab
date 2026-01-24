@@ -121,7 +121,8 @@ kubectl get subnets.kubeovn.io
 
 ###Deploy the Rook operator
 #https://docs.rackspacecloud.com/storage-ceph-rook-internal/#talos-linux
-# https://docs.siderolabs.com/kubernetes-guides/csi/ceph-with-rook
+#https://docs.siderolabs.com/kubernetes-guides/csi/ceph-with-rook
+#https://blog.grosdouli.dev/blog/talos-on-proxmox-opentofu-part-6
 
 helm repo add rook-release https://charts.rook.io/release 
 helm install --create-namespace --namespace rook-ceph rook-ceph rook-release/rook-ceph --version 1.18.8
