@@ -67,34 +67,6 @@ locals {
         }
       }
     },
-    // see https://docs.siderolabs.com/talos/v1.12/reference/configuration/network/statichostconfig
-    // see talosctl -n $c0 read /etc/hosts
-    {
-      apiVersion = "v1alpha1"
-      kind       = "StaticHostConfig"
-      name       = local.zot_cluster_ip
-      hostnames = [
-        local.zot_cluster_domain,
-      ]
-    },
-    // see https://docs.siderolabs.com/talos/v1.12/reference/configuration/cri/registryauthconfig
-    // see talosctl -n $c0 read /etc/cri/conf.d/cri.toml
-    {
-      apiVersion = "v1alpha1"
-      kind       = "RegistryAuthConfig"
-      name       = local.zot_cluster_host
-      username   = "talos"
-      password   = "talos"
-    },
-    // see https://docs.siderolabs.com/talos/v1.12/reference/configuration/cri/registrymirrorconfig
-    // see talosctl -n $c0 read /etc/cri/conf.d/hosts/zot.zot.svc.cluster.local_5000_/hosts.toml
-    {
-      apiVersion   = "v1alpha1"
-      kind         = "RegistryMirrorConfig"
-      name         = local.zot_cluster_host
-      endpoints    = [{ url = local.zot_cluster_url }]
-      skipFallback = false
-    },
   ]
 }
 
@@ -155,10 +127,6 @@ data "talos_machine_configuration" "controller" {
             {
               name     = "reloader"
               contents = data.helm_template.reloader.manifest
-            },
-            {
-              name     = "zot"
-              contents = local.zot_manifest
             },
             {
               name = "argocd"
