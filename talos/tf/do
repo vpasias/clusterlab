@@ -207,16 +207,6 @@ function info {
   local controllers="$(terraform output -raw controllers)"
   local workers="$(terraform output -raw workers)"
   local nodes=($(echo "$controllers,$workers" | tr ',' ' '))
-  step 'talos node installer image'
-  for n in "${nodes[@]}"; do
-    # NB there can be multiple machineconfigs in a machine. we only want to see
-    #    the ones with an id that looks like a version tag.
-    # NB machineconfigs.spec is a multi-document yaml.
-    talosctl -n $n get machineconfigs -o json \
-      | jq -r 'select(.metadata.id | test("v\\d+")) | .spec' \
-      | yq -r '.machine.install.image | select(.)' \
-      | sed -E "s,(.+),$n: \1,g"
-  done
   step 'talos node os-release'
   for n in "${nodes[@]}"; do
     talosctl -n $n read /etc/os-release \
