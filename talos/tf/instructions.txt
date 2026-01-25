@@ -133,6 +133,7 @@ kubectl -n prometheus get pods -l "release=kube-prometheus-stack"
 
 #helm list -n prometheus
 #helm uninstall kube-prometheus-stack -n prometheus
+#kubectl delete replicasets,subscriptions,deployments,jobs,services,pods --all -n prometheus
 
 kubectl -n rook-ceph patch CephCluster rook-ceph  --type=merge -p "{\"spec\": {\"monitoring\": {\"enabled\": true}}}"
 
