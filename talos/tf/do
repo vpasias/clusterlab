@@ -236,10 +236,10 @@ function rook-ceph {
   kubectl label node w2 role=storage-node
   kubectl label namespace rook-ceph pod-security.kubernetes.io/enforce=privileged
   kubectl apply -f /mnt/extra/clusterlab/talos/tf/ceph_cluster.yaml
-  sleep 600
+  sleep 900
   kubectl get pods -o wide --namespace rook-ceph
   kubectl --namespace rook-ceph get cephcluster rook-ceph
-  sleep 1200
+  sleep 600
   kubectl apply -k /etc/genestack/kustomize/rook-defaults/base
   sleep 30
   kubectl get cephfilesystems,storageclass -n rook-ceph
