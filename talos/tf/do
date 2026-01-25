@@ -230,7 +230,7 @@ function rook-ceph {
   #https://blog.grosdouli.dev/blog/talos-on-proxmox-opentofu-part-6
   helm repo add rook-release https://charts.rook.io/release 
   helm install --create-namespace --namespace rook-ceph rook-ceph rook-release/rook-ceph --version 1.18.8
-  sleep 120
+  sleep 180
   kubectl label node w0 role=storage-node
   kubectl label node w1 role=storage-node
   kubectl label node w2 role=storage-node
