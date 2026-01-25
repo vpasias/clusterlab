@@ -141,6 +141,82 @@ kubectl -n rook-ceph patch CephCluster rook-ceph  --type=merge -p "{\"spec\": {\
 #sudo /opt/genestack/bin/setup-openstack.sh
 #sudo /opt/genestack/bin/setup-openstack-rc.sh
 
+kubectl label node -l beta.kubernetes.io/os=linux kubernetes.io/os=linux
+kubectl label node -l node-role.kubernetes.io/control-plane kube-ovn/role=master
+kubectl label node -l ovn.kubernetes.io/ovs_dp_type!=userspace ovn.kubernetes.io/ovs_dp_type=kernel
+kubectl label node -l node-role.kubernetes.io/control-plane longhorn.io/storage-node=enabled
+kubectl label node --all node.kubernetes.io/exclude-from-external-load-balancers-
+
+kubectl annotate nodes -l openstack-compute-node=enabled -l openstack-network-node=enabled ovn.openstack.org/int_bridge='br-int'
+kubectl annotate nodes -l openstack-compute-node=enabled -l openstack-network-node=enabled ovn.openstack.org/bridges='br-ex'
+kubectl annotate nodes -l openstack-compute-node=enabled -l openstack-network-node=enabled ovn.openstack.org/ports="br-ex:eth1"
+kubectl annotate nodes -l openstack-compute-node=enabled -l openstack-network-node=enabled ovn.openstack.org/mappings='physnet1:br-ex'
+kubectl annotate nodes -l openstack-compute-node=enabled -l openstack-network-node=enabled ovn.openstack.org/availability_zones='az1'
+kubectl annotate nodes -l openstack-network-node=enabled ovn.openstack.org/gateway='enabled'
+
+# Deploy metallb
+kubectl apply -f /etc/genestack/manifests/metallb/metallb-namespace.yaml
+/opt/genestack/bin/install-metallb.sh
+echo "Waiting for the metallb-controller to be available"
+kubectl -n metallb-system wait --timeout=5m deployments.apps/metallb-controller --for=condition=available
+kubectl apply -f /etc/genestack/manifests/metallb/metallb-openstack-service-lb.yml
+
+# Deploy openstack
+kubectl apply -k /etc/genestack/kustomize/openstack/base
+
+# Deploy envoy
+/opt/genestack/bin/install-envoy-gateway.sh
+echo "Waiting for the envoyproxy-gateway to be available"
+kubectl -n envoyproxy-gateway-system wait --timeout=5m deployments.apps/envoy-gateway --for=condition=available
+/opt/genestack/bin/setup-envoy-gateway.sh -e "" -d openstack.local
+
+# Run a rollout for cert-manager
+echo "Waiting for the cert-manager to be available"
+kubectl -n cert-manager wait --timeout=5m deployments.apps cert-manager --for=condition=available
+
+# Deploy the Genestack secrets
+/opt/genestack/bin/create-secrets.sh
+if ! kubectl create -f /etc/genestack/kubesecrets.yaml; then
+  echo "Secrets already created"
+fi
+
+/opt/genestack/bin/create-skyline-secrets.sh
+if ! kubectl create -f /etc/genestack/skylinesecrets.yaml; then
+  echo "Skyline secrets already created"
+fi
+
+# Deploy mariadb
+/opt/genestack/bin/install-mariadb-operator.sh
+echo "Waiting for the mariadb-operator-webhook to be available"
+if ! kubectl -n mariadb-system wait --timeout=1m deployments.apps mariadb-operator-webhook --for=condition=available; then
+  echo "Recycling the mariadb-operator pods because sometimes they're stupid"
+  kubectl -n mariadb-system get pods -o name | xargs kubectl -n mariadb-system delete
+  kubectl -n mariadb-system wait --timeout=5m deployments.apps mariadb-operator-webhook --for=condition=available
+fi
+
+kubectl -n openstack apply -k /etc/genestack/kustomize/mariadb-cluster/overlay
+
+# Deploy rabbitmq
+kubectl apply -k /etc/genestack/kustomize/rabbitmq-operator/base
+kubectl apply -k /etc/genestack/kustomize/rabbitmq-topology-operator/base
+echo "Waiting for the rabbitmq-cluster-operator to be available"
+kubectl -n rabbitmq-system wait --timeout=5m deployments.apps rabbitmq-cluster-operator --for=condition=available
+kubectl apply -k /etc/genestack/kustomize/rabbitmq-cluster/overlay
+
+# Deploy ovn
+kubectl apply -k /etc/genestack/kustomize/ovn/base
+
+# Deploy memcached
+/opt/genestack/bin/install-memcached.sh
+
+# Deploy libvirt
+/opt/genestack/bin/install-libvirt.sh
+
+# Deploy Redis operator and replication cluster
+/opt/genestack/bin/install-redis-operator.sh
+
+# Deploy Redis Sentinel
+/opt/genestack/bin/install-redis-sentinel.sh
 #################################################################################################################################
 ### Troubleshoot ###
 #################################################################################################################################
