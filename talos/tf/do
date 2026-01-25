@@ -189,7 +189,7 @@ function apply {
   terraform output -raw kubeconfig >kubeconfig.yml
 #  health
 #  export-kubernetes-ingress-ca-crt
-  sleep 120
+  sleep 240
   info
 }
 
