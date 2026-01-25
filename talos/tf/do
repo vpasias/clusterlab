@@ -211,22 +211,7 @@ function ovn {
   # Attach 2nd network interface to VMs
   for i in {0..2}; do virsh attach-interface --domain athena_talos_c$i --type network --source service --model virtio --mac 02:00:aa:0a:01:1$i --config --live; done
   for i in {0..2}; do virsh attach-interface --domain  athena_talos_w$i --type network --source service --model virtio --mac 02:00:aa:0a:01:2$i --config --live; done
-  cat > /etc/genestack/helm-configs/kube-ovn/kube-ovn-helm-overrides.yaml <<EOF
-  # This is a YAML-formatted file.
-  # Declare variables to be passed into your templates.
-  ---
-  global:
-    registry:
-      address: docker.io/kubeovn
-      imagePullSecrets: []
-  networking:
-    IFACE: eth0
-    vlan:
-      VLAN_INTERFACE_NAME: eth0
-  OPENVSWITCH_DIR: /var/lib/openvswitch
-  OVN_DIR: /var/lib/ovn
-  DISABLE_MODULES_MANAGEMENT: true
-  EOF
+  cp /mnt/extra/clusterlab/talos/tf/kube-ovn-helm-overrides.yaml /etc/genestack/helm-configs/kube-ovn/kube-ovn-helm-overrides.yam
   kubectl label node -l beta.kubernetes.io/os=linux kubernetes.io/os=linux
   kubectl label node -l node-role.kubernetes.io/control-plane kube-ovn/role=master
   kubectl label node -l ovn.kubernetes.io/ovs_dp_type!=userspace ovn.kubernetes.io/ovs_dp_type=kernel 
