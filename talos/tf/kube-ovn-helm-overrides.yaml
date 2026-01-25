@@ -1,0 +1,14 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+---
+global:
+  registry:
+    address: docker.io/kubeovn
+    imagePullSecrets: []
+networking:
+  IFACE: eth0
+  vlan:
+    VLAN_INTERFACE_NAME: eth0
+OPENVSWITCH_DIR: /var/lib/openvswitch
+OVN_DIR: /var/lib/ovn
+DISABLE_MODULES_MANAGEMENT: true
