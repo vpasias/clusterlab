@@ -126,8 +126,9 @@ kubectl get nodes -o wide --show-labels=true
 kubectl get nodes -o json | jq '[.items[] | {"NAME": .metadata.name, "LABELS": .metadata.labels}]'
 
 #Install the Prometheus Stack
-sudo /opt/genestack/bin/install-kube-prometheus-stack.sh && \
-kubectl label namespace prometheus pod-security.kubernetes.io/enforce=privileged && \
+#https://docs.rackspacecloud.com/prometheus/
+./do prometheus
+
 kubectl -n prometheus get pods -l "release=kube-prometheus-stack"
 
 kubectl -n rook-ceph patch CephCluster rook-ceph  --type=merge -p "{\"spec\": {\"monitoring\": {\"enabled\": true}}}"
