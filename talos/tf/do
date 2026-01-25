@@ -226,13 +226,15 @@ function rook-ceph {
   #https://blog.grosdouli.dev/blog/talos-on-proxmox-opentofu-part-6
   helm repo add rook-release https://charts.rook.io/release 
   helm install --create-namespace --namespace rook-ceph rook-ceph rook-release/rook-ceph --version 1.18.8
-  sleep 30
+  sleep 60
   kubectl label namespace rook-ceph pod-security.kubernetes.io/enforce=privileged
   kubectl apply -f /mnt/extra/clusterlab/talos/tf/ceph_cluster.yaml
   sleep 300
   kubectl get pods -o wide --namespace rook-ceph
   kubectl --namespace rook-ceph get cephcluster rook-ceph
+  sleep 600
   kubectl apply -k /etc/genestack/kustomize/rook-defaults/base
+  sleep 30
   kubectl get cephfilesystems,storageclass -n rook-ceph
   kubectl get cephblockpool,storageclass -n rook-ceph
 }
