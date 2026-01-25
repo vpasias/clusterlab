@@ -137,6 +137,10 @@ kubectl -n prometheus get pods -l "release=kube-prometheus-stack"
 
 kubectl -n rook-ceph patch CephCluster rook-ceph  --type=merge -p "{\"spec\": {\"monitoring\": {\"enabled\": true}}}"
 
+#sudo /opt/genestack/bin/setup-infrastructure.sh
+#sudo /opt/genestack/bin/setup-openstack.sh
+#sudo /opt/genestack/bin/setup-openstack-rc.sh
+
 #################################################################################################################################
 ### Troubleshoot ###
 #################################################################################################################################
