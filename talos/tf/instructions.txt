@@ -128,6 +128,21 @@ kubectl get nodes -o json | jq '[.items[] | {"NAME": .metadata.name, "LABELS": .
 
 #Install the Prometheus Stack
 #https://docs.rackspacecloud.com/prometheus/
+cat <<EOF | kubectl create -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    kubernetes.io/metadata.name: prometheus
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/audit-version: latest
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/enforce-version: latest
+    pod-security.kubernetes.io/warn: privileged
+    pod-security.kubernetes.io/warn-version: latest
+  name: prometheus
+EOF
+
 ./do prometheus
 
 kubectl -n prometheus get pods -l "release=kube-prometheus-stack"
@@ -135,6 +150,7 @@ kubectl -n prometheus get pods -l "release=kube-prometheus-stack"
 #helm list -n prometheus
 #helm uninstall kube-prometheus-stack -n prometheus
 #kubectl delete replicasets,deployments,jobs,services,pods --all -n prometheus
+#kubectl delete namespace prometheus
 
 kubectl -n rook-ceph patch CephCluster rook-ceph  --type=merge -p "{\"spec\": {\"monitoring\": {\"enabled\": true}}}"
 
@@ -146,18 +162,16 @@ kubectl label node -l node-role.kubernetes.io/control-plane kube-ovn/role=master
 kubectl label node -l ovn.kubernetes.io/ovs_dp_type!=userspace ovn.kubernetes.io/ovs_dp_type=kernel
 kubectl label node --all node.kubernetes.io/exclude-from-external-load-balancers-
 
-kubectl annotate nodes -l openstack-compute-node=enabled -l openstack-network-node=enabled ovn.openstack.org/int_bridge='br-int'
-kubectl annotate nodes -l openstack-compute-node=enabled -l openstack-network-node=enabled ovn.openstack.org/bridges='br-ex'
-kubectl annotate nodes -l openstack-compute-node=enabled -l openstack-network-node=enabled ovn.openstack.org/ports="br-ex:eth1"
-kubectl annotate nodes -l openstack-compute-node=enabled -l openstack-network-node=enabled ovn.openstack.org/mappings='physnet1:br-ex'
-kubectl annotate nodes -l openstack-compute-node=enabled -l openstack-network-node=enabled ovn.openstack.org/availability_zones='az1'
+kubectl annotate nodes -l openstack-compute-node=enabled -l openstack-network-node=enabled ovn.openstack.org/int_bridge='br-int' && \
+kubectl annotate nodes -l openstack-compute-node=enabled -l openstack-network-node=enabled ovn.openstack.org/bridges='br-ex' && \
+kubectl annotate nodes -l openstack-compute-node=enabled -l openstack-network-node=enabled ovn.openstack.org/ports="br-ex:eth1" && \
+kubectl annotate nodes -l openstack-compute-node=enabled -l openstack-network-node=enabled ovn.openstack.org/mappings='physnet1:br-ex' && \
+kubectl annotate nodes -l openstack-compute-node=enabled -l openstack-network-node=enabled ovn.openstack.org/availability_zones='az1' && \
 kubectl annotate nodes -l openstack-network-node=enabled ovn.openstack.org/gateway='enabled'
 
 # Deploy metallb
 kubectl apply -f /etc/genestack/manifests/metallb/metallb-namespace.yaml
 /opt/genestack/bin/install-metallb.sh
-echo "Waiting for the metallb-controller to be available"
-kubectl -n metallb-system wait --timeout=5m deployments.apps/metallb-controller --for=condition=available
 kubectl apply -f /etc/genestack/manifests/metallb/metallb-openstack-service-lb.yml
 
 # Deploy openstack
