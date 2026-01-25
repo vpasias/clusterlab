@@ -114,6 +114,8 @@ kubectl taint nodes -l node-role.kubernetes.io/control-plane node-role.kubernete
 kubectl label node c0 role=master && kubectl label node c1 role=master && kubectl label node c2 role=master
 kubectl label node w0 node-role.kubernetes.io/worker=enabled && kubectl label node w1 node-role.kubernetes.io/worker=enabled  && \
 kubectl label node w2 node-role.kubernetes.io/worker=enabled
+kubectl label node c0 node-role.kubernetes.io/control-plane=enabled --overwrite && kubectl label node c1 node-role.kubernetes.io/control-plane=enabled --overwrite && \
+kubectl label node c2 node-role.kubernetes.io/control-plane=enabled --overwrite
 
 # Label the openstack controllers - Label the openstack compute nodes - Label the openstack network nodes - Label the openstack storage nodes - With OVN we need the compute nodes to be "network" nodes as well.
 kubectl label node $(kubectl get nodes | awk '/control-plane/ {print $1}') openstack-control-plane=enabled && \
