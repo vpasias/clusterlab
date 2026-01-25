@@ -216,6 +216,10 @@ function ovn {
   kubectl label node -l node-role.kubernetes.io/control-plane kube-ovn/role=master
   kubectl label node -l ovn.kubernetes.io/ovs_dp_type!=userspace ovn.kubernetes.io/ovs_dp_type=kernel 
   sudo /opt/genestack/bin/install-kube-ovn.sh
+  sleep 120
+  kubectl get nodes -o wide
+  sleep 5
+  kubectl get pods -o wide --all-namespaces
 }
 
 function rook-ceph {
