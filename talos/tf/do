@@ -250,9 +250,9 @@ function prometheus {
   step 'prometheus'
   ###Deploy Prometheus
   #https://docs.rackspacecloud.com/prometheus/
-  sudo /opt/genestack/bin/install-kube-prometheus-stack.sh
-  sleep 5
+  kubectl create namespace prometheus
   kubectl label namespace prometheus pod-security.kubernetes.io/enforce=privileged
+  sudo /opt/genestack/bin/install-kube-prometheus-stack.sh
   sleep 180
   kubectl -n prometheus get pods -l "release=kube-prometheus-stack"
 }
