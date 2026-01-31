@@ -114,7 +114,7 @@ variable "worker_count" {
 
 variable "talos_libvirt_base_volume_name" {
   type    = string
-  default = "talos-1.12.1.qcow2"
+  default = "talos-1.12.2.qcow2"
   validation {
     condition     = can(regex(".+\\.qcow2+$", var.talos_libvirt_base_volume_name))
     error_message = "Must be a name with a .qcow2 extension."
