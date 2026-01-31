@@ -63,7 +63,7 @@ function update-talos-extensions {
 function build_talos_image__imager {
   # see https://docs.siderolabs.com/talos/v1.12/platform-specific-installations/boot-assets
   # see https://docs.siderolabs.com/talos/v1.12/platform-specific-installations/bare-metal-platforms/network-config
-  # see Profile type at https://github.com/siderolabs/talos/blob/v1.12.1/pkg/imager/profile/profile.go#L24-L47
+  # see Profile type at https://github.com/siderolabs/talos/blob/v1.12.2/pkg/imager/profile/profile.go#L24-L47
   local talos_version_tag="v$talos_version"
   rm -rf tmp/talos
   mkdir -p tmp/talos
