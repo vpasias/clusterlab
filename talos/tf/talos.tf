@@ -68,7 +68,8 @@ locals {
           }
         }
         proxy = {
-          disabled = false
+          disabled = true
+//          disabled = false
         }
       }
     },
