@@ -53,6 +53,13 @@ resource "libvirt_volume" "worker_data0" {
   size   = 100 * 1024 * 1024 * 1024 # 100GiB.
 }
 
+resource "libvirt_volume" "controller_data0" {
+  count  = var.controller_count
+  name   = "${var.prefix}_c${count.index}d0.img"
+  format = "qcow2"
+  size   = 100 * 1024 * 1024 * 1024 # 100GiB.
+}
+
 # see https://github.com/dmacvicar/terraform-provider-libvirt/blob/v0.8.3/website/docs/r/domain.html.markdown
 resource "libvirt_domain" "controller" {
   count      = var.controller_count
@@ -71,6 +78,11 @@ resource "libvirt_domain" "controller" {
   disk {
     volume_id = libvirt_volume.controller[count.index].id
     scsi      = true
+  }
+  disk {
+    volume_id = libvirt_volume.controller_data0[count.index].id
+    scsi      = true
+    wwn       = format("000000000000ab%02x", count.index)
   }
   network_interface {
     network_id     = libvirt_network.talos.id
