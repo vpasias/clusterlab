@@ -105,7 +105,7 @@ variable "controller_count" {
 
 variable "worker_count" {
   type    = number
-  default = 3
+  default = 4
   validation {
     condition     = var.worker_count >= 1
     error_message = "Must be 1 or more."
