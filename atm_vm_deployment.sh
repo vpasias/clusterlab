@@ -233,23 +233,30 @@ EOF'
 
 done
 
+ssh_ctl "1" -t -- "sudo sed -i 's/127.0.1.1       ctl1    ctl1/127.0.1.1       ctl1.cloud.atmosphere.dev    ctl1.cloud.atmosphere.dev/' /etc/hosts"
+ssh_ctl "2" -t -- "sudo sed -i 's/127.0.1.1       ctl2    ctl2/127.0.1.1       ctl2.cloud.atmosphere.dev    ctl2.cloud.atmosphere.dev/' /etc/hosts"
+ssh_ctl "3" -t -- "sudo sed -i 's/127.0.1.1       ctl3    ctl3/127.0.1.1       ctl3.cloud.atmosphere.dev    ctl3.cloud.atmosphere.dev/' /etc/hosts"
+ssh_ceph "1" -t -- "sudo sed -i 's/127.0.1.1       ceph1    ceph1/127.0.1.1       ceph1.cloud.atmosphere.dev    ceph1.cloud.atmosphere.dev/' /etc/hosts"
+ssh_ceph "2" -t -- "sudo sed -i 's/127.0.1.1       ceph2    ceph2/127.0.1.1       ceph2.cloud.atmosphere.dev    ceph2.cloud.atmosphere.dev/' /etc/hosts"
+ssh_ceph "3" -t -- "sudo sed -i 's/127.0.1.1       ceph3    ceph3/127.0.1.1       ceph3.cloud.atmosphere.dev    ceph3.cloud.atmosphere.dev/' /etc/hosts"
+ssh_kvm "1" -t -- "sudo sed -i 's/127.0.1.1       kvm1    kvm1/127.0.1.1       kvm1.cloud.atmosphere.dev    kvm1.cloud.atmosphere.dev/' /etc/hosts"
+ssh_kvm "2" -t -- "sudo sed -i 's/127.0.1.1       kvm2    kvm2/127.0.1.1       kvm2.cloud.atmosphere.dev    kvm2.cloud.atmosphere.dev/' /etc/hosts"
+ssh_kvm "3" -t -- "sudo sed -i 's/127.0.1.1       kvm3    kvm3/127.0.1.1       kvm3.cloud.atmosphere.dev    kvm3.cloud.atmosphere.dev/' /etc/hosts"
+
 for i in {1..3}; do
 
-    ssh_ctl "${i}" -t -- sudo hostnamectl set-hostname ctl${i}.cloud.atmosphere.dev
     ssh_ctl "${i}" -t -- sudo reboot
 
 done
 
 for i in {1..3}; do
 
-    ssh_ceph "${i}" -t -- sudo hostnamectl set-hostname ceph${i}.cloud.atmosphere.dev
     ssh_ceph "${i}" -t -- sudo reboot
 
 done
 
 for i in {1..3}; do
 
-    ssh_kvm "${i}" -t -- sudo hostnamectl set-hostname kvm${i}.cloud.atmosphere.dev
     ssh_kvm "${i}" -t -- sudo reboot
 
 done
