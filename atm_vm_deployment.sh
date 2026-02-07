@@ -235,18 +235,21 @@ done
 
 for i in {1..3}; do
 
+    ssh_ctl "${i}" -t -- sudo hostnamectl set-hostname ctl${i}.cloud.atmosphere.dev
     ssh_ctl "${i}" -t -- sudo reboot
 
 done
 
 for i in {1..3}; do
 
+    ssh_ceph "${i}" -t -- sudo hostnamectl set-hostname ceph${i}.cloud.atmosphere.dev
     ssh_ceph "${i}" -t -- sudo reboot
 
 done
 
 for i in {1..3}; do
 
+    ssh_kvm "${i}" -t -- sudo hostnamectl set-hostname kvm${i}.cloud.atmosphere.dev
     ssh_kvm "${i}" -t -- sudo reboot
 
 done
