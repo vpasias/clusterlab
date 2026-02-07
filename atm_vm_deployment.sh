@@ -34,7 +34,7 @@ for i in {1..3}; do
         --unsafe-caching \
         --network-config /dev/stdin \
         --no-start \
-        "ctl${i}" \
+        "ctl${i}.cloud.atmosphere.dev" \
         release=jammy
 network:
   version: 2
@@ -66,7 +66,7 @@ for i in {1..3}; do
         --unsafe-caching \
         --network-config /dev/stdin \
         --no-start \
-        "ceph${i}" \
+        "ceph${i}.cloud.atmosphere.dev" \
         release=jammy
 network:
   version: 2
@@ -98,7 +98,7 @@ for i in {1..3}; do
         --unsafe-caching \
         --network-config /dev/stdin \
         --no-start \
-        "kvm${i}" \
+        "kvm${i}.cloud.atmosphere.dev" \
         release=jammy
 network:
   version: 2
@@ -119,27 +119,27 @@ EOF
 done
 
 for i in {1..3}; do
-    virsh detach-interface "ctl${i}" network --config
+    virsh detach-interface "ctl${i}.cloud.atmosphere.dev" network --config
     
-    virsh attach-interface "ctl${i}" network virbr-mgt --model virtio --config
+    virsh attach-interface "ctl${i}.cloud.atmosphere.dev" network virbr-mgt --model virtio --config
 
-    virsh start "ctl${i}"
+    virsh start "ctl${i}.cloud.atmosphere.dev"
 done
 
 for i in {1..3}; do
-    virsh detach-interface "ceph${i}" network --config
+    virsh detach-interface "ceph${i}.cloud.atmosphere.dev" network --config
     
-    virsh attach-interface "ceph${i}" network virbr-mgt --model virtio --config   
+    virsh attach-interface "ceph${i}.cloud.atmosphere.dev" network virbr-mgt --model virtio --config   
     
-    virsh start "ceph${i}"
+    virsh start "ceph${i}.cloud.atmosphere.dev"
 done
 
 for i in {1..3}; do
-    virsh detach-interface "kvm${i}" network --config
+    virsh detach-interface "kvm${i}.cloud.atmosphere.dev" network --config
     
-    virsh attach-interface "kvm${i}" network virbr-mgt --model virtio --config    
+    virsh attach-interface "kvm${i}.cloud.atmosphere.dev" network virbr-mgt --model virtio --config    
 
-    virsh start "kvm${i}"
+    virsh start "kvm${i}.cloud.atmosphere.dev"
 done
 
 
@@ -232,16 +232,6 @@ ssh_kvm "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
 EOF'
 
 done
-
-ssh_ctl "1" -t -- "sudo sed -i 's/127.0.1.1       ctl1    ctl1/127.0.1.1       ctl1.cloud.atmosphere.dev    ctl1.cloud.atmosphere.dev/' /etc/hosts"
-ssh_ctl "2" -t -- "sudo sed -i 's/127.0.1.1       ctl2    ctl2/127.0.1.1       ctl2.cloud.atmosphere.dev    ctl2.cloud.atmosphere.dev/' /etc/hosts"
-ssh_ctl "3" -t -- "sudo sed -i 's/127.0.1.1       ctl3    ctl3/127.0.1.1       ctl3.cloud.atmosphere.dev    ctl3.cloud.atmosphere.dev/' /etc/hosts"
-ssh_ceph "1" -t -- "sudo sed -i 's/127.0.1.1       ceph1    ceph1/127.0.1.1       ceph1.cloud.atmosphere.dev    ceph1.cloud.atmosphere.dev/' /etc/hosts"
-ssh_ceph "2" -t -- "sudo sed -i 's/127.0.1.1       ceph2    ceph2/127.0.1.1       ceph2.cloud.atmosphere.dev    ceph2.cloud.atmosphere.dev/' /etc/hosts"
-ssh_ceph "3" -t -- "sudo sed -i 's/127.0.1.1       ceph3    ceph3/127.0.1.1       ceph3.cloud.atmosphere.dev    ceph3.cloud.atmosphere.dev/' /etc/hosts"
-ssh_kvm "1" -t -- "sudo sed -i 's/127.0.1.1       kvm1    kvm1/127.0.1.1       kvm1.cloud.atmosphere.dev    kvm1.cloud.atmosphere.dev/' /etc/hosts"
-ssh_kvm "2" -t -- "sudo sed -i 's/127.0.1.1       kvm2    kvm2/127.0.1.1       kvm2.cloud.atmosphere.dev    kvm2.cloud.atmosphere.dev/' /etc/hosts"
-ssh_kvm "3" -t -- "sudo sed -i 's/127.0.1.1       kvm3    kvm3/127.0.1.1       kvm3.cloud.atmosphere.dev    kvm3.cloud.atmosphere.dev/' /etc/hosts"
 
 for i in {1..3}; do
 
