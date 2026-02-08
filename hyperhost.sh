@@ -42,7 +42,7 @@ for i in {1..1}; do
         --cpu 60 \
         --host-passthrough \
         --memory 368640 \
-        --disk 500 \
+        --disk 1000 \
         --ephemeral-disk 500 \
         --unsafe-caching \
         --network-config /dev/stdin \
