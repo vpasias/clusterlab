@@ -79,7 +79,7 @@ for i in {1..1}; do
     virsh attach-interface "node-${i}.cloud.atmosphere.dev" network virbr-ser \
         --model virtio --config
 
-    virsh start "node-${i}.localdomain"
+    virsh start "node-${i}.cloud.atmosphere.dev"
 done
 
 sleep 60
