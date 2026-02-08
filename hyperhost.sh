@@ -72,11 +72,11 @@ EOF
 done
 
 for i in {1..1}; do
-    virsh detach-interface "node-${i}.localdomain" network --config
+    virsh detach-interface "node-${i}.cloud.atmosphere.dev" network --config
 
-    virsh attach-interface "node-${i}.localdomain" network virbr-mgt \
+    virsh attach-interface "node-${i}.cloud.atmosphere.dev" network virbr-mgt \
         --model virtio --config
-    virsh attach-interface "node-${i}.localdomain" network virbr-ser \
+    virsh attach-interface "node-${i}.cloud.atmosphere.dev" network virbr-ser \
         --model virtio --config
 
     virsh start "node-${i}.localdomain"
