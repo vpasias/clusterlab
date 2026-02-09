@@ -229,6 +229,28 @@ ssh_kvm "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.31 kvm1 kvm1.cloud.atmosphere.dev
 10.0.123.32 kvm2 kvm2.cloud.atmosphere.dev
 10.0.123.33 kvm3 kvm3.cloud.atmosphere.dev
+10.0.123.250 keycloak.cloud.atmosphere.dev
+10.0.123.250 prometheus.cloud.atmosphere.dev
+10.0.123.250 alertmanager.cloud.atmosphere.dev
+10.0.123.250 grafana.cloud.atmosphere.dev
+10.0.123.250 key-manager.cloud.atmosphere.dev
+10.0.123.250 volume.cloud.atmosphere.dev
+10.0.123.250 dns.cloud.atmosphere.dev
+10.0.123.250 image.cloud.atmosphere.dev
+10.0.123.250 orchestration.cloud.atmosphere.dev
+10.0.123.250 cloudformation.cloud.atmosphere.dev
+10.0.123.250 dashboard.cloud.atmosphere.dev
+10.0.123.250 baremetal.cloud.atmosphere.dev
+10.0.123.250 identity.cloud.atmosphere.dev
+10.0.123.250 network.cloud.atmosphere.dev
+10.0.123.250 compute.cloud.atmosphere.dev
+10.0.123.250 vnc.cloud.atmosphere.dev
+10.0.123.250 load-balancer.cloud.atmosphere.dev
+10.0.123.250 placement.cloud.atmosphere.dev
+10.0.123.250 container-infra.cloud.atmosphere.dev
+10.0.123.250 container-infra-registry.cloud.atmosphere.dev
+10.0.123.250 object-store.cloud.atmosphere.dev
+10.0.123.250 share.cloud.atmosphere.dev
 EOF'
 
 done
