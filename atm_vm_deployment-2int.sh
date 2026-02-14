@@ -51,6 +51,12 @@ network:
       nameservers:
         addresses:
           - 10.0.123.1
+    enp9s0:
+      dhcp4: false
+      dhcp6: false
+      accept-ra: false
+      addresses:
+        - 10.0.124.1${i}/24
 EOF
 done
 
@@ -83,6 +89,12 @@ network:
       nameservers:
         addresses:
           - 10.0.123.1
+    enp9s0:
+      dhcp4: false
+      dhcp6: false
+      accept-ra: false
+      addresses:
+        - 10.0.124.2${i}/24
 EOF
 done
 
@@ -115,6 +127,12 @@ network:
       nameservers:
         addresses:
           - 10.0.123.1
+    enp9s0:
+      dhcp4: false
+      dhcp6: false
+      accept-ra: false
+      addresses:
+        - 10.0.124.3${i}/24
 EOF
 done
 
@@ -122,6 +140,7 @@ for i in {1..3}; do
     virsh detach-interface "ctl${i}.cloud.atmosphere.dev" network --config
     
     virsh attach-interface "ctl${i}.cloud.atmosphere.dev" network virbr-mgt --model virtio --config
+    virsh attach-interface "ctl${i}.cloud.atmosphere.dev" network virbr-serv --model virtio --config
 
     virsh start "ctl${i}.cloud.atmosphere.dev"
 done
@@ -129,7 +148,8 @@ done
 for i in {1..3}; do
     virsh detach-interface "ceph${i}.cloud.atmosphere.dev" network --config
     
-    virsh attach-interface "ceph${i}.cloud.atmosphere.dev" network virbr-mgt --model virtio --config   
+    virsh attach-interface "ceph${i}.cloud.atmosphere.dev" network virbr-mgt --model virtio --config
+    virsh attach-interface "ceph${i}.cloud.atmosphere.dev" network virbr-serv --model virtio --config   
     
     virsh start "ceph${i}.cloud.atmosphere.dev"
 done
@@ -137,7 +157,8 @@ done
 for i in {1..3}; do
     virsh detach-interface "kvm${i}.cloud.atmosphere.dev" network --config
     
-    virsh attach-interface "kvm${i}.cloud.atmosphere.dev" network virbr-mgt --model virtio --config    
+    virsh attach-interface "kvm${i}.cloud.atmosphere.dev" network virbr-mgt --model virtio --config
+    virsh attach-interface "kvm${i}.cloud.atmosphere.dev" network virbr-serv --model virtio --config
 
     virsh start "kvm${i}.cloud.atmosphere.dev"
 done
