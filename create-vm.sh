@@ -2,8 +2,8 @@
 
 # --- Configuration Variables ---
 VM_NAME="cif"
-RAM=344064 # In MB (4GB)
-VCPUS=60
+RAM=245760 # In MB (4GB)
+VCPUS=52
 DISK_SIZE=1300 # In GB
 ISO_PATH="/mnt/extra/virt/CentOS-Stream-9-latest-x86_64-boot.iso"
 DISK_PATH="/var/lib/libvirt/images/${VM_NAME}.qcow2"
