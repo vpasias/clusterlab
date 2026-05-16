@@ -239,11 +239,11 @@ function rook-ceph {
   sleep 900
   kubectl get pods -o wide --namespace rook-ceph
   kubectl --namespace rook-ceph get cephcluster rook-ceph
-  sleep 600
-  kubectl apply -k /etc/genestack/kustomize/rook-defaults/base
-  sleep 30
-  kubectl get cephfilesystems,storageclass -n rook-ceph
-  kubectl get cephblockpool,storageclass -n rook-ceph
+  #sleep 600
+  #kubectl apply -k /etc/genestack/kustomize/rook-defaults/base
+  #sleep 30
+  #kubectl get cephfilesystems,storageclass -n rook-ceph
+  #kubectl get cephblockpool,storageclass -n rook-ceph
 }
 
 function prometheus {
