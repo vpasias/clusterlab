@@ -15,14 +15,14 @@ talos_version="1.13.0"
 
 # see https://github.com/siderolabs/extensions/pkgs/container/qemu-guest-agent
 # see https://github.com/siderolabs/extensions/tree/main/guest-agents/qemu-guest-agent
-talos_qemu_guest_agent_extension_tag="10.2.0@sha256:b2843f69e3cd31ba813c1164f290ebbfddd239d53b3a0eeb19eb2f91fec6fed7"
+talos_qemu_guest_agent_extension_tag="11.0.0@sha256:e4a0ed2fe8cf067f19b68257b261b1883842f11ef7726e383249695222fcfbed"
 
 # see https://github.com/siderolabs/extensions/pkgs/container/iscsi-tools
 # see https://github.com/siderolabs/extensions/tree/main/storage/iscsi-tools
 talos_iscsi_tools_extension_tag="v0.2.0@sha256:1011cc9acc7f30a78893185a75d107689a0d7735e7041a1d5e1c913135c32fc2"
                                                
 # see https://github.com/siderolabs/extensions/pkgs/container/util-linux-tools
-talos_util_linux_tools_extension_tag="v2.41.2@sha256:bcaf485539d7d07ee2988d1f189df74c54f8ad818017bcebe88207618e54b86c"
+talos_util_linux_tools_extension_tag="v2.42.0@sha256:45d2a7590c3c1601abc077f4ea3e98ee8c66390e915e2f92fa2e4ba5ffdaf65a"
 
 export CHECKPOINT_DISABLE='1'
 export TF_LOG='DEBUG' # TRACE, DEBUG, INFO, WARN or ERROR.
