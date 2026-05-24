@@ -10,7 +10,7 @@ function ssh_node() {
     ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu "${ip}" "$@"
 }
 
-for i in {1..3}; do
+for i in {0..3}; do
     cat <<EOF | uvt-kvm create \
         --machine-type q35 \
         --cpu 16 \
@@ -23,7 +23,7 @@ for i in {1..3}; do
         --network-config /dev/stdin \
         --no-start \
         "node${i}.cozystack.dev" \
-        release=noble
+        release=jammy
 network:
   version: 2
   ethernets:
@@ -48,7 +48,7 @@ network:
 EOF
 done
 
-for i in {1..3}; do
+for i in {0..3}; do
     virsh detach-interface "node${i}.cozystack.dev" network --config
     
     virsh attach-interface "node${i}.cozystack.dev" network virbr-mgt --model virtio --config
@@ -57,7 +57,7 @@ for i in {1..3}; do
     virsh start "node${i}.cozystack.dev"
 done
 
-for i in {1..3}; do
+for i in {0..3}; do
     until ssh_node "${i}" -t -- cloud-init status --wait; do
         sleep 1
     done
@@ -75,7 +75,7 @@ for i in {1..3}; do
 
 done
 
-for i in {1..3}; do
+for i in {0..3}; do
 
     ssh_node "${i}" -t -- sudo reboot
 
