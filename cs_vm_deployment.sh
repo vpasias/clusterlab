@@ -10,7 +10,7 @@ function ssh_node() {
     ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu "${ip}" "$@"
 }
 
-for i in {0..3}; do
+for i in {0..0}; do
     cat <<EOF | uvt-kvm create \
         --machine-type q35 \
         --cpu 16 \
@@ -22,7 +22,7 @@ for i in {0..3}; do
         --unsafe-caching \
         --network-config /dev/stdin \
         --no-start \
-        "node${i}.cozystack.dev" \
+        "pxe-vm0" \
         release=jammy
 network:
   version: 2
