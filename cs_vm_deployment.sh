@@ -48,16 +48,16 @@ network:
 EOF
 done
 
-for i in {0..3}; do
-    virsh detach-interface "node${i}.cozystack.dev" network --config
+for i in {0..0}; do
+    virsh detach-interface "pxe-vm0" network --config
     
-    virsh attach-interface "node${i}.cozystack.dev" network virbr-mgt --model virtio --config
-    virsh attach-interface "node${i}.cozystack.dev" network virbr-serv --model virtio --config
+    virsh attach-interface "pxe-vm0" network virbr-mgt --model virtio --config
+    virsh attach-interface "pxe-vm0" network virbr-serv --model virtio --config
 
-    virsh start "node${i}.cozystack.dev"
+    virsh start "pxe-vm0"
 done
 
-for i in {0..3}; do
+for i in {0..0}; do
     until ssh_node "${i}" -t -- cloud-init status --wait; do
         sleep 1
     done
@@ -75,7 +75,7 @@ for i in {0..3}; do
 
 done
 
-for i in {0..3}; do
+for i in {0..0}; do
 
     ssh_node "${i}" -t -- sudo reboot
 
