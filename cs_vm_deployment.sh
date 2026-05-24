@@ -13,9 +13,9 @@ function ssh_node() {
 for i in {0..0}; do
     cat <<EOF | uvt-kvm create \
         --machine-type q35 \
-        --cpu 16 \
+        --cpu 4 \
         --host-passthrough \
-        --memory 65536 \
+        --memory 16384 \
         --disk 100 \
         --ephemeral-disk 100 \
         --ephemeral-disk 100 \
