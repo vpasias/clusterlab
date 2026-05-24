@@ -23,7 +23,7 @@ for i in {1..3}; do
         --network-config /dev/stdin \
         --no-start \
         "node${i}.cozystack.dev" \
-        release=jammy
+        release=noble
 network:
   version: 2
   ethernets:
