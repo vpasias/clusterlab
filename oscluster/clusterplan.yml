@@ -1,0 +1,174 @@
+controller-1.openstack.local:
+ image: ubuntu2404
+ memory: 32768
+ numcpus: 8
+ sharedkey: true
+ pool: default
+ disks: 
+  - size: 100
+    interface: scsi
+  - size: 100
+    interface: scsi
+ nets:
+  - management
+    ip: 10.0.123.11
+    mask: 255.255.255.0
+    gateway: 10.0.123.1
+    dns: 8.8.8.8
+  - service
+    noconf: true
+ cmds:
+  - echo kyax7344 | passwd --stdin root
+  - apt update && sudo apt upgrade -y
+  - apt install -y chrony rsyslog iputils-ping nfs-common
+  - systemctl enable --now chrony rsyslog
+
+controller-2.openstack.local:
+ image: ubuntu2404
+ memory: 32768
+ numcpus: 8
+ sharedkey: true
+ pool: default
+ disks: 
+  - size: 100
+    interface: scsi
+  - size: 100
+    interface: scsi
+ nets:
+  - management
+    ip: 10.0.123.12
+    mask: 255.255.255.0
+    gateway: 10.0.123.1
+    dns: 8.8.8.8
+  - service
+    noconf: true
+ cmds:
+  - echo kyax7344 | passwd --stdin root
+  - apt update && sudo apt upgrade -y
+  - apt install -y chrony rsyslog iputils-ping nfs-common
+  - systemctl enable --now chrony rsyslog
+
+controller-3.openstack.local:
+ image: ubuntu2404
+ memory: 32768
+ numcpus: 8
+ sharedkey: true
+ pool: default
+ disks: 
+  - size: 100
+    interface: scsi
+  - size: 100
+    interface: scsi
+ nets:
+  - management
+    ip: 10.0.123.13
+    mask: 255.255.255.0
+    gateway: 10.0.123.1
+    dns: 8.8.8.8
+  - service
+    noconf: true
+ cmds:
+  - echo kyax7344 | passwd --stdin root
+  - apt update && sudo apt upgrade -y
+  - apt install -y chrony rsyslog iputils-ping nfs-common
+  - systemctl enable --now chrony rsyslog
+
+compute-1.openstack.local:
+ image: ubuntu2404
+ memory: 32768
+ numcpus: 8
+ sharedkey: true
+ pool: default
+ disks: 
+  - size: 100
+    interface: scsi
+  - size: 100
+    interface: scsi
+ nets:
+  - management
+    ip: 10.0.123.14
+    mask: 255.255.255.0
+    gateway: 10.0.123.1
+    dns: 8.8.8.8
+  - service
+    noconf: true
+ cmds:
+  - echo kyax7344 | passwd --stdin root
+  - apt update && sudo apt upgrade -y
+  - apt install -y chrony rsyslog iputils-ping nfs-common
+  - systemctl enable --now chrony rsyslog
+
+compute-2.openstack.local:
+ image: ubuntu2404
+ memory: 32768
+ numcpus: 8
+ sharedkey: true
+ pool: default
+ disks: 
+  - size: 100
+    interface: scsi
+  - size: 100
+    interface: scsi
+ nets:
+  - management
+    ip: 10.0.123.15
+    mask: 255.255.255.0
+    gateway: 10.0.123.1
+    dns: 8.8.8.8
+  - service
+    noconf: true
+ cmds:
+  - echo kyax7344 | passwd --stdin root
+  - apt update && sudo apt upgrade -y
+  - apt install -y chrony rsyslog iputils-ping nfs-common
+  - systemctl enable --now chrony rsyslog
+
+compute-3.openstack.local:
+ image: ubuntu2404
+ memory: 32768
+ numcpus: 8
+ sharedkey: true
+ pool: default
+ disks: 
+  - size: 100
+    interface: scsi
+  - size: 100
+    interface: scsi
+ nets:
+  - management
+    ip: 10.0.123.16
+    mask: 255.255.255.0
+    gateway: 10.0.123.1
+    dns: 8.8.8.8
+  - service
+    noconf: true
+ cmds:
+  - echo kyax7344 | passwd --stdin root
+  - apt update && sudo apt upgrade -y
+  - apt install -y chrony rsyslog iputils-ping nfs-common
+  - systemctl enable --now chrony rsyslog
+
+storage.openstack.local:
+ image: ubuntu2404
+ memory: 32768
+ numcpus: 8
+ sharedkey: true
+ pool: default
+ disks: 
+  - size: 100
+    interface: scsi
+  - size: 100
+    interface: scsi
+ nets:
+  - management
+    ip: 10.0.123.17
+    mask: 255.255.255.0
+    gateway: 10.0.123.1
+    dns: 8.8.8.8
+  - service
+    noconf: true
+ cmds:
+  - echo kyax7344 | passwd --stdin root
+  - apt update && sudo apt upgrade -y
+  - apt install -y chrony rsyslog iputils-ping nfs-common
+  - systemctl enable --now chrony rsyslog
