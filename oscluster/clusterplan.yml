@@ -21,7 +21,6 @@ controller-1.openstack.local:
   - sudo apt update && sudo apt upgrade -y
   - sudo apt install -y chrony rsyslog iputils-ping nfs-common
   - sudo systemctl enable --now chrony rsyslog
-  - echo kyax7344 | passwd --stdin root
 
 controller-2.openstack.local:
  image: ubuntu2404
@@ -46,7 +45,6 @@ controller-2.openstack.local:
   - sudo apt update && sudo apt upgrade -y
   - sudo apt install -y chrony rsyslog iputils-ping nfs-common
   - sudo systemctl enable --now chrony rsyslog
-  - echo kyax7344 | passwd --stdin root
 
 controller-3.openstack.local:
  image: ubuntu2404
@@ -71,7 +69,6 @@ controller-3.openstack.local:
   - sudo apt update && sudo apt upgrade -y
   - sudo apt install -y chrony rsyslog iputils-ping nfs-common
   - sudo systemctl enable --now chrony rsyslog
-  - echo kyax7344 | passwd --stdin root
 
 compute-1.openstack.local:
  image: ubuntu2404
@@ -96,7 +93,6 @@ compute-1.openstack.local:
   - sudo apt update && sudo apt upgrade -y
   - sudo apt install -y chrony rsyslog iputils-ping nfs-common
   - sudo systemctl enable --now chrony rsyslog
-  - echo kyax7344 | passwd --stdin root
 
 compute-2.openstack.local:
  image: ubuntu2404
@@ -121,7 +117,6 @@ compute-2.openstack.local:
   - sudo apt update && sudo apt upgrade -y
   - sudo apt install -y chrony rsyslog iputils-ping nfs-common
   - sudo systemctl enable --now chrony rsyslog
-  - echo kyax7344 | passwd --stdin root
 
 compute-3.openstack.local:
  image: ubuntu2404
@@ -146,7 +141,6 @@ compute-3.openstack.local:
   - sudo apt update && sudo apt upgrade -y
   - sudo apt install -y chrony rsyslog iputils-ping nfs-common
   - sudo systemctl enable --now chrony rsyslog
-  - echo kyax7344 | passwd --stdin root
   
 storage.openstack.local:
  image: ubuntu2404
@@ -171,4 +165,3 @@ storage.openstack.local:
   - sudo apt update && sudo apt upgrade -y
   - sudo apt install -y chrony rsyslog iputils-ping nfs-common
   - sudo systemctl enable --now chrony rsyslog
-  - echo kyax7344 | passwd --stdin root
