@@ -18,10 +18,14 @@ controller-1.openstack.local:
     noconf: true
  cmds:
   - sudo apt update && sudo apt upgrade -y
-  - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass
+  - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass vim wget curl
   - sudo systemctl enable --now chrony rsyslog
-  - echo -e 'kyax7344\nkyax7344\n' | sudo passwd ubuntu
-  - echo -e 'gprm8350\ngprm8350\n' | sudo passwd root
+  - echo "root:gprm8350" | sudo chpasswd
+  - echo "ubuntu:kyax7344" | sudo chpasswd
+  - sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+  - sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+  - sudo systemctl restart sshd
+  - sudo rm -rf /root/.ssh/authorized_keys
 
 controller-2.openstack.local:
  image: ubuntu2404
@@ -43,10 +47,14 @@ controller-2.openstack.local:
     noconf: true
  cmds:
   - sudo apt update && sudo apt upgrade -y
-  - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass
+  - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass vim wget curl
   - sudo systemctl enable --now chrony rsyslog
-  - echo -e 'kyax7344\nkyax7344\n' | sudo passwd ubuntu
-  - echo -e 'gprm8350\ngprm8350\n' | sudo passwd root
+  - echo "root:gprm8350" | sudo chpasswd
+  - echo "ubuntu:kyax7344" | sudo chpasswd
+  - sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+  - sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+  - sudo systemctl restart sshd
+  - sudo rm -rf /root/.ssh/authorized_keys
 
 controller-3.openstack.local:
  image: ubuntu2404
@@ -68,10 +76,14 @@ controller-3.openstack.local:
     noconf: true
  cmds:
   - sudo apt update && sudo apt upgrade -y
-  - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass
+  - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass vim wget curl
   - sudo systemctl enable --now chrony rsyslog
-  - echo -e 'kyax7344\nkyax7344\n' | sudo passwd ubuntu
-  - echo -e 'gprm8350\ngprm8350\n' | sudo passwd root
+  - echo "root:gprm8350" | sudo chpasswd
+  - echo "ubuntu:kyax7344" | sudo chpasswd
+  - sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+  - sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+  - sudo systemctl restart sshd
+  - sudo rm -rf /root/.ssh/authorized_keys
 
 compute-1.openstack.local:
  image: ubuntu2404
@@ -93,10 +105,14 @@ compute-1.openstack.local:
     noconf: true
  cmds:
   - sudo apt update && sudo apt upgrade -y
-  - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass
+  - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass vim wget curl
   - sudo systemctl enable --now chrony rsyslog
-  - echo -e 'kyax7344\nkyax7344\n' | sudo passwd ubuntu
-  - echo -e 'gprm8350\ngprm8350\n' | sudo passwd root
+  - echo "root:gprm8350" | sudo chpasswd
+  - echo "ubuntu:kyax7344" | sudo chpasswd
+  - sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+  - sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+  - sudo systemctl restart sshd
+  - sudo rm -rf /root/.ssh/authorized_keys
 
 compute-2.openstack.local:
  image: ubuntu2404
@@ -118,10 +134,14 @@ compute-2.openstack.local:
     noconf: true
  cmds:
   - sudo apt update && sudo apt upgrade -y
-  - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass
+  - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass vim wget curl
   - sudo systemctl enable --now chrony rsyslog
-  - echo -e 'kyax7344\nkyax7344\n' | sudo passwd ubuntu
-  - echo -e 'gprm8350\ngprm8350\n' | sudo passwd root
+  - echo "root:gprm8350" | sudo chpasswd
+  - echo "ubuntu:kyax7344" | sudo chpasswd
+  - sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+  - sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+  - sudo systemctl restart sshd
+  - sudo rm -rf /root/.ssh/authorized_keys
 
 compute-3.openstack.local:
  image: ubuntu2404
@@ -143,10 +163,14 @@ compute-3.openstack.local:
     noconf: true
  cmds:
   - sudo apt update && sudo apt upgrade -y
-  - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass
+  - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass vim wget curl
   - sudo systemctl enable --now chrony rsyslog
-  - echo -e 'kyax7344\nkyax7344\n' | sudo passwd ubuntu
-  - echo -e 'gprm8350\ngprm8350\n' | sudo passwd root
+  - echo "root:gprm8350" | sudo chpasswd
+  - echo "ubuntu:kyax7344" | sudo chpasswd
+  - sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+  - sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+  - sudo systemctl restart sshd
+  - sudo rm -rf /root/.ssh/authorized_keys
   
 storage.openstack.local:
  image: ubuntu2404
@@ -168,7 +192,11 @@ storage.openstack.local:
     noconf: true
  cmds:
   - sudo apt update && sudo apt upgrade -y
-  - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass
+  - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass vim wget curl
   - sudo systemctl enable --now chrony rsyslog
-  - echo -e 'kyax7344\nkyax7344\n' | sudo passwd ubuntu
-  - echo -e 'gprm8350\ngprm8350\n' | sudo passwd root
+  - echo "root:gprm8350" | sudo chpasswd
+  - echo "ubuntu:kyax7344" | sudo chpasswd
+  - sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+  - sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+  - sudo systemctl restart sshd
+  - sudo rm -rf /root/.ssh/authorized_keys
