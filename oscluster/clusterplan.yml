@@ -1,7 +1,7 @@
 controller-1.openstack.local:
  image: ubuntu2404
- memory: 32768
- numcpus: 8
+ memory: 65536
+ numcpus: 10
  pool: default
  disks: 
   - size: 100
@@ -23,8 +23,8 @@ controller-1.openstack.local:
 
 controller-2.openstack.local:
  image: ubuntu2404
- memory: 32768
- numcpus: 8
+ memory: 65536
+ numcpus: 10
  pool: default
  disks: 
   - size: 100
@@ -46,8 +46,8 @@ controller-2.openstack.local:
 
 controller-3.openstack.local:
  image: ubuntu2404
- memory: 32768
- numcpus: 8
+ memory: 65536
+ numcpus: 10
  pool: default
  disks: 
   - size: 100
