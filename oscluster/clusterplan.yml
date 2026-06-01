@@ -10,12 +10,12 @@ controller-1.openstack.local:
   - size: 100
     interface: scsi
  nets:
-  - management
+  - name: management
     ip: 10.0.123.11
     mask: 255.255.255.0
     gateway: 10.0.123.1
     dns: 8.8.8.8
-  - service
+  - name: service
     noconf: true
  cmds:
   - sudo apt update && sudo apt upgrade -y
@@ -35,12 +35,12 @@ controller-2.openstack.local:
   - size: 100
     interface: scsi
  nets:
-  - management
+  - name: management
     ip: 10.0.123.12
     mask: 255.255.255.0
     gateway: 10.0.123.1
     dns: 8.8.8.8
-  - service
+  - name: service
     noconf: true
  cmds:
   - sudo apt update && sudo apt upgrade -y
@@ -60,12 +60,12 @@ controller-3.openstack.local:
   - size: 100
     interface: scsi
  nets:
-  - management
+  - name: management
     ip: 10.0.123.13
     mask: 255.255.255.0
     gateway: 10.0.123.1
     dns: 8.8.8.8
-  - service
+  - name: service
     noconf: true
  cmds:
   - sudo apt update && sudo apt upgrade -y
@@ -85,12 +85,12 @@ compute-1.openstack.local:
   - size: 100
     interface: scsi
  nets:
-  - management
+  - name: management
     ip: 10.0.123.14
     mask: 255.255.255.0
     gateway: 10.0.123.1
     dns: 8.8.8.8
-  - service
+  - name: service
     noconf: true
  cmds:
   - sudo apt update && sudo apt upgrade -y
@@ -110,12 +110,12 @@ compute-2.openstack.local:
   - size: 100
     interface: scsi
  nets:
-  - management
+  - name: management
     ip: 10.0.123.15
     mask: 255.255.255.0
     gateway: 10.0.123.1
     dns: 8.8.8.8
-  - service
+  - name: service
     noconf: true
  cmds:
   - sudo apt update && sudo apt upgrade -y
@@ -135,12 +135,12 @@ compute-3.openstack.local:
   - size: 100
     interface: scsi
  nets:
-  - management
+  - name: management
     ip: 10.0.123.16
     mask: 255.255.255.0
     gateway: 10.0.123.1
     dns: 8.8.8.8
-  - service
+  - name: service
     noconf: true
  cmds:
   - sudo apt update && sudo apt upgrade -y
@@ -160,12 +160,12 @@ storage.openstack.local:
   - size: 200
     interface: scsi
  nets:
-  - management
+  - name: management
     ip: 10.0.123.17
     mask: 255.255.255.0
     gateway: 10.0.123.1
     dns: 8.8.8.8
-  - service
+  - name: service
     noconf: true
  cmds:
   - sudo apt update && sudo apt upgrade -y
