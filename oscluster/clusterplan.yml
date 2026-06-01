@@ -18,7 +18,7 @@ controller-1.openstack.local:
     noconf: true
  cmds:
   - sudo apt update && sudo apt upgrade -y
-  - sudo apt install -y chrony rsyslog iputils-ping nfs-common
+  - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass
   - sudo systemctl enable --now chrony rsyslog
   - echo kyax7344 | passwd --stdin ubuntu
   - echo gprm8350 | passwd --stdin root
@@ -43,7 +43,7 @@ controller-2.openstack.local:
     noconf: true
  cmds:
   - sudo apt update && sudo apt upgrade -y
-  - sudo apt install -y chrony rsyslog iputils-ping nfs-common
+  - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass
   - sudo systemctl enable --now chrony rsyslog
   - echo kyax7344 | passwd --stdin ubuntu
   - echo gprm8350 | passwd --stdin root
@@ -68,7 +68,7 @@ controller-3.openstack.local:
     noconf: true
  cmds:
   - sudo apt update && sudo apt upgrade -y
-  - sudo apt install -y chrony rsyslog iputils-ping nfs-common
+  - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass
   - sudo systemctl enable --now chrony rsyslog
   - echo kyax7344 | passwd --stdin ubuntu
   - echo gprm8350 | passwd --stdin root
@@ -93,7 +93,7 @@ compute-1.openstack.local:
     noconf: true
  cmds:
   - sudo apt update && sudo apt upgrade -y
-  - sudo apt install -y chrony rsyslog iputils-ping nfs-common
+  - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass
   - sudo systemctl enable --now chrony rsyslog
   - echo kyax7344 | passwd --stdin ubuntu
   - echo gprm8350 | passwd --stdin root
@@ -118,7 +118,7 @@ compute-2.openstack.local:
     noconf: true
  cmds:
   - sudo apt update && sudo apt upgrade -y
-  - sudo apt install -y chrony rsyslog iputils-ping nfs-common
+  - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass
   - sudo systemctl enable --now chrony rsyslog
   - echo kyax7344 | passwd --stdin ubuntu
   - echo gprm8350 | passwd --stdin root
@@ -143,7 +143,7 @@ compute-3.openstack.local:
     noconf: true
  cmds:
   - sudo apt update && sudo apt upgrade -y
-  - sudo apt install -y chrony rsyslog iputils-ping nfs-common
+  - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass
   - sudo systemctl enable --now chrony rsyslog
   - echo kyax7344 | passwd --stdin ubuntu
   - echo gprm8350 | passwd --stdin root
@@ -168,7 +168,7 @@ storage.openstack.local:
     noconf: true
  cmds:
   - sudo apt update && sudo apt upgrade -y
-  - sudo apt install -y chrony rsyslog iputils-ping nfs-common
+  - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass
   - sudo systemctl enable --now chrony rsyslog
   - echo kyax7344 | passwd --stdin ubuntu
   - echo gprm8350 | passwd --stdin root
