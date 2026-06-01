@@ -150,14 +150,14 @@ compute-3.openstack.local:
   
 storage.openstack.local:
  image: ubuntu2404
- memory: 32768
- numcpus: 8
+ memory: 16384
+ numcpus: 4
  sharedkey: true
  pool: default
  disks: 
   - size: 100
     interface: scsi
-  - size: 100
+  - size: 200
     interface: scsi
  nets:
   - management
