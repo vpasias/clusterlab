@@ -167,7 +167,9 @@ EOF
 
 source ~/.bashrc
 
-openstack service list
+openstack endpoint list && openstack service list && openstack compute service list && openstack network agent list && openstack volume service list && cinder get-pools && \
+openstack service list && openstack server list && openstack catalog list && openstack image list && openstack flavor list && openstack network list && openstack subnet list && \
+openstack project list && openstack port list && openstack user list && openstack network agent list && openstack hypervisor list && openstack key list
 
 ./venv/share/kolla-ansible/init-runonce
 
