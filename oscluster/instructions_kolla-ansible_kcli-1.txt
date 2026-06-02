@@ -171,7 +171,6 @@ openstack service list
 
 ./venv/share/kolla-ansible/init-runonce
 
-
 ######################## Delete ########################################################
 # Destroy the already installed cluster
 ########################################################################################
