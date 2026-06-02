@@ -22,9 +22,9 @@ controller-1.openstack.local:
   - sudo systemctl enable --now chrony rsyslog
   - echo "root:gprm8350" | sudo chpasswd
   - echo "ubuntu:kyax7344" | sudo chpasswd
-  - sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+  - sudo sed -i 's/#PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
   - sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-  - sudo systemctl restart sshd
+  - sudo systemctl restart ssh
   - sudo rm -rf /root/.ssh/authorized_keys
 
 controller-2.openstack.local:
@@ -51,9 +51,9 @@ controller-2.openstack.local:
   - sudo systemctl enable --now chrony rsyslog
   - echo "root:gprm8350" | sudo chpasswd
   - echo "ubuntu:kyax7344" | sudo chpasswd
-  - sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+  - sudo sed -i 's/#PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
   - sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-  - sudo systemctl restart sshd
+  - sudo systemctl restart ssh
   - sudo rm -rf /root/.ssh/authorized_keys
 
 controller-3.openstack.local:
@@ -80,9 +80,9 @@ controller-3.openstack.local:
   - sudo systemctl enable --now chrony rsyslog
   - echo "root:gprm8350" | sudo chpasswd
   - echo "ubuntu:kyax7344" | sudo chpasswd
-  - sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+  - sudo sed -i 's/#PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
   - sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-  - sudo systemctl restart sshd
+  - sudo systemctl restart ssh
   - sudo rm -rf /root/.ssh/authorized_keys
 
 compute-1.openstack.local:
@@ -109,9 +109,9 @@ compute-1.openstack.local:
   - sudo systemctl enable --now chrony rsyslog
   - echo "root:gprm8350" | sudo chpasswd
   - echo "ubuntu:kyax7344" | sudo chpasswd
-  - sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+  - sudo sed -i 's/#PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
   - sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-  - sudo systemctl restart sshd
+  - sudo systemctl restart ssh
   - sudo rm -rf /root/.ssh/authorized_keys
 
 compute-2.openstack.local:
@@ -138,9 +138,9 @@ compute-2.openstack.local:
   - sudo systemctl enable --now chrony rsyslog
   - echo "root:gprm8350" | sudo chpasswd
   - echo "ubuntu:kyax7344" | sudo chpasswd
-  - sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+  - sudo sed -i 's/#PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
   - sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-  - sudo systemctl restart sshd
+  - sudo systemctl restart ssh
   - sudo rm -rf /root/.ssh/authorized_keys
 
 compute-3.openstack.local:
@@ -167,9 +167,9 @@ compute-3.openstack.local:
   - sudo systemctl enable --now chrony rsyslog
   - echo "root:gprm8350" | sudo chpasswd
   - echo "ubuntu:kyax7344" | sudo chpasswd
-  - sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+  - sudo sed -i 's/#PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
   - sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-  - sudo systemctl restart sshd
+  - sudo systemctl restart ssh
   - sudo rm -rf /root/.ssh/authorized_keys
   
 storage.openstack.local:
@@ -196,7 +196,7 @@ storage.openstack.local:
   - sudo systemctl enable --now chrony rsyslog
   - echo "root:gprm8350" | sudo chpasswd
   - echo "ubuntu:kyax7344" | sudo chpasswd
-  - sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+  - sudo sed -i 's/#PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
   - sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-  - sudo systemctl restart sshd
+  - sudo systemctl restart ssh
   - sudo rm -rf /root/.ssh/authorized_keys
