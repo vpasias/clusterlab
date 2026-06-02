@@ -130,6 +130,15 @@ cat > /etc/hosts
 10.0.123.17 storage-openstack.openstack.local
 EOF
 
+sed -i 's/control01/controller-1.openstack.local/' /etc/kolla/multinode && \
+sed -i 's/control02/controller-2.openstack.local/' /etc/kolla/multinode && \
+sed -i 's/control03/controller-3.openstack.local/' /etc/kolla/multinode && \
+sed -i 's/network01/controller-1.openstack.local/' /etc/kolla/multinode && \
+sed -i 's/network02/controller-2.openstack.local/' /etc/kolla/multinode && \
+sed -i 's/compute01/compute-1.openstack.local/' /etc/kolla/multinode && \
+sed -i 's/monitoring01/controller-3.openstack.local/' /etc/kolla/multinode && \
+sed -i 's/storage01/storage.openstack.local/' /etc/kolla/multinode
+
 
 ######################## Delete ########################################################
 # Destroy the already installed cluster
