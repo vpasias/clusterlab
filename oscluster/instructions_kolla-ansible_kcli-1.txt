@@ -97,6 +97,8 @@ cp ~/kolla-venv/share/kolla-ansible/ansible/inventory/multinode /etc/kolla/ && k
 
 cp -a /etc/kolla/globals.yml /etc/kolla/globals.yml.back
 
+/etc/kolla/globals.yml
+
 ######################## Delete ########################################################
 # Destroy the already installed cluster
 ########################################################################################
