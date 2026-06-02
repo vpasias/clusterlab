@@ -64,8 +64,9 @@ sudo -i
 ssh-keygen -t rsa -N "" -f .ssh/id_rsa
 
 #echo -e 'gprm8350\ngprm8350\n' | sudo passwd root
+#sshpass -p 'gprm8350' ssh-copy-id -o "StrictHostKeyChecking=no" root@localhost
 
-for h in 10.0.123.12 10.0.123.13 10.0.123.14 10.0.123.15 10.0.123.16 10.0.123.17; do sudo sshpass -p 'gprm8350' sudo ssh-copy-id -o "StrictHostKeyChecking=no" root@$h; done
+for h in 10.0.123.11 10.0.123.12 10.0.123.13 10.0.123.14 10.0.123.15 10.0.123.16 10.0.123.17; do sudo sshpass -p 'gprm8350' sudo ssh-copy-id -o "StrictHostKeyChecking=no" root@$h; done
 
 #######################################################################################################################################################################
 ### Deploying OpenStack using Kolla-Ansible ###
@@ -106,28 +107,39 @@ sed -i 's/#enable_cinder: "no"/enable_cinder: "yes"/' /etc/kolla/globals.yml && 
 sed -i 's/#enable_cinder_backup: "yes"/enable_cinder_backup: "yes"/' /etc/kolla/globals.yml && \
 sed -i 's/#enable_cinder_backend_nfs: "no"/enable_cinder_backend_nfs: "yes"/' /etc/kolla/globals.yml && \
 sed -i 's/#cinder_backup_driver: "ceph"/cinder_backup_driver: "nfs"/' /etc/kolla/globals.yml && \
-sed -i 's/#cinder_backup_share: ""/cinder_backup_share: "10.0.123.17:/kolla_nfs"/' /etc/kolla/globals.yml && \
 sed -i 's/#nova_compute_virt_type: "kvm"/nova_compute_virt_type: "kvm"/' /etc/kolla/globals.yml
+
+#sed -i 's/#cinder_backup_share: ""/cinder_backup_share: "10.0.123.17:/kolla_nfs"/' /etc/kolla/globals.yml
 
 mkdir /etc/kolla/config
 
-cat > /etc/kolla/config/global.conf
+cat > /etc/kolla/config/global.conf <<EOF
 [database]
 max_pool_size = 100
 EOF
 
-cat > /etc/kolla/config/nfs_shares
+cat > /etc/kolla/config/nfs_shares <<EOF
 10.0.123.17:/kolla_nfs
 EOF
 
-cat > /etc/hosts
-10.0.123.11 controller-1.openstack.local
-10.0.123.12 controller-2.openstack.local
-10.0.123.13 controller-3.openstack.local
-10.0.123.14 compute-1.openstack.local
-10.0.123.15 compute-2.openstack.local
-10.0.123.16 compute-3.openstack.local
-10.0.123.17 storage-openstack.openstack.local
+cat > /etc/hosts <<EOF
+127.0.0.1 localhost
+
+# The following lines are desirable for IPv6 capable hosts
+::1 ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+
+10.0.123.11 controller-1.openstack.local controller-1
+10.0.123.12 controller-2.openstack.local controller-2
+10.0.123.13 controller-3.openstack.local controller-3
+10.0.123.14 compute-1.openstack.local compute-1
+10.0.123.15 compute-2.openstack.local compute-2
+10.0.123.16 compute-3.openstack.local compute-3
+10.0.123.17 storage.openstack.local storage
 EOF
 
 sed -i 's/control01/controller-1.openstack.local/' /etc/kolla/multinode && \
@@ -142,7 +154,7 @@ sed -i 's/storage01/storage.openstack.local/' /etc/kolla/multinode
 #Add nodes
 # nano /etc/kolla/multinode
 # add under [network]: controller-3.openstack.local
-# add under [compute]: compute-2.openstack.local , controller-3.openstack.local
+# add under [compute]: compute-2.openstack.local , compute-3.openstack.local
 
 #Bootstrap Servers
 kolla-ansible bootstrap-servers -i /etc/kolla/multinode
