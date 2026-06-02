@@ -139,6 +139,38 @@ sed -i 's/compute01/compute-1.openstack.local/' /etc/kolla/multinode && \
 sed -i 's/monitoring01/controller-3.openstack.local/' /etc/kolla/multinode && \
 sed -i 's/storage01/storage.openstack.local/' /etc/kolla/multinode
 
+#Add nodes
+# nano /etc/kolla/multinode
+# add under [network]: controller-3.openstack.local
+# add under [compute]: compute-2.openstack.local , controller-3.openstack.local
+
+#Bootstrap Servers
+kolla-ansible bootstrap-servers -i /etc/kolla/multinode
+
+#Pre‑Deployment Checks
+kolla-ansible prechecks -i /etc/kolla/multinode
+#pip install bcrypt==4.3.0
+
+#Deploy OpenStack
+kolla-ansible deploy -i /etc/kolla/multinode
+
+#Post‑Deploy
+kolla-ansible post-deploy -i /etc/kolla/multinode
+
+#OpenStack Client Setup
+pip install python-openstackclient -c https://releases.openstack.org/constraints/upper/2025.2
+
+cat <<EOF | tee -a ~/.bashrc
+export OS_CLIENT_CONFIG_FILE=/etc/kolla/clouds.yaml
+export OS_CLOUD=kolla-admin
+EOF
+
+source ~/.bashrc
+
+openstack service list
+
+./venv/share/kolla-ansible/init-runonce
+
 
 ######################## Delete ########################################################
 # Destroy the already installed cluster
