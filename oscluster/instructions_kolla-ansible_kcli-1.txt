@@ -97,7 +97,39 @@ cp ~/kolla-venv/share/kolla-ansible/ansible/inventory/multinode /etc/kolla/ && k
 
 cp -a /etc/kolla/globals.yml /etc/kolla/globals.yml.back
 
-/etc/kolla/globals.yml
+sed -i 's/#kolla_base_distro: "rocky"/kolla_base_distro: "ubuntu"/' /etc/kolla/globals.yml && \
+sed -i 's/#kolla_internal_vip_address: "10.10.10.254"/kolla_internal_vip_address: "10.0.123.250"/' /etc/kolla/globals.yml && \
+sed -i 's/#network_interface: "eth0"/network_interface: "ens3"/' /etc/kolla/globals.yml && \
+sed -i 's/#network_address_family: "ipv4"/network_address_family: "ipv4"/' /etc/kolla/globals.yml && \
+sed -i 's/#neutron_external_interface: "eth1"/neutron_external_interface: "ens4"/' /etc/kolla/globals.yml && \
+sed -i 's/#enable_cinder: "no"/enable_cinder: "yes"/' /etc/kolla/globals.yml && \
+sed -i 's/#enable_cinder_backup: "yes"/enable_cinder_backup: "yes"/' /etc/kolla/globals.yml && \
+sed -i 's/#enable_cinder_backend_nfs: "no"/enable_cinder_backend_nfs: "yes"/' /etc/kolla/globals.yml && \
+sed -i 's/#cinder_backup_driver: "ceph"/cinder_backup_driver: "nfs"/' /etc/kolla/globals.yml && \
+sed -i 's/#cinder_backup_share: ""/cinder_backup_share: "10.0.123.17:/kolla_nfs"/' /etc/kolla/globals.yml && \
+sed -i 's/#nova_compute_virt_type: "kvm"/nova_compute_virt_type: "kvm"/' /etc/kolla/globals.yml
+
+mkdir /etc/kolla/config
+
+cat > /etc/kolla/config/global.conf
+[database]
+max_pool_size = 100
+EOF
+
+cat > /etc/kolla/config/nfs_shares
+10.0.123.17:/kolla_nfs
+EOF
+
+cat > /etc/hosts
+10.0.123.11 controller-1.openstack.local
+10.0.123.12 controller-2.openstack.local
+10.0.123.13 controller-3.openstack.local
+10.0.123.14 compute-1.openstack.local
+10.0.123.15 compute-2.openstack.local
+10.0.123.16 compute-3.openstack.local
+10.0.123.17 storage-openstack.openstack.local
+EOF
+
 
 ######################## Delete ########################################################
 # Destroy the already installed cluster
