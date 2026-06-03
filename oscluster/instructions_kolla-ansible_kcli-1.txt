@@ -103,7 +103,10 @@ sed -i 's/#kolla_internal_vip_address: "10.10.10.254"/kolla_internal_vip_address
 sed -i 's/#network_interface: "eth0"/network_interface: "ens3"/' /etc/kolla/globals.yml && \
 sed -i 's/#network_address_family: "ipv4"/network_address_family: "ipv4"/' /etc/kolla/globals.yml && \
 sed -i 's/#neutron_external_interface: "eth1"/neutron_external_interface: "ens4"/' /etc/kolla/globals.yml && \
+sed -i 's/#enable_ceilometer: "no"/enable_ceilometer: "yes"/' /etc/kolla/globals.yml && \
 sed -i 's/#enable_cinder: "no"/enable_cinder: "yes"/' /etc/kolla/globals.yml && \
+sed -i 's/#enable_magnum: "no"/enable_magnum: "yes"/' /etc/kolla/globals.yml && \
+sed -i 's/#enable_masakari: "no"/enable_masakari: "yes"/' /etc/kolla/globals.yml && \
 sed -i 's/#enable_cinder_backup: "yes"/enable_cinder_backup: "yes"/' /etc/kolla/globals.yml && \
 sed -i 's/#enable_cinder_backend_nfs: "no"/enable_cinder_backend_nfs: "yes"/' /etc/kolla/globals.yml && \
 sed -i 's/#cinder_backup_driver: "ceph"/cinder_backup_driver: "nfs"/' /etc/kolla/globals.yml && \
@@ -154,7 +157,7 @@ sed -i '/\[compute]/a compute-2.openstack.local' /etc/kolla/multinode && \
 sed -i '/\[compute]/a compute-1.openstack.local' /etc/kolla/multinode
 
 #Add nodes
-# nano /etc/kolla/multinode
+#nano /etc/kolla/multinode
 
 #Bootstrap Servers
 kolla-ansible bootstrap-servers -i /etc/kolla/multinode
@@ -182,7 +185,7 @@ source ~/.bashrc
 openstack endpoint list && openstack service list && openstack compute service list && openstack network agent list && openstack volume service list && \
 openstack service list && openstack server list && openstack catalog list && openstack image list && openstack flavor list && \
 openstack network list && openstack subnet list && openstack project list && openstack port list && openstack user list && openstack network agent list && \
-openstack hypervisor list && openstack key list
+openstack hypervisor list && openstack key list && openstack volume list
 
 ./kolla-venv/share/kolla-ansible/init-runonce
 
