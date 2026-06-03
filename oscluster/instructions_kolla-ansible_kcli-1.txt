@@ -83,7 +83,7 @@ exit
 apt install -y git python3-dev libffi-dev gcc libssl-dev python3-venv python3-dbus libdbus-1-dev libdbus-glib-1-dev
 
 python3 -m venv ~/kolla-venv
-echo 'source ~/venv/bin/activate' >> ~/.bashrc && source ~/kolla-venv/bin/activate
+echo 'source ~/kolla-venv/bin/activate' >> ~/.bashrc && source ~/kolla-venv/bin/activate
 pip install -U pip && pip install -U ansible-core>=2.15 && pip install docker dbus-python && pip install git+https://opendev.org/openstack/kolla-ansible@stable/2025.2
 
 cat > ~/ansible.cfg <<EOF
@@ -107,9 +107,8 @@ sed -i 's/#enable_cinder: "no"/enable_cinder: "yes"/' /etc/kolla/globals.yml && 
 sed -i 's/#enable_cinder_backup: "yes"/enable_cinder_backup: "yes"/' /etc/kolla/globals.yml && \
 sed -i 's/#enable_cinder_backend_nfs: "no"/enable_cinder_backend_nfs: "yes"/' /etc/kolla/globals.yml && \
 sed -i 's/#cinder_backup_driver: "ceph"/cinder_backup_driver: "nfs"/' /etc/kolla/globals.yml && \
+sed -i 's/#cinder_backup_share: ""/cinder_backup_share: "10.0.123.17:\/kolla_nfs"/' /etc/kolla/globals.yml && \
 sed -i 's/#nova_compute_virt_type: "kvm"/nova_compute_virt_type: "kvm"/' /etc/kolla/globals.yml
-
-#sed -i 's/#cinder_backup_share: ""/cinder_backup_share: "10.0.123.17:/kolla_nfs"/' /etc/kolla/globals.yml
 
 mkdir /etc/kolla/config
 
@@ -145,16 +144,17 @@ EOF
 sed -i 's/control01/controller-1.openstack.local/' /etc/kolla/multinode && \
 sed -i 's/control02/controller-2.openstack.local/' /etc/kolla/multinode && \
 sed -i 's/control03/controller-3.openstack.local/' /etc/kolla/multinode && \
-sed -i 's/network01/controller-1.openstack.local/' /etc/kolla/multinode && \
-sed -i 's/network02/controller-2.openstack.local/' /etc/kolla/multinode && \
-sed -i 's/compute01/compute-1.openstack.local/' /etc/kolla/multinode && \
+sed -i 's/network01/controller-2.openstack.local/' /etc/kolla/multinode && \
+sed -i 's/network02/controller-3.openstack.local/' /etc/kolla/multinode && \
+sed -i 's/compute01/compute-3.openstack.local/' /etc/kolla/multinode && \
 sed -i 's/monitoring01/controller-3.openstack.local/' /etc/kolla/multinode && \
-sed -i 's/storage01/storage.openstack.local/' /etc/kolla/multinode
+sed -i 's/storage01/storage.openstack.local/' /etc/kolla/multinode && \
+sed -i '/\[network]/a controller-1.openstack.local' /etc/kolla/multinode && \
+sed -i '/\[compute]/a compute-2.openstack.local' /etc/kolla/multinode && \
+sed -i '/\[compute]/a compute-1.openstack.local' /etc/kolla/multinode
 
 #Add nodes
 # nano /etc/kolla/multinode
-# add under [network]: controller-3.openstack.local
-# add under [compute]: compute-2.openstack.local , compute-3.openstack.local
 
 #Bootstrap Servers
 kolla-ansible bootstrap-servers -i /etc/kolla/multinode
@@ -179,11 +179,12 @@ EOF
 
 source ~/.bashrc
 
-openstack endpoint list && openstack service list && openstack compute service list && openstack network agent list && openstack volume service list && cinder get-pools && \
-openstack service list && openstack server list && openstack catalog list && openstack image list && openstack flavor list && openstack network list && openstack subnet list && \
-openstack project list && openstack port list && openstack user list && openstack network agent list && openstack hypervisor list && openstack key list
+openstack endpoint list && openstack service list && openstack compute service list && openstack network agent list && openstack volume service list && \
+openstack service list && openstack server list && openstack catalog list && openstack image list && openstack flavor list && \
+openstack network list && openstack subnet list && openstack project list && openstack port list && openstack user list && openstack network agent list && \
+openstack hypervisor list && openstack key list
 
-./venv/share/kolla-ansible/init-runonce
+./kolla-venv/share/kolla-ansible/init-runonce
 
 ######################## Delete ########################################################
 # Destroy the already installed cluster
