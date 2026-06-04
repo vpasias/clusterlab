@@ -71,6 +71,7 @@ for h in 10.0.123.11 10.0.123.12 10.0.123.13 10.0.123.14 10.0.123.15 10.0.123.16
 #######################################################################################################################################################################
 ### Deploying OpenStack using Kolla-Ansible ###
 # https://paliijaann.medium.com/running-openstack-flamingo-2025-2-90cfdd24cb6b
+# https://venkatnamala.medium.com/building-and-testing-a-high-availability-nfs-cluster-with-drbd-and-pacemaker-for-kubernetes-2dc864d914a3
 #######################################################################################################################################################################
 
 ssh root@10.0.123.17
