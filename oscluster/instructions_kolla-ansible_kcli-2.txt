@@ -212,4 +212,5 @@ openstack hypervisor list && openstack key list && openstack volume list
 ######################## Delete ########################################################
 # Destroy the already installed cluster
 ########################################################################################
-kcli delete plan cluster --yes && kcli delete network service -y && kcli delete network management -y && cd /mnt/extra/ && rm -rf /mnt/extra/clusterlab/
+kcli delete plan cluster --yes && kcli delete network storage -y && kcli delete network service -y && kcli delete network management -y && \
+cd /mnt/extra/ && rm -rf /mnt/extra/clusterlab/
