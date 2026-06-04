@@ -190,6 +190,8 @@ storage-1.openstack.local:
     dns: 8.8.8.8
   - name: service
     noconf: true
+  - name: storage
+    ip: 10.0.125.17
  cmds:
   - sudo apt update && sudo apt upgrade -y
   - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass vim wget curl
@@ -219,6 +221,8 @@ storage-2.openstack.local:
     dns: 8.8.8.8
   - name: service
     noconf: true
+  - name: storage
+    ip: 10.0.125.18
  cmds:
   - sudo apt update && sudo apt upgrade -y
   - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass vim wget curl
