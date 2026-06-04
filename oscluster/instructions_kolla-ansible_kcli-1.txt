@@ -142,7 +142,8 @@ ff02::3 ip6-allhosts
 10.0.123.14 compute-1.openstack.local compute-1
 10.0.123.15 compute-2.openstack.local compute-2
 10.0.123.16 compute-3.openstack.local compute-3
-10.0.123.17 storage.openstack.local storage
+10.0.123.17 storage-1.openstack.local storage
+10.0.123.18 storage-1.openstack.local storage
 EOF
 
 sed -i 's/control01/controller-1.openstack.local/' /etc/kolla/multinode && \
@@ -152,10 +153,11 @@ sed -i 's/network01/controller-2.openstack.local/' /etc/kolla/multinode && \
 sed -i 's/network02/controller-3.openstack.local/' /etc/kolla/multinode && \
 sed -i 's/compute01/compute-3.openstack.local/' /etc/kolla/multinode && \
 sed -i 's/monitoring01/controller-3.openstack.local/' /etc/kolla/multinode && \
-sed -i 's/storage01/storage.openstack.local/' /etc/kolla/multinode && \
+sed -i 's/storage01/storage-2.openstack.local/' /etc/kolla/multinode && \
 sed -i '/\[network]/a controller-1.openstack.local' /etc/kolla/multinode && \
 sed -i '/\[compute]/a compute-2.openstack.local' /etc/kolla/multinode && \
-sed -i '/\[compute]/a compute-1.openstack.local' /etc/kolla/multinode
+sed -i '/\[compute]/a compute-1.openstack.local' /etc/kolla/multinode && \
+sed -i '/\[storage]/a storage-1.openstack.local' /etc/kolla/multinode
 
 #Add nodes
 #nano /etc/kolla/multinode
