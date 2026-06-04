@@ -79,7 +79,24 @@ ssh root@10.0.123.17
 #sudo apt install -y nfs-kernel-server && sudo mkdir -p /kolla_nfs && sudo chmod 777 /kolla_nfs && echo "/kolla_nfs *(rw,sync,no_root_squash)" | sudo tee /etc/exports
 #sudo exportfs -v && sudo systemctl restart nfs-kernel-server && sudo systemctl enable nfs-kernel-server && sudo systemctl status nfs-kernel-server
 
-git clone https://github.com/vpasias/clusterlab.git && ls -lah && cd /root/clusterlab/oscluster 
+git clone https://github.com/vpasias/clusterlab.git && ls -lah && cd /root/clusterlab/oscluster && chmod +x nfs-storage.sh && ./nfs-storage.sh && sleep 10
+
+exit
+
+ssh root@10.0.123.18
+
+git clone https://github.com/vpasias/clusterlab.git && ls -lah && cd /root/clusterlab/oscluster && chmod +x nfs-storage.sh && ./nfs-storage.sh && sleep 10
+
+exit
+
+ssh root@10.0.123.17
+
+sudo chown nobody:nogroup /mnt/drbd0 && sudo chmod 777 /mnt/drbd0 && sudo exportfs -av && echo "/mnt/drbd0 *(rw,sync,no_root_squash)" | sudo tee /etc/exports && \
+sudo systemctl restart nfs-kernel-server && sudo systemctl enable nfs-kernel-server && sudo systemctl status nfs-kernel-server
+
+sudo drbdadm status && cat /proc/drbd
+
+sudo pcs status && sudo systemctl status corosync && sudo systemctl status pacemaker && sudo systemctl status nfs-kernel-server
 
 exit
 
@@ -114,7 +131,7 @@ sed -i 's/#enable_masakari: "no"/enable_masakari: "yes"/' /etc/kolla/globals.yml
 sed -i 's/#enable_cinder_backup: "yes"/enable_cinder_backup: "yes"/' /etc/kolla/globals.yml && \
 sed -i 's/#enable_cinder_backend_nfs: "no"/enable_cinder_backend_nfs: "yes"/' /etc/kolla/globals.yml && \
 sed -i 's/#cinder_backup_driver: "ceph"/cinder_backup_driver: "nfs"/' /etc/kolla/globals.yml && \
-sed -i 's/#cinder_backup_share: ""/cinder_backup_share: "10.0.123.17:\/kolla_nfs"/' /etc/kolla/globals.yml && \
+sed -i 's/#cinder_backup_share: ""/cinder_backup_share: "10.0.123.251:\/mnt\/drbd0"/' /etc/kolla/globals.yml && \
 sed -i 's/#nova_compute_virt_type: "kvm"/nova_compute_virt_type: "kvm"/' /etc/kolla/globals.yml
 
 mkdir /etc/kolla/config
@@ -125,7 +142,7 @@ max_pool_size = 100
 EOF
 
 cat > /etc/kolla/config/nfs_shares <<EOF
-10.0.123.17:/kolla_nfs
+10.0.123.251:/mnt/drbd0
 EOF
 
 cat > /etc/hosts <<EOF
