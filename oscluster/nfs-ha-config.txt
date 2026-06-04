@@ -4,12 +4,12 @@ HAVIP=10.0.123.251
 # Node 1 details
 NODE1=storage-1.openstack.local storag
 IP1=10.0.123.17
-REPIP1=192.168.10.136
+REPIP1=10.0.125.17
 
 # Node 2 details
 NODE2=storage-2.openstack.local storag
 IP2=10.0.123.18
-REPIP2=192.168.10.138
+REPIP2=10.0.125.18
 
 # Block device for DRBD
 BACKDEV=/dev/sdb
