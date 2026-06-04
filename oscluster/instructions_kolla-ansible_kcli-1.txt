@@ -66,7 +66,7 @@ ssh-keygen -t rsa -N "" -f .ssh/id_rsa
 #echo -e 'gprm8350\ngprm8350\n' | sudo passwd root
 #sshpass -p 'gprm8350' ssh-copy-id -o "StrictHostKeyChecking=no" root@localhost
 
-for h in 10.0.123.11 10.0.123.12 10.0.123.13 10.0.123.14 10.0.123.15 10.0.123.16 10.0.123.17; do sudo sshpass -p 'gprm8350' sudo ssh-copy-id -o "StrictHostKeyChecking=no" root@$h; done
+for h in 10.0.123.11 10.0.123.12 10.0.123.13 10.0.123.14 10.0.123.15 10.0.123.16 10.0.123.17 10.0.123.18; do sudo sshpass -p 'gprm8350' sudo ssh-copy-id -o "StrictHostKeyChecking=no" root@$h; done
 
 #######################################################################################################################################################################
 ### Deploying OpenStack using Kolla-Ansible ###
@@ -76,8 +76,10 @@ for h in 10.0.123.11 10.0.123.12 10.0.123.13 10.0.123.14 10.0.123.15 10.0.123.16
 
 ssh root@10.0.123.17
 
-sudo apt install -y nfs-kernel-server && sudo mkdir -p /kolla_nfs && sudo chmod 777 /kolla_nfs && echo "/kolla_nfs *(rw,sync,no_root_squash)" | sudo tee /etc/exports
-sudo exportfs -v && sudo systemctl restart nfs-kernel-server && sudo systemctl enable nfs-kernel-server && sudo systemctl status nfs-kernel-server
+#sudo apt install -y nfs-kernel-server && sudo mkdir -p /kolla_nfs && sudo chmod 777 /kolla_nfs && echo "/kolla_nfs *(rw,sync,no_root_squash)" | sudo tee /etc/exports
+#sudo exportfs -v && sudo systemctl restart nfs-kernel-server && sudo systemctl enable nfs-kernel-server && sudo systemctl status nfs-kernel-server
+
+git clone https://github.com/vpasias/clusterlab.git && ls -lah && cd /root/clusterlab/oscluster 
 
 exit
 
