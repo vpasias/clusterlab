@@ -54,7 +54,7 @@ kcli list images && kcli list vms && kcli list pools && kcli list networks
 #######################################################################################################################################################################
 
 cd /mnt/extra/ && git clone https://github.com/vpasias/clusterlab.git && ls -lah && cd /mnt/extra/clusterlab/oscluster && \
-kcli create network -c 10.0.123.0/24 management && kcli create network -c 10.0.124.0/24 service && kcli create plan -f clusterplan.yml cluster
+kcli create network -c 10.0.123.0/24 management && kcli create network -c 10.0.124.0/24 service && kcli create network -c 10.0.125.0/24 storage && kcli create plan -f clusterplan.yml cluster
 
 kcli ssh controller-1.openstack.local
 #cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && lsblk && ip a && cat /etc/hosts
