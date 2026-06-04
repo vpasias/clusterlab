@@ -63,9 +63,6 @@ sudo -i
 
 ssh-keygen -t rsa -N "" -f .ssh/id_rsa
 
-#echo -e 'gprm8350\ngprm8350\n' | sudo passwd root
-#sshpass -p 'gprm8350' ssh-copy-id -o "StrictHostKeyChecking=no" root@localhost
-
 for h in 10.0.123.11 10.0.123.12 10.0.123.13 10.0.123.14 10.0.123.15 10.0.123.16 10.0.123.17 10.0.123.18; do sudo sshpass -p 'gprm8350' sudo ssh-copy-id -o "StrictHostKeyChecking=no" root@$h; done
 
 #######################################################################################################################################################################
