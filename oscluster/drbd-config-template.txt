@@ -1,0 +1,48 @@
+resource r0 {
+    protocol C;  # Use protocol C for maximum data safety
+    device /dev/drbd0;
+    disk /dev/vg_drbd/lv_r0;
+    meta-disk internal;
+
+    on NODE1 {
+        address IP1:7788;
+    }
+    on NODE2 {
+        address IP2:7788;
+    }
+
+    syncer {
+        rate 1G;             # Set to the maximum value your network can handle. You can also increase this to higher if possible.
+        al-extents 3833;      # Recommended value for high-performance networks
+        verify-alg sha1;      # Fast verification algorithm
+        c-plan-ahead 20;      # Aggressively plan synchronization ahead
+        c-fill-target 32M;    # Maximum amount of data to send in advance
+        c-min-rate 250M;      # Minimum synchronization rate
+        c-max-rate 2G;        # Maximum rate for synchronization
+    }
+
+    net {
+        max-buffers 8000;          # Increase the number of network buffers to handle more data
+        max-epoch-size 8000;       # Controls the number of updates in one epoch (higher increases throughput)
+        sndbuf-size 4M;            # Increase socket send buffer size for more data
+        rcvbuf-size 4M;            # Increase socket receive buffer size
+        tcp-cork yes;              # Enable TCP_CORK to optimize TCP performance
+        allow-two-primaries no;    # Set to 'no' unless you are using a dual-primary configuration
+    }
+
+    disk {
+        no-disk-barrier;       # Disable barriers to improve performance (use with caution, only if power loss is not a concern)
+        no-disk-flushes;       # Disables flush commands to the disk (again, use with caution)
+        no-md-flushes;         # Disables metadata flushes
+        c-plan-ahead 20;       # Plan synchronization ahead more aggressively
+        c-fill-target 32M;     # Adjust fill target size for smoother transfers
+        c-min-rate 250M;       # Ensures the minimum sync speed doesn't drop below this rate
+        c-max-rate 2G;         # Cap the maximum sync rate to avoid overwhelming resources
+        resync-rate 2G;        # Set a higher rate to speed up syncing
+    }
+
+    handlers {
+        pri-on-incon-degr "echo o > /proc/sysrq-trigger ; halt -f";
+        pri-lost-after-sb "echo o > /proc/sysrq-trigger ; halt -f";
+    }
+}
