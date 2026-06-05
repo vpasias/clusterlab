@@ -159,8 +159,8 @@ ff02::3 ip6-allhosts
 10.0.123.14 compute-1.openstack.local compute-1
 10.0.123.15 compute-2.openstack.local compute-2
 10.0.123.16 compute-3.openstack.local compute-3
-10.0.123.17 storage-1.openstack.local storage
-10.0.123.18 storage-1.openstack.local storage
+10.0.123.17 storage-1.openstack.local storage-1
+10.0.123.18 storage-2.openstack.local storage-2
 EOF
 
 #Modify inventory file
