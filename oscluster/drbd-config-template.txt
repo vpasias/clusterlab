@@ -5,10 +5,10 @@ resource r0 {
     meta-disk internal;
 
     on NODE1 {
-        address IP1:7788;
+        address REPIP1:7788;
     }
     on NODE2 {
-        address IP2:7788;
+        address REPIP2:7788;
     }
 
     syncer {
