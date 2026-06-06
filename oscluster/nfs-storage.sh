@@ -4,6 +4,7 @@
 source nfs-ha-config.txt
 
 # Update and install necessary packages
+sudo apt install build-essential linux-headers-$(uname -r) -y
 sudo add-apt-repository ppa:linbit/linbit-drbd9-stack -y
 sudo apt update && sudo apt -y upgrade
 sudo apt -y install drbd-utils drbd-dkms lvm2 nfs-kernel-server corosync pcs pacemaker pwgen resource-agents-extra sysstat
