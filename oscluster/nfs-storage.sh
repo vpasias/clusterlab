@@ -5,7 +5,7 @@ source nfs-ha-config.txt
 
 # Update and install necessary packages
 sudo apt update && sudo apt -y upgrade
-sudo apt -y install drbd-utils lvm2 nfs-kernel-server corosync pcs pacemaker pwgen resource-agents-extra sysstat
+sudo apt -y install drbd-utils drbd-dkms lvm2 nfs-kernel-server corosync pcs pacemaker pwgen resource-agents-extra sysstat
 
 # Disable conflicting NFS services
 sudo systemctl disable --now nfs-server rpc-statd
