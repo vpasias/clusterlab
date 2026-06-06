@@ -192,6 +192,7 @@ storage-1.openstack.local:
     noconf: true
   - name: storage
     ip: 10.0.125.17
+    mask: 255.255.255.0
  cmds:
   - sudo apt update && sudo apt upgrade -y
   - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass vim wget curl
@@ -223,6 +224,7 @@ storage-2.openstack.local:
     noconf: true
   - name: storage
     ip: 10.0.125.18
+    mask: 255.255.255.0
  cmds:
   - sudo apt update && sudo apt upgrade -y
   - sudo apt install -y chrony rsyslog iputils-ping nfs-common sshpass vim wget curl
