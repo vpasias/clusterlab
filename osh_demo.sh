@@ -5,12 +5,12 @@ set -eux
 cd "$(dirname "$0")"
 
 function ssh_to() {
-    local ip="10.0.123.1${1}"
+    local ip="10.0.123.1${0}"
     shift
     ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu "${ip}" "$@"
 }
 
-for i in {1..4}; do
+for i in {0..3}; do
     cat <<EOF | uvt-kvm create \
         --machine-type q35 \
         --cpu 8 \
@@ -42,7 +42,7 @@ network:
 EOF
 done
 
-for i in {1..4}; do
+for i in {0..3}; do
     virsh detach-interface "node-${i}" network --config
 
     virsh attach-interface "node-${i}" network virbr-mgt \
@@ -52,7 +52,7 @@ for i in {1..4}; do
 done
 
 
-for i in {1..4}; do
+for i in {0..3}; do
     until ssh_to "${i}" -t -- cloud-init status --wait; do
         sleep 1
     done
@@ -70,7 +70,7 @@ for i in {1..4}; do
 
 done
 
-for i in {1..4}; do
+for i in {0..3}; do
 
     ssh_to "${i}" -t -- sudo reboot
 
