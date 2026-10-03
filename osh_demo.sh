@@ -23,7 +23,7 @@ for i in {1..4}; do
         --network-config /dev/stdin \
         --no-start \
         "node-${i}.localdomain" \
-        release=jammy
+        release=noble
 network:
   version: 2
   ethernets:
