@@ -70,6 +70,13 @@ for i in {0..3}; do
 
 done
 
+ssh_to 0 -- 'sudo tee -a /etc/hosts <<EOF
+10.0.123.10 node-0
+10.0.123.11 node-1
+10.0.123.12 node-2
+10.0.123.13 node-3
+EOF'
+
 for i in {0..3}; do
 
     ssh_to "${i}" -t -- sudo reboot
