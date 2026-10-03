@@ -10,12 +10,12 @@ function ssh_to() {
     ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu "${ip}" "$@"
 }
 
-for i in {1..9}; do
+for i in {1..4}; do
     cat <<EOF | uvt-kvm create \
         --machine-type q35 \
-        --cpu 6 \
+        --cpu 8 \
         --host-passthrough \
-        --memory 24576 \
+        --memory 32768 \
         --disk 100 \
         --ephemeral-disk 100 \
         --ephemeral-disk 100 \
@@ -42,7 +42,7 @@ network:
 EOF
 done
 
-for i in {1..9}; do
+for i in {1..4}; do
     virsh detach-interface "node-${i}.localdomain" network --config
 
     virsh attach-interface "node-${i}.localdomain" network virbr-mgt \
@@ -52,7 +52,7 @@ for i in {1..9}; do
 done
 
 
-for i in {1..9}; do
+for i in {1..4}; do
     until ssh_to "${i}" -t -- cloud-init status --wait; do
         sleep 1
     done
@@ -70,19 +70,7 @@ for i in {1..9}; do
 
 done
 
-ssh_to 9 -- 'sudo tee -a /etc/hosts <<EOF
-10.0.123.11 node-1 node-1.localdomain
-10.0.123.12 node-2 node-2.localdomain
-10.0.123.13 node-3 node-3.localdomain
-10.0.123.14 node-4 node-4.localdomain
-10.0.123.15 node-5 node-5.localdomain
-10.0.123.16 node-6 node-6.localdomain
-10.0.123.17 node-7 node-7.localdomain
-10.0.123.18 node-8 node-8.localdomain
-10.0.123.19 node-9 node-9.localdomain
-EOF'
-
-for i in {1..9}; do
+for i in {1..4}; do
 
     ssh_to "${i}" -t -- sudo reboot
 
