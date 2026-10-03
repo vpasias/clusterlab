@@ -51,7 +51,7 @@ for i in {1..4}; do
     virsh start "node-${i}"
 done
 
-sleep 60
+sleep 30
 
 for i in {1..4}; do
 
