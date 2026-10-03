@@ -22,7 +22,7 @@ for i in {1..4}; do
         --unsafe-caching \
         --network-config /dev/stdin \
         --no-start \
-        "node-${i}.localdomain" \
+        "node-${i}" \
         release=noble
 network:
   version: 2
@@ -43,12 +43,12 @@ EOF
 done
 
 for i in {1..4}; do
-    virsh detach-interface "node-${i}.localdomain" network --config
+    virsh detach-interface "node-${i}" network --config
 
-    virsh attach-interface "node-${i}.localdomain" network virbr-mgt \
+    virsh attach-interface "node-${i}" network virbr-mgt \
         --model virtio --config
 
-    virsh start "node-${i}.localdomain"
+    virsh start "node-${i}"
 done
 
 
