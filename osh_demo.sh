@@ -5,7 +5,7 @@ set -eux
 cd "$(dirname "$0")"
 
 function ssh_to() {
-    local ip="10.0.123.1${0}"
+    local ip="10.0.123.1${1}"
     shift
     ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu "${ip}" "$@"
 }
