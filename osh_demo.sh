@@ -10,7 +10,7 @@ function ssh_to() {
     ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu "${ip}" "$@"
 }
 
-for i in {0..3}; do
+for i in {1..4}; do
     cat <<EOF | uvt-kvm create \
         --machine-type q35 \
         --cpu 8 \
@@ -42,7 +42,7 @@ network:
 EOF
 done
 
-for i in {0..3}; do
+for i in {1..4}; do
     virsh detach-interface "node-${i}" network --config
 
     virsh attach-interface "node-${i}" network virbr-mgt \
@@ -52,7 +52,7 @@ for i in {0..3}; do
 done
 
 
-for i in {0..3}; do
+for i in {1..4}; do
     until ssh_to "${i}" -t -- cloud-init status --wait; do
         sleep 1
     done
@@ -70,14 +70,14 @@ for i in {0..3}; do
 
 done
 
-ssh_to 0 -- 'sudo tee -a /etc/hosts <<EOF
-10.0.123.10 node-0
+ssh_to 1 -- 'sudo tee -a /etc/hosts <<EOF
 10.0.123.11 node-1
 10.0.123.12 node-2
 10.0.123.13 node-3
+10.0.123.14 node-4
 EOF'
 
-for i in {0..3}; do
+for i in {1..4}; do
 
     ssh_to "${i}" -t -- sudo reboot
 
