@@ -163,11 +163,9 @@ for i in {1..3}; do
     virsh start "kvm${i}.cloud.atmosphere.dev"
 done
 
+sleep 30
 
 for i in {1..3}; do
-    until ssh_ctl "${i}" -t -- cloud-init status --wait; do
-        sleep 1
-    done
 
     ssh_ctl "${i}" -t -- sudo apt update -y
     ssh_ctl "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils sshpass
@@ -217,9 +215,6 @@ EOF'
 done
 
 for i in {1..3}; do
-    until ssh_ceph "${i}" -t -- cloud-init status --wait; do
-        sleep 1
-    done
 
     ssh_ceph "${i}" -t -- sudo apt update -y
     ssh_ceph "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils sshpass
@@ -269,9 +264,6 @@ EOF'
 done
 
 for i in {1..3}; do
-    until ssh_kvm "${i}" -t -- cloud-init status --wait; do
-        sleep 1
-    done
 
     ssh_kvm "${i}" -t -- sudo apt update -y
     ssh_kvm "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils sshpass
