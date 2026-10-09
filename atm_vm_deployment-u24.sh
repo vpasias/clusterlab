@@ -175,7 +175,7 @@ for i in {1..3}; do
     ssh_ctl "${i}" -t -- "sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config"
     ssh_ctl "${i}" -t -- "sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config"
     ssh_ctl "${i}" -t -- "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config.d/60-cloudimg-settings.conf"
-    ssh_ctl "${i}" -t -- sudo systemctl restart sshd
+    ssh_ctl "${i}" -t -- sudo systemctl restart ssh
     ssh_ctl "${i}" -t -- sudo rm -rf /root/.ssh/authorized_keys
 
 ssh_ctl "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
@@ -224,7 +224,7 @@ for i in {1..3}; do
     ssh_ceph "${i}" -t -- "sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config"
     ssh_ceph "${i}" -t -- "sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config"
     ssh_ceph "${i}" -t -- "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config.d/60-cloudimg-settings.conf"
-    ssh_ceph "${i}" -t -- sudo systemctl restart sshd
+    ssh_ceph "${i}" -t -- sudo systemctl restart ssh
     ssh_ceph "${i}" -t -- sudo rm -rf /root/.ssh/authorized_keys
 
 ssh_ceph "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
@@ -273,7 +273,7 @@ for i in {1..3}; do
     ssh_kvm "${i}" -t -- "sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config"
     ssh_kvm "${i}" -t -- "sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config"
     ssh_kvm "${i}" -t -- "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config.d/60-cloudimg-settings.conf"
-    ssh_kvm "${i}" -t -- sudo systemctl restart sshd
+    ssh_kvm "${i}" -t -- sudo systemctl restart ssh
     ssh_kvm "${i}" -t -- sudo rm -rf /root/.ssh/authorized_keys
 
 ssh_kvm "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
