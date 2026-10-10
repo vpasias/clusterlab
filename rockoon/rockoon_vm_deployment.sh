@@ -155,7 +155,7 @@ sleep 30
 for i in {1..3}; do
 
     ssh_ctl "${i}" -t -- sudo apt update -y
-    ssh_ctl "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils sshpass
+    ssh_ctl "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils sshpass python3-pip
 
     ssh_ctl "${i}" -t -- 'echo "root:gprm8350" | sudo chpasswd'
     ssh_ctl "${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
@@ -182,7 +182,7 @@ done
 for i in {1..3}; do
 
     ssh_osctl "${i}" -t -- sudo apt update -y
-    ssh_osctl "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils sshpass
+    ssh_osctl "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils sshpass python3-pip
 
     ssh_osctl "${i}" -t -- 'echo "root:gprm8350" | sudo chpasswd'
     ssh_osctl "${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
@@ -209,7 +209,7 @@ done
 for i in {1..3}; do
 
     ssh_oscomp "${i}" -t -- sudo apt update -y
-    ssh_oscomp "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils sshpass
+    ssh_oscomp "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils sshpass python3-pip
 
     ssh_oscomp "${i}" -t -- 'echo "root:gprm8350" | sudo chpasswd'
     ssh_oscomp "${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
