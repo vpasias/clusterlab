@@ -1,7 +1,7 @@
 ---
 all:
   vars:
-    ansible_ssh_user: ubuntu
+    ansible_ssh_user: root
     k0s_worker_on_controller: false
     k0s_no_taints: false
     # The Kubernetes 36.0.1 and later require PyYAML 6.0.3
