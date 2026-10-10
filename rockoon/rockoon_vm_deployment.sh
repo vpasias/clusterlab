@@ -186,8 +186,8 @@ ssh_ctl "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
 172.19.123.22 oc-virtual-lab-server-os-ctl-02
 172.19.123.23 oc-virtual-lab-server-os-ctl-03
 172.19.123.31 oc-virtual-lab-server-os-cmp-01
-172.19.123.32 oc-virtual-lab-server-os-cmp-01
-172.19.123.33 oc-virtual-lab-server-os-cmp-01
+172.19.123.32 oc-virtual-lab-server-os-cmp-02
+172.19.123.33 oc-virtual-lab-server-os-cmp-03
 EOF'
 
 done
@@ -213,8 +213,8 @@ ssh_osctl "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
 172.19.123.22 oc-virtual-lab-server-os-ctl-02
 172.19.123.23 oc-virtual-lab-server-os-ctl-03
 172.19.123.31 oc-virtual-lab-server-os-cmp-01
-172.19.123.32 oc-virtual-lab-server-os-cmp-01
-172.19.123.33 oc-virtual-lab-server-os-cmp-01
+172.19.123.32 oc-virtual-lab-server-os-cmp-02
+172.19.123.33 oc-virtual-lab-server-os-cmp-03
 EOF'
 
 done
@@ -240,8 +240,8 @@ ssh_oscomp "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
 172.19.123.22 oc-virtual-lab-server-os-ctl-02
 172.19.123.23 oc-virtual-lab-server-os-ctl-03
 172.19.123.31 oc-virtual-lab-server-os-cmp-01
-172.19.123.32 oc-virtual-lab-server-os-cmp-01
-172.19.123.33 oc-virtual-lab-server-os-cmp-01
+172.19.123.32 oc-virtual-lab-server-os-cmp-02
+172.19.123.33 oc-virtual-lab-server-os-cmp-03
 EOF'
 
 done
