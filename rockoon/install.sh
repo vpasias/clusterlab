@@ -12,7 +12,7 @@ exec 2> >(ts '[%Y-%m-%d %H:%M:%S]' | tee -a "${LOG_FILE}" >&2)
 
 TOP_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-OPENSTACK_CONTROLLER_DIR=${OPENSTACK_CONTROLLER_DIR:-"${TOP_DIR}/../"}
+OPENSTACK_CONTROLLER_DIR=/mnt/extra/rockoon
 INVENTORY_FILE=${INVENTORY_FILE:-"${OPENSTACK_CONTROLLER_DIR}/virtual_lab/ansible/inventory/multi_node.yaml"}
 HOSTNAME=$(hostname)
 
