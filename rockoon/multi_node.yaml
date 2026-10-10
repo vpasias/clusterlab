@@ -1,1 +1,53 @@
+---
+all:
+  vars:
+    ansible_ssh_user: ubuntu
+    k0s_worker_on_controller: false
+    k0s_no_taints: false
+    # The Kubernetes 36.0.1 and later require PyYAML 6.0.3
+    # Ubunti provides this version since Resolute so we
+    # pin Kubernetes 35.0.0 and korrespond k0s version
+    k0s_version: 1.35.4+k0s.0
+    kubernetes_py_version: 35.0.0
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+    rvl_binary_base_url: https://artifactory.mcp.mirantis.net/artifactory/binary-dev-kaas-virtual
+    rvl_images_base_url: docker-dev-kaas-virtual.docker.mirantis.net
 
+  hosts:
+    oc-virtual-lab-server-ctl-01:
+      ansible_host: 172.19.123.11
+    oc-virtual-lab-server-os-ctl-01:
+      ansible_host: 172.19.123.21
+    oc-virtual-lab-server-os-ctl-02:
+      ansible_host: 172.19.123.22
+    oc-virtual-lab-server-os-ctl-03:
+      ansible_host: 172.19.123.23
+    oc-virtual-lab-server-os-cmp-01:
+      ansible_host: 172.19.123.31
+    oc-virtual-lab-server-os-cmp-02:
+      ansible_host: 172.19.123.32
+    oc-virtual-lab-server-os-cmp-03:
+      ansible_host: 172.19.123.33
+
+  children:
+    computes:
+      hosts:
+        oc-virtual-lab-server-os-cmp-01:
+        oc-virtual-lab-server-os-cmp-02:
+        oc-virtual-lab-server-os-cmp-03:
+    controllers:
+      hosts:
+        oc-virtual-lab-server-os-ctl-01:
+        oc-virtual-lab-server-os-ctl-02:
+        oc-virtual-lab-server-os-ctl-03:
+    k8s_controllers:
+      hosts:
+        oc-virtual-lab-server-ctl-01:
+    k8s_workers:
+      hosts:
+        oc-virtual-lab-server-os-ctl-01:
+        oc-virtual-lab-server-os-ctl-02:
+        oc-virtual-lab-server-os-ctl-03:
+        oc-virtual-lab-server-os-cmp-01:
+        oc-virtual-lab-server-os-cmp-02:
+        oc-virtual-lab-server-os-cmp-03:
