@@ -225,7 +225,7 @@ for i in {1..3}; do
     ssh_oscomp "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils sshpass
 
     ssh_oscomp "${i}" -t -- 'echo "root:gprm8350" | sudo chpasswd'
-    ssh_oscomp"${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
+    ssh_oscomp "${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
     ssh_oscomp "${i}" -t -- "sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config"
     ssh_oscomp "${i}" -t -- "sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config"
     ssh_oscomp "${i}" -t -- "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config.d/60-cloudimg-settings.conf"
