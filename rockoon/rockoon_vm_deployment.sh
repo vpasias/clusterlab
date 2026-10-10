@@ -51,12 +51,6 @@ network:
       nameservers:
         addresses:
           - 172.19.123.1
-    enp9s0:
-      dhcp4: false
-      dhcp6: false
-      accept-ra: false
-      addresses:
-        - 172.19.124.1${i}/24
 EOF
 done
 
@@ -89,12 +83,6 @@ network:
       nameservers:
         addresses:
           - 172.19.123.1
-    enp9s0:
-      dhcp4: false
-      dhcp6: false
-      accept-ra: false
-      addresses:
-        - 172.19.124.2${i}/24
 EOF
 done
 
@@ -127,39 +115,24 @@ network:
       nameservers:
         addresses:
           - 172.19.123.1
-    enp9s0:
-      dhcp4: false
-      dhcp6: false
-      accept-ra: false
-      addresses:
-        - 172.19.124.3${i}/24
 EOF
 done
 
 for i in {1..3}; do
-    virsh detach-interface "oc-virtual-lab-server-ctl-0${i}" network --config
-    
+    virsh detach-interface "oc-virtual-lab-server-ctl-0${i}" network --config    
     virsh attach-interface "oc-virtual-lab-server-ctl-0${i}" network virbr-mgt --model virtio --config
-    virsh attach-interface "oc-virtual-lab-server-ctl-0${i}" network virbr-serv --model virtio --config
-
     virsh start "oc-virtual-lab-server-ctl-0${i}"
 done
 
 for i in {1..3}; do
-    virsh detach-interface "oc-virtual-lab-server-os-ctl-0${i}" network --config
-    
-    virsh attach-interface "oc-virtual-lab-server-os-ctl-0${i}" network virbr-mgt --model virtio --config
-    virsh attach-interface "oc-virtual-lab-server-os-ctl-0${i}" network virbr-serv --model virtio --config   
-    
+    virsh detach-interface "oc-virtual-lab-server-os-ctl-0${i}" network --config    
+    virsh attach-interface "oc-virtual-lab-server-os-ctl-0${i}" network virbr-mgt --model virtio --config    
     virsh start "oc-virtual-lab-server-os-ctl-0${i}"
 done
 
 for i in {1..3}; do
     virsh detach-interface "oc-virtual-lab-server-os-cmp-0${i}" network --config
-    
     virsh attach-interface "oc-virtual-lab-server-os-cmp-0${i}" network virbr-mgt --model virtio --config
-    virsh attach-interface "oc-virtual-lab-server-os-cmp-0${i}" network virbr-serv --model virtio --config
-
     virsh start "oc-virtual-lab-server-os-cmp-0${i}"
 done
 
