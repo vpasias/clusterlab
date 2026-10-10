@@ -65,7 +65,7 @@ for i in {1..3}; do
         --machine-type q35 \
         --cpu 6 \
         --host-passthrough \
-        --memory 24576 \
+        --memory 32768 \
         --disk 100 \
         --ephemeral-disk 100 \
         --ephemeral-disk 100 \
@@ -103,7 +103,7 @@ for i in {1..3}; do
         --machine-type q35 \
         --cpu 6 \
         --host-passthrough \
-        --memory 24576 \
+        --memory 32768 \
         --disk 100 \
         --ephemeral-disk 100 \
         --ephemeral-disk 100 \
