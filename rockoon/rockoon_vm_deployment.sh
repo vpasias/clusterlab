@@ -14,6 +14,10 @@ cat <<EOF | virsh net-define /dev/stdin
 </network>
 EOF
 
+virsh net-autostart virbr-mgt
+
+virsh net-start virbr-mgt 
+
 function ssh_ctl() {
     local ip="172.19.123.1${1}"
     shift
