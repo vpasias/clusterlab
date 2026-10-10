@@ -11,7 +11,7 @@ all:
     kubernetes_py_version: 35.0.0
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
     rvl_binary_base_url: https://artifactory.mcp.mirantis.net/artifactory/binary-dev-kaas-virtual
-    rvl_images_base_url: docker-dev-kaas-virtual.docker.mirantis.net    
+    rvl_images_base_url: docker-dev-kaas-virtual.docker.mirantis.net
 
   hosts:
     oc-virtual-lab-server-ctl-01:
