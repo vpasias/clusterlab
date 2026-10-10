@@ -48,10 +48,10 @@ all:
         oc-virtual-lab-server-ctl-01:
     k8s_workers:
       hosts:
-        #oc-virtual-lab-server-ctl-01:
-        #oc-virtual-lab-server-os-ctl-01:
-        #oc-virtual-lab-server-os-ctl-02:
+        oc-virtual-lab-server-ctl-01:
+        oc-virtual-lab-server-os-ctl-01:
+        oc-virtual-lab-server-os-ctl-02:
         #oc-virtual-lab-server-os-ctl-03:
-        #oc-virtual-lab-server-os-cmp-01:
-        #oc-virtual-lab-server-os-cmp-02:
+        oc-virtual-lab-server-os-cmp-01:
+        oc-virtual-lab-server-os-cmp-02:
         #oc-virtual-lab-server-os-cmp-03:
