@@ -47,9 +47,9 @@ function ssh_sn() {
 for i in {1..1}; do
     cat <<EOF | uvt-kvm create \
         --machine-type q35 \
-        --cpu 8 \
+        --cpu 4 \
         --host-passthrough \
-        --memory 32768 \
+        --memory 16384 \
         --disk 100 \
         --ephemeral-disk 100 \
         --ephemeral-disk 100 \
@@ -85,7 +85,7 @@ done
 for i in {1..6}; do
     cat <<EOF | uvt-kvm create \
         --machine-type q35 \
-        --cpu 6 \
+        --cpu 8 \
         --host-passthrough \
         --memory 32768 \
         --disk 100 \
