@@ -139,7 +139,7 @@ sleep 30
 for i in {1..1}; do
 
     ssh_in "${i}" -t -- sudo apt update -y
-    ssh_in "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils sshpass python3-pip
+    ssh_in "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils sshpass
 
     ssh_in "${i}" -t -- 'echo "root:gprm8350" | sudo chpasswd'
     ssh_in "${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
