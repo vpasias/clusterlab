@@ -165,7 +165,7 @@ done
 for i in {1..6}; do
 
     ssh_sn "${i}" -t -- sudo apt update -y
-    ssh_sn "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils sshpass python3-pip
+    ssh_sn "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils sshpass
 
     ssh_sn "${i}" -t -- 'echo "root:gprm8350" | sudo chpasswd'
     ssh_sn "${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
