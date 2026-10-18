@@ -71,8 +71,8 @@ node_types:
       - physnet1
     console_log_enabled: true
   compute:
-    memory_mb: 311296
-    vcpus: 48
+    memory_mb: 196608
+    vcpus: 40
     volumes:
       # There is a minimum disk space capacity requirement of 4GiB when using Ironic Python Agent:
       # https://github.com/openstack/ironic-python-agent/blob/master/ironic_python_agent/utils.py#L290
