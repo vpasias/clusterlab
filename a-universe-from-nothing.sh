@@ -6,23 +6,18 @@
 set -eu
 
 # Install git and tmux.
-if $(which dnf 2>/dev/null >/dev/null); then
-    sudo dnf -y install git tmux
+if command -v dnf >/dev/null 2>&1; then
+    sudo dnf -y install git python3 tmux
 else
     sudo apt update
     sudo apt -y install git python3 python3-venv tmux
-fi
-
-# Install Python 3.12 on Rocky Linux 9
-if $(which dnf 2>/dev/null >/dev/null); then
-    sudo dnf -y install python3.12
 fi
 
 # Disable the firewall.
 sudo systemctl is-enabled firewalld && sudo systemctl stop firewalld && sudo systemctl disable firewalld
 
 # Put SELinux in permissive mode both immediately and permanently.
-if $(which setenforce 2>/dev/null >/dev/null); then
+if command -v setenforce >/dev/null 2>&1; then
     sudo setenforce 0
     sudo sed -i 's/^SELINUX=enforcing/SELINUX=permissive/' /etc/selinux/config
 fi
