@@ -45,12 +45,7 @@ cd
 [[ -d beokay ]] || git clone https://github.com/stackhpc/beokay.git
 
 # Use Beokay to bootstrap your control host.
-if $(which dnf 2>/dev/null >/dev/null); then
-    PYTHON_ARG=" --python /usr/bin/python3.12"
-else
-    PYTHON_ARG=""
-fi
-[[ -d deployment ]] || beokay/beokay.py create --base-path ~/deployment --kayobe-repo https://opendev.org/openstack/kayobe.git --kayobe-branch stable/2025.1 --kayobe-config-repo https://github.com/stackhpc/a-universe-from-nothing.git --kayobe-config-branch stable/2025.1 $PYTHON_ARG
+[[ -d deployment ]] || beokay/beokay.py create --base-path ~/deployment --kayobe-repo https://opendev.org/openstack/kayobe.git --kayobe-branch stable/2026.1 --kayobe-config-repo https://github.com/stackhpc/a-universe-from-nothing.git --kayobe-config-branch stable/2026.1
 
 rm -rf ~/deployment/src/kayobe-config/tenks.yml
 
@@ -159,6 +154,11 @@ kayobe overcloud hardware inspect
 kayobe overcloud introspection data save
 kayobe overcloud provision
 kayobe overcloud host configure
+kayobe overcloud host package update --packages '*'
+if command -v dnf >/dev/null 2>&1; then
+    kayobe overcloud host command run --become --command "dnf install -y kernel-modules-extra"
+fi
+kayobe playbook run $KAYOBE_CONFIG_PATH/ansible/reboot.yml
 kayobe overcloud container image pull
 kayobe overcloud service deploy
 source ~/deployment/src/kayobe-config/etc/kolla/public-openrc.sh
