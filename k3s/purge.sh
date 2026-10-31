@@ -8,7 +8,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "$BASE_DIR/lib/colors.sh"
 source "$BASE_DIR/lib/atomic_helm.sh"
 
-DISK="${DISK:-/dev/sdb}"
+DISK="${DISK:-/dev/vdc}"
 
 K3S=0
 CEPH=0
