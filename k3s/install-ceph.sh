@@ -7,7 +7,6 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "$BASE_DIR/lib/colors.sh"
 source "$BASE_DIR/lib/atomic_helm.sh"
 
-MGMT_DOMAIN="${MGMT_DOMAIN:-osh-int.proxmox.home}"
 MGMT_INGRESS_CLASS="${MGMT_INGRESS_CLASS:-traefik}"
 
 OPENSTACK_NS="${OPENSTACK_NS:-openstack}"
@@ -347,16 +346,6 @@ cephClusterSpec:
         disabled: false
       osd:
         disabled: false
-
-ingress:
-  dashboard:
-    enabled: true
-    ingressClassName: ${MGMT_INGRESS_CLASS}
-    host:
-      name: ceph.${MGMT_DOMAIN}
-      path: /
-    annotations:
-      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
 
 cephBlockPools:
   - name: rdb
