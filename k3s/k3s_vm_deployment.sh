@@ -138,6 +138,7 @@ for i in {1..2}; do
 
     ssh_in "${i}" -t -- sudo apt update -y
     ssh_in "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils sshpass ca-certificates gnupg lsb-release jq
+    ssh_in "${i}" -t -- sudo apt-get install haproxy keepalived -y
 
     ssh_in "${i}" -t -- 'echo "root:gprm8350" | sudo chpasswd'
     ssh_in "${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
