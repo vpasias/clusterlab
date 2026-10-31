@@ -83,11 +83,10 @@ done
 for i in {1..6}; do
     cat <<EOF | uvt-kvm create \
         --machine-type q35 \
-        --cpu 8 \
+        --cpu 6 \
         --host-passthrough \
         --memory 32768 \
         --disk 100 \
-        --ephemeral-disk 100 \
         --ephemeral-disk 100 \
         --unsafe-caching \
         --network-config /dev/stdin \
@@ -158,6 +157,23 @@ ssh_in "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
 172.19.123.24 snode4 snode4.cloud.dev
 172.19.123.25 snode5 snode5.cloud.dev
 172.19.123.26 snode6 snode6.cloud.dev
+EOF'
+
+ssh_in "${i}" -t -- 'sudo tee -a /etc/haproxy/haproxy.cfg <<EOF
+frontend k3s-frontend
+    bind *:6443
+    mode tcp
+    option tcplog
+    default_backend k3s-backend
+
+backend k3s-backend
+    mode tcp
+    option tcp-check
+    balance roundrobin
+    default-server inter 10s downinter 5s
+    server snode1 172.19.123.21:6443 check
+    server snode2 172.19.123.22:6443 check
+    server snode3 172.19.123.23:6443 check
 EOF'
 
 done
