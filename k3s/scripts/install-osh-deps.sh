@@ -104,24 +104,45 @@ helm_safe_install_atomic ceph-adapter-rook ceph-adapter-rook "${OPENSTACK_NS}" "
 
 helm osh wait-for-pods ${OPENSTACK_NS}
 
-cat <<EOF | kubectl apply -f -
+# --- Install MetalLB -----------------------------------
+tee > /tmp/metallb_system_namespace.yaml <<EOF
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: metallb-system
+EOF
+kubectl apply -f /tmp/metallb_system_namespace.yaml
+
+helm repo add metallb https://metallb.github.io/metallb
+helm install metallb metallb/metallb -n metallb-system
+
+tee > /tmp/metallb_ipaddresspool.yaml <<EOF
+---
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
- name: public
- namespace: metallb-system
+    name: public
+    namespace: metallb-system
 spec:
- addresses:
- - 192.168.29.200–192.168.29.250
+    addresses:
+    - "172.19.123.200–172.19.123.250"
+EOF
+
+kubectl apply -f /tmp/metallb_ipaddresspool.yaml
+
+tee > /tmp/metallb_l2advertisement.yaml <<EOF
+---
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
 metadata:
- name: public
- namespace: metallb-system
+    name: public
+    namespace: metallb-system
 spec:
- ipAddressPools:
- - public
+    ipAddressPools:
+    - public
 EOF
+
+kubectl apply -f /tmp/metallb_l2advertisement.yaml
 
 # --- Install Nginx Ingress Controller for Openstack -----------------------------------
 info "Install Nginx Ingress Controller for Openstack"
