@@ -23,7 +23,7 @@ CEPH_IMAGE="${CEPH_IMAGE:-quay.io/ceph/ceph:v19.2.3}"
 
 OPENSTACK_NS="${OPENSTACK_NS:-openstack}"
 HELM_OSH_REPO_URL="https://tarballs.opendev.org/openstack/openstack-helm"
-KITE_REPO_URL="${KITE_REPO_URL:-https://zxh326.github.io/kite}"
+KITE_REPO_URL="${KITE_REPO_URL:-https://github.com/kite-org/kite}"
 NGINX_REPO_URL="${NGINX_REPO_URL:-https://kubernetes.github.io/ingress-nginx}"
 
 require_cmd() { command -v "$1" >/dev/null 2>&1 || { err "Missing command: $1"; exit 1; }; }
