@@ -36,7 +36,11 @@ if ! command -v k3s >/dev/null 2>&1; then
   info "Using enp1s0 IP: $ETH0_IP"
   
   sudo curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="644" INSTALL_K3S_EXEC="server \
-    --flannel-iface enp1s0 --tls-san 172.19.123.254 --cluster-init --token k3svip --bind-address $ETH0_IP" sh -
+    --cluster-init \
+    --flannel-iface enp1s0 \
+    --tls-san 172.19.123.254 
+    --token k3svip \
+    --bind-address $ETH0_IP" sh -
   
   if [ -z "${KUBECONFIG:-}" ] && [ -f /etc/rancher/k3s/k3s.yaml ]; then
     export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
