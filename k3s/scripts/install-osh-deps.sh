@@ -116,8 +116,7 @@ kubectl apply -f /tmp/metallb_system_namespace.yaml
 helm repo add metallb https://metallb.github.io/metallb
 helm install metallb metallb/metallb -n metallb-system
 
-tee > /tmp/metallb_ipaddresspool.yaml <<EOF
----
+cat <<EOF | kubectl apply -f -
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
@@ -125,12 +124,7 @@ metadata:
     namespace: metallb-system
 spec:
     addresses:
-    - "172.19.123.200–172.19.123.250"
-EOF
-
-kubectl apply -f /tmp/metallb_ipaddresspool.yaml
-
-tee > /tmp/metallb_l2advertisement.yaml <<EOF
+    - 172.19.123.200–172.19.123.250
 ---
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
@@ -141,8 +135,6 @@ spec:
     ipAddressPools:
     - public
 EOF
-
-kubectl apply -f /tmp/metallb_l2advertisement.yaml
 
 # --- Install Nginx Ingress Controller for Openstack -----------------------------------
 info "Install Nginx Ingress Controller for Openstack"
