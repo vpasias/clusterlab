@@ -424,8 +424,6 @@ cephObjectStores:
       name: ceph-bucket
       reclaimPolicy: Delete
       volumeBindingMode: Immediate
-      parameters:
-        region: us-east-1
 EOF
 
 
