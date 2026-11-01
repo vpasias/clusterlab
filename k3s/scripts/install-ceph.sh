@@ -354,6 +354,16 @@ cephClusterSpec:
       osd:
         disabled: false
 
+ingress:
+  dashboard:
+    enabled: true
+    ingressClassName: ${MGMT_INGRESS_CLASS}
+    host:
+      name: ceph.${MGMT_DOMAIN}
+      path: /
+    annotations:
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+
 cephBlockPools:
   - name: rdb
     namespace: ceph
