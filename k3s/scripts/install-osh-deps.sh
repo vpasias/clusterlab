@@ -48,6 +48,7 @@ kubectl create namespace "${ROOK_NS}" 2>/dev/null || true
 kubectl create namespace "${OPENSTACK_NS}" 2>/dev/null || true
 kubectl create namespace kite 2>/dev/null || true
 kubectl create namespace kubevpn 2>/dev/null || true
+kubectl create namespace metallb-system 2>/dev/null || true
 
 # --- Clone OSH repos and download override -----------------------------------
 info "Cloning or updating OSH repos"
@@ -93,6 +94,8 @@ helm repo add openstack-helm "$HELM_OSH_REPO_URL" >/dev/null 2>&1 || true
 helm repo add rook-release "${ROOK_REPO_URL}" >/dev/null 2>&1 || true
 helm repo add kite "${KITE_REPO_URL}" >/dev/null 2>&1 || true
 helm repo add ingress-nginx "${NGINX_REPO_URL}" >/dev/null 2>&1 || true
+helm repo add metallb https://metallb.github.io/metallb
+helm install metallb metallb/metallb -n metallb-system
 
 helm repo update >/dev/null 2>&1 || true
 
@@ -105,16 +108,6 @@ helm_safe_install_atomic ceph-adapter-rook ceph-adapter-rook "${OPENSTACK_NS}" "
 helm osh wait-for-pods ${OPENSTACK_NS}
 
 # --- Install MetalLB -----------------------------------
-tee > /tmp/metallb_system_namespace.yaml <<EOF
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: metallb-system
-EOF
-kubectl apply -f /tmp/metallb_system_namespace.yaml
-
-helm repo add metallb https://metallb.github.io/metallb
-helm install metallb metallb/metallb -n metallb-system
 
 cat <<EOF | kubectl apply -f -
 apiVersion: metallb.io/v1beta1
