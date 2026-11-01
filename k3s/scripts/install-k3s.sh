@@ -33,7 +33,7 @@ sudo apt-get install -y git curl ca-certificates gnupg lsb-release jq
 # --- k3s install (if needed) -------------------------------------------------
 if ! command -v k3s >/dev/null 2>&1; then
   info "Installing k3s master…"  
-  info "Using eth0 IP: $ETH0_IP"
+  info "Using enp1s0 IP: $ETH0_IP"
   
   sudo curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="644" INSTALL_K3S_EXEC="server \
     --flannel-iface enp1s0 --tls-san 172.19.123.254 --cluster-init --token k3svip --bind-address $ETH0_IP" sh -
