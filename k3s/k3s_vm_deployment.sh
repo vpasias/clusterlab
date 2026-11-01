@@ -80,7 +80,7 @@ network:
 EOF
 done
 
-for i in {1..6}; do
+for i in {1..5}; do
     cat <<EOF | uvt-kvm create \
         --machine-type q35 \
         --cpu 6 \
@@ -124,7 +124,7 @@ for i in {1..2}; do
     virsh start "inode${i}"
 done
 
-for i in {1..6}; do
+for i in {1..5}; do
     virsh detach-interface "snode${i}" network --config    
     virsh attach-interface "snode${i}" network virbr-mgt --model virtio --config    
     virsh attach-interface "snode${i}" network virbr-serv --model virtio --config    
@@ -156,7 +156,6 @@ ssh_in "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
 172.19.123.23 snode3 snode3.cloud.dev
 172.19.123.24 snode4 snode4.cloud.dev
 172.19.123.25 snode5 snode5.cloud.dev
-172.19.123.26 snode6 snode6.cloud.dev
 172.19.123.250 osh.cloud.dev
 172.19.123.250 keystone.osh.cloud.dev
 172.19.123.250 horizon.osh.cloud.dev
@@ -236,7 +235,6 @@ ssh_in "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
 172.19.123.23 snode3 snode3.cloud.dev
 172.19.123.24 snode4 snode4.cloud.dev
 172.19.123.25 snode5 snode5.cloud.dev
-172.19.123.26 snode6 snode6.cloud.dev
 172.19.123.250 osh.cloud.dev
 172.19.123.250 keystone.osh.cloud.dev
 172.19.123.250 horizon.osh.cloud.dev
@@ -293,7 +291,7 @@ ssh_in "${i}" -t -- sudo systemctl restart keepalived
 
 done
 
-for i in {1..6}; do
+for i in {1..5}; do
 
     ssh_sn "${i}" -t -- sudo apt update -y
     ssh_sn "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils sshpass ca-certificates gnupg lsb-release jq
@@ -315,7 +313,6 @@ ssh_sn "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
 172.19.123.23 snode3 snode3.cloud.dev
 172.19.123.24 snode4 snode4.cloud.dev
 172.19.123.25 snode5 snode5.cloud.dev
-172.19.123.26 snode6 snode6.cloud.dev
 172.19.123.250 osh.cloud.dev
 172.19.123.250 keystone.osh.cloud.dev
 172.19.123.250 horizon.osh.cloud.dev
