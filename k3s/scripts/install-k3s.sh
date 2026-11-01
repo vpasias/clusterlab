@@ -7,7 +7,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "$BASE_DIR/lib/colors.sh"
 source "$BASE_DIR/lib/atomic_helm.sh"
 
-NIC="${NIC:-eth0}"
+NIC="${NIC:-enp1s0}"
 
 require_cmd() { command -v "$1" >/dev/null 2>&1 || { err "Missing command: $1"; exit 1; }; }
 
