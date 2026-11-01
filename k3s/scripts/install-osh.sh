@@ -10,7 +10,7 @@ source "$BASE_DIR/lib/atomic_helm.sh"
 DOMAIN="${DOMAIN:-osh.cloud.dev}"
 INGRESS_CLASS="${INGRESS_CLASS:-nginx}"
 
-NIC="${NIC:-eth1}"
+NIC="${NIC:-enp8s0}"
 
 OPENSTACK_RELEASE="${OPENSTACK_RELEASE:-2025.1}"
 OS_DISTRO="${OS_DISTRO:-ubuntu_noble}"
