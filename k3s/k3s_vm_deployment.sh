@@ -177,7 +177,7 @@ backend k3s-backend
     server snode3 172.19.123.23:6443 check
 EOF'
 
-ssh_in "${i}" -t -- 'sudo tee -a /etc/haproxy/haproxy.cfg <<EOF
+ssh_in "${i}" -t -- 'sudo tee -a /etc/keepalived/keepalived.conf <<EOF
 global_defs {
   enable_script_security
   script_user root
@@ -250,7 +250,7 @@ backend k3s-backend
     server snode3 172.19.123.23:6443 check
 EOF'
 
-ssh_in "${i}" -t -- 'sudo tee -a /etc/haproxy/haproxy.cfg <<EOF
+ssh_in "${i}" -t -- 'sudo tee -a /etc/keepalived/keepalived.conf <<EOF
 global_defs {
   enable_script_security
   script_user root
