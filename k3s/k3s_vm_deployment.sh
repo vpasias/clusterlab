@@ -54,7 +54,7 @@ for i in {1..2}; do
         --unsafe-caching \
         --network-config /dev/stdin \
         --no-start \
-        "inode-0${i}" \
+        "inode${i}" \
         release=noble
 network:
   version: 2
@@ -91,7 +91,7 @@ for i in {1..6}; do
         --unsafe-caching \
         --network-config /dev/stdin \
         --no-start \
-        "snode-0${i}" \
+        "snode${i}" \
         release=noble
 network:
   version: 2
@@ -118,22 +118,22 @@ EOF
 done
 
 for i in {1..2}; do
-    virsh detach-interface "inode-0${i}" network --config    
-    virsh attach-interface "inode-0${i}" network virbr-mgt --model virtio --config
-    virsh attach-interface "inode-0${i}" network virbr-serv --model virtio --config
-    virsh start "inode-0${i}"
+    virsh detach-interface "inode${i}" network --config    
+    virsh attach-interface "inode${i}" network virbr-mgt --model virtio --config
+    virsh attach-interface "inode${i}" network virbr-serv --model virtio --config
+    virsh start "inode${i}"
 done
 
 for i in {1..6}; do
-    virsh detach-interface "snode-0${i}" network --config    
-    virsh attach-interface "snode-0${i}" network virbr-mgt --model virtio --config    
-    virsh attach-interface "snode-0${i}" network virbr-serv --model virtio --config    
-    virsh start "snode-0${i}"
+    virsh detach-interface "snode${i}" network --config    
+    virsh attach-interface "snode${i}" network virbr-mgt --model virtio --config    
+    virsh attach-interface "snode${i}" network virbr-serv --model virtio --config    
+    virsh start "snode${i}"
 done
 
 sleep 30
 
-for i in {1..2}; do
+for i in {1..1}; do
 
     ssh_in "${i}" -t -- sudo apt update -y
     ssh_in "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils sshpass ca-certificates gnupg lsb-release jq
@@ -157,6 +157,14 @@ ssh_in "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
 172.19.123.24 snode4 snode4.cloud.dev
 172.19.123.25 snode5 snode5.cloud.dev
 172.19.123.26 snode6 snode6.cloud.dev
+172.19.123.250 osh.cloud.dev
+172.19.123.250 keystone.osh.cloud.dev
+172.19.123.250 horizon.osh.cloud.dev
+172.19.123.250 skyline.osh.cloud.dev
+172.19.123.250 novncproxy.osh.cloud.dev
+172.19.123.251 int.cloud.dev
+172.19.123.251 kite.int.cloud.dev
+172.19.123.251 ceph.int.cloud.dev
 EOF'
 
 ssh_in "${i}" -t -- 'sudo tee -a /etc/haproxy/haproxy.cfg <<EOF
@@ -175,6 +183,113 @@ backend k3s-backend
     server snode2 172.19.123.22:6443 check
     server snode3 172.19.123.23:6443 check
 EOF'
+
+ssh_in "${i}" -t -- 'sudo tee -a /etc/haproxy/haproxy.cfg <<EOF
+global_defs {
+  enable_script_security
+  script_user root
+}
+
+vrrp_script chk_haproxy {
+    script 'killall -0 haproxy' # faster than pidof
+    interval 2
+}
+
+vrrp_instance haproxy-vip {
+    interface enp1s0
+    state MASTER
+    priority 200
+
+    virtual_router_id 51
+
+    virtual_ipaddress {
+        172.19.123.254/24
+    }
+EOF'
+
+ssh_in "${i}" -t -- sudo systemctl restart haproxy
+
+ssh_in "${i}" -t -- sudo systemctl restart keepalived
+
+done
+
+for i in {2..2}; do
+
+    ssh_in "${i}" -t -- sudo apt update -y
+    ssh_in "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils sshpass ca-certificates gnupg lsb-release jq
+    ssh_in "${i}" -t -- sudo apt-get install haproxy keepalived -y
+
+    ssh_in "${i}" -t -- 'echo "root:gprm8350" | sudo chpasswd'
+    ssh_in "${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
+    ssh_in "${i}" -t -- "sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config"
+    ssh_in "${i}" -t -- "sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config"
+    ssh_in "${i}" -t -- "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config.d/60-cloudimg-settings.conf"
+    ssh_in "${i}" -t -- sudo systemctl restart ssh
+    ssh_in "${i}" -t -- sudo rm -rf /root/.ssh/authorized_keys
+    ssh_in "${i}" -t -- 'echo "ubuntu ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/ubuntu'
+
+ssh_in "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
+172.19.123.11 inode1 inode1.cloud.dev
+172.19.123.12 inode2 inode2.cloud.dev
+172.19.123.21 snode1 snode1.cloud.dev
+172.19.123.22 snode2 snode2.cloud.dev
+172.19.123.23 snode3 snode3.cloud.dev
+172.19.123.24 snode4 snode4.cloud.dev
+172.19.123.25 snode5 snode5.cloud.dev
+172.19.123.26 snode6 snode6.cloud.dev
+172.19.123.250 osh.cloud.dev
+172.19.123.250 keystone.osh.cloud.dev
+172.19.123.250 horizon.osh.cloud.dev
+172.19.123.250 skyline.osh.cloud.dev
+172.19.123.250 novncproxy.osh.cloud.dev
+172.19.123.251 int.cloud.dev
+172.19.123.251 kite.int.cloud.dev
+172.19.123.251 ceph.int.cloud.dev
+EOF'
+
+ssh_in "${i}" -t -- 'sudo tee -a /etc/haproxy/haproxy.cfg <<EOF
+frontend k3s-frontend
+    bind *:6443
+    mode tcp
+    option tcplog
+    default_backend k3s-backend
+
+backend k3s-backend
+    mode tcp
+    option tcp-check
+    balance roundrobin
+    default-server inter 10s downinter 5s
+    server snode1 172.19.123.21:6443 check
+    server snode2 172.19.123.22:6443 check
+    server snode3 172.19.123.23:6443 check
+EOF'
+
+ssh_in "${i}" -t -- 'sudo tee -a /etc/haproxy/haproxy.cfg <<EOF
+global_defs {
+  enable_script_security
+  script_user root
+}
+
+vrrp_script chk_haproxy {
+    script 'killall -0 haproxy' # faster than pidof
+    interval 2
+}
+
+vrrp_instance haproxy-vip {
+    interface enp1s0
+    state BACKUP
+    priority 100
+
+    virtual_router_id 51
+
+    virtual_ipaddress {
+        172.19.123.254/24
+    }
+EOF'
+
+ssh_in "${i}" -t -- sudo systemctl restart haproxy
+
+ssh_in "${i}" -t -- sudo systemctl restart keepalived
 
 done
 
@@ -201,6 +316,14 @@ ssh_sn "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
 172.19.123.24 snode4 snode4.cloud.dev
 172.19.123.25 snode5 snode5.cloud.dev
 172.19.123.26 snode6 snode6.cloud.dev
+172.19.123.250 osh.cloud.dev
+172.19.123.250 keystone.osh.cloud.dev
+172.19.123.250 horizon.osh.cloud.dev
+172.19.123.250 skyline.osh.cloud.dev
+172.19.123.250 novncproxy.osh.cloud.dev
+172.19.123.251 int.cloud.dev
+172.19.123.251 kite.int.cloud.dev
+172.19.123.251 ceph.int.cloud.dev
 EOF'
 
 done
