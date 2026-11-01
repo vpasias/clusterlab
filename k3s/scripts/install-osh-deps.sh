@@ -147,3 +147,26 @@ warn "You need to manually add the following external IP addresses to your DNS"
 kubectl get svc public-openstack -n openstack
 
 ok "Installed OSH dependencies"
+
+# --- Kite deployment  ---------------------------------------
+  info "Deploying Kite…"
+
+  cat > $K3S_OVERRIDES_DIR/kite.yaml <<EOF
+  anonymousUserEnabled: true
+  ingress:
+    enabled: true
+    className: ${MGMT_INGRESS_CLASS}
+    hosts:
+      - host: kite.${MGMT_DOMAIN}
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+EOF
+
+helm_safe_install_atomic kite kite kite "${KITE_REPO_URL}" \
+    -f $K3S_OVERRIDES_DIR/kite.yaml \
+    --wait --timeout 10m
+
+  helm osh wait-for-pods kite
+
+ok "Installed OSH dependencies"
