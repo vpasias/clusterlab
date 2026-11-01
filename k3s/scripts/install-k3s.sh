@@ -26,7 +26,7 @@ sudo apt-get install -y git curl ca-certificates gnupg lsb-release jq
   ETH0_IP=$(ip -4 addr show enp1s0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -n1)
   
   if [ -z "$ETH0_IP" ]; then
-    err "Could not detect eth0 IP address"
+    err "Could not detect enp1s0 IP address"
     exit 1
   fi
 
