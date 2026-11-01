@@ -7,7 +7,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "$BASE_DIR/lib/colors.sh"
 source "$BASE_DIR/lib/atomic_helm.sh"
 
-DOMAIN="${DOMAIN:-osh.proxmox.home}"
+DOMAIN="${DOMAIN:-osh.cloud.dev}"
 INGRESS_CLASS="${INGRESS_CLASS:-nginx}"
 
 NIC="${NIC:-eth1}"
