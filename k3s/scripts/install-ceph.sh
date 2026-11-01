@@ -19,8 +19,8 @@ ROOK_REPO_URL="${ROOK_REPO_URL:-https://charts.rook.io/release}"
 
 CEPH_NS="${CEPH_NS:-ceph}"
 CEPH_IMAGE="${CEPH_IMAGE:-quay.io/ceph/ceph:v19.2.3}"
-CEPH_MON_REPLICAS="${CEPH_MON_REPLICAS:-3}"
-CEPH_MAN_REPLICAS="${CEPH_MAN_REPLICAS:-1}"
+CEPH_MON_REPLICAS="${CEPH_MON_REPLICAS:-5}"
+CEPH_MAN_REPLICAS="${CEPH_MAN_REPLICAS:-2}"
 
 CREATE_RBD_SC="${CREATE_RBD_SC:-true}"
 RBD_SC_NAME="${RBD_SC_NAME:-ceph-rbd}"
@@ -28,7 +28,7 @@ RBD_POOL="${RBD_POOL:-ceph}"
 
 OSD_BACKING_SC="${OSD_BACKING_SC:-longhorn}"
 OSD_SIZE="${OSD_SIZE:-10Gi}"
-OSD_COUNT="${OSD_COUNT:-3}"
+OSD_COUNT="${OSD_COUNT:-5}"
 
 # Ensure kubeconfig for k3s
 if [ -z "${KUBECONFIG:-}" ] && [ -f /etc/rancher/k3s/k3s.yaml ]; then
