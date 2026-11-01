@@ -331,7 +331,7 @@ for i in {1..1}; do
 
 done
 
-for i in {1..6}; do
+for i in {1..5}; do
 
     ssh_sn "${i}" -t -- sudo reboot
 
