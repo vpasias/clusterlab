@@ -22,7 +22,7 @@ info "Updating apt & installing base tools…"
 sudo apt-get update -y
 sudo apt-get install -y git curl ca-certificates gnupg lsb-release jq
 
-  # Get eth0 IP address
+  # Get enp1s0 IP address
   ETH0_IP=$(ip -4 addr show enp1s0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -n1)
   
   if [ -z "$ETH0_IP" ]; then
