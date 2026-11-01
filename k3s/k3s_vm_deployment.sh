@@ -71,7 +71,7 @@ network:
       nameservers:
         addresses:
           - 172.19.123.1
-    enp9s0:
+    enp8s0:
       dhcp4: false
       dhcp6: false
       accept-ra: false
@@ -108,7 +108,7 @@ network:
       nameservers:
         addresses:
           - 172.19.123.1
-    enp9s0:
+    enp8s0:
       dhcp4: false
       dhcp6: false
       accept-ra: false
