@@ -1,0 +1,162 @@
+#mv cloudlab-setup-ubuntu-amd.sh cloudlab-setup-ubuntu-tl.sh
+chmod +x cloudlab-setup-ubuntu-tl.sh && ./cloudlab-setup-ubuntu-tl.sh && \
+sudo apt-get install libvirt-daemon genisoimage libguestfs-tools libosinfo-bin virtinst qemu-kvm git vim net-tools wget curl bash-completion python3-pip libvirt-daemon-system virt-manager bridge-utils libnss-libvirt libvirt-clients osinfo-db-tools intltool sshpass p7zip-full p7zip-rar uvtool python3.12-venv -y && \
+sudo sed -i 's/hosts:          files dns/hosts:          files libvirt libvirt_guest dns/' /etc/nsswitch.conf && sudo lsmod | grep kvm && sudo reboot
+#sudo systemctl restart libvirtd && sudo systemctl status libvirtd
+
+screen
+# Press Return to continue
+# detach from session without killing it: Ctrl a d 
+# to see screen sessions: screen -ls
+# detach from closed session: screen -d -r 2568.pts-0.node0
+# enter session: screen -r 2568.pts-0.node0
+# exit a session and terminate it: exit
+
+sudo -i
+
+# Create OS node VMs
+#cat /sys/module/kvm_intel/parameters/nested
+#cat /sys/module/kvm_amd/parameters/nested
+cd /mnt/extra && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && sudo virsh list --all && sudo brctl show && \
+mkdir -p /mnt/extra/virt/images && mkdir -p /mnt/extra/virt/vms && \
+sudo sed -i -E 's,#?(security_driver)\s*=.*,\1 = "none",g' /etc/libvirt/qemu.conf && sudo systemctl restart libvirtd && \
+uvt-simplestreams-libvirt sync release=jammy arch=amd64 && uvt-simplestreams-libvirt sync release=noble arch=amd64 && \
+ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa && sudo systemctl status libvirtd
+
+#sudo ls -lah /var/lib/uvtool/libvirt/images/ && uvt-kvm list
+
+#####################################################################################################################################################
+### Production Ready k3s Cluster ###
+### https://github.com/akyriako/osh ###
+### https://docs.k3s.io/blog/2025/03/10/simple-ha ###
+### https://github.com/wim-vdw/k3s-ha-setup ###
+#####################################################################################################################################################
+
+cd /mnt/extra && git clone https://github.com/vpasias/clusterlab.git && cd /mnt/extra/clusterlab/k3s && chmod +x k3s_vm_deployment.sh && ./k3s_vm_deployment.sh
+
+for i in {1..2}; do ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 172.19.123.1$i 'uname -a'; done && \
+for i in {1..5}; do ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu 172.19.123.2$i 'uname -a'; done && \
+sudo cp /etc/hosts /etc/hosts.temp && \
+sudo tee -a /etc/hosts <<EOF
+172.19.123.11 inode1 inode1.cloud.dev
+172.19.123.12 inode2 inode2.cloud.dev
+172.19.123.21 snode1 snode1.cloud.dev
+172.19.123.22 snode2 snode2.cloud.dev
+172.19.123.23 snode3 snode3.cloud.dev
+172.19.123.24 snode4 snode4.cloud.dev
+172.19.123.25 snode5 snode5.cloud.dev
+172.19.123.250 osh.cloud.dev keystone.osh.cloud.dev horizon.osh.cloud.dev skyline.osh.cloud.dev novncproxy.osh.cloud.dev
+172.19.123.251 int.cloud.dev kite.int.cloud.dev ceph.int.cloud.dev
+EOF
+
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu snode1
+#cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && lsblk && ip a && cat /etc/hosts
+
+echo 'kyax7344' > upass && chmod 0400 upass && ssh-keygen -t rsa -N "" -f .ssh/id_rsa
+sshpass -f /home/ubuntu/upass ssh-copy-id '-o StrictHostKeyChecking=no' -i ~/.ssh/id_rsa.pub ubuntu@172.19.123.11 && \
+sshpass -f /home/ubuntu/upass ssh-copy-id '-o StrictHostKeyChecking=no' -i ~/.ssh/id_rsa.pub ubuntu@172.19.123.12 && \
+sshpass -f /home/ubuntu/upass ssh-copy-id '-o StrictHostKeyChecking=no' -i ~/.ssh/id_rsa.pub ubuntu@172.19.123.21 && \
+sshpass -f /home/ubuntu/upass ssh-copy-id '-o StrictHostKeyChecking=no' -i ~/.ssh/id_rsa.pub ubuntu@172.19.123.22 && \
+sshpass -f /home/ubuntu/upass ssh-copy-id '-o StrictHostKeyChecking=no' -i ~/.ssh/id_rsa.pub ubuntu@172.19.123.23 && \
+sshpass -f /home/ubuntu/upass ssh-copy-id '-o StrictHostKeyChecking=no' -i ~/.ssh/id_rsa.pub ubuntu@172.19.123.24 && \
+sshpass -f /home/ubuntu/upass ssh-copy-id '-o StrictHostKeyChecking=no' -i ~/.ssh/id_rsa.pub ubuntu@172.19.123.25 && \
+ssh -o "StrictHostKeyChecking=no" ubuntu@172.19.123.11 'sudo systemctl status haproxy && sudo systemctl status keepalived' && \
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && chmod +x kubectl && \
+sudo mv kubectl /usr/local/bin && kubectl version
+
+###Install K3s Control Plane and Workers
+git clone https://github.com/vpasias/clusterlab.git && cd clusterlab/k3s && chmod +x scripts/install-k3s.sh && sudo ./scripts/install-k3s.sh
+
+TOKEN_FILE="/var/lib/rancher/k3s/server/node-token" && export NODE_TOKEN=$(sudo cat "$TOKEN_FILE") && echo $NODE_TOKEN
+#complete the field K3S_TOKEN below
+
+for i in {2..3}; do ssh -oStrictHostKeyChecking=no ubuntu@172.19.123.2$i 'sudo curl -sfL https://get.k3s.io | K3S_URL=https://172.19.123.21:6443 K3S_TOKEN=K10cd3e40fc1a88d0af2d57cf8a5adea5d27e057e2076f7cfa3158076db63eec869::server:k3svip INSTALL_K3S_EXEC="server --flannel-iface enp1s0" sh -'; done
+
+for i in {4..5}; do ssh -oStrictHostKeyChecking=no ubuntu@172.19.123.2$i 'sudo curl -sfL https://get.k3s.io | K3S_URL=https://172.19.123.254:6443 K3S_TOKEN=K10cd3e40fc1a88d0af2d57cf8a5adea5d27e057e2076f7cfa3158076db63eec869::server:k3svip INSTALL_K3S_EXEC="agent --flannel-iface enp1s0" sh -'; done
+
+export KUBECONFIG=$HOME/.kube/config && kubectl cluster-info && kubectl get nodes -o wide && kubectl get pods -o wide --all-namespaces
+
+###Post-Installation Steps for K3s Nodes
+chmod +x scripts/post-k3s.sh && sudo ./scripts/post-k3s.sh && \
+for i in {2..5}; do ssh -oStrictHostKeyChecking=no ubuntu@172.19.123.2$i 'git clone https://github.com/vpasias/clusterlab.git && chmod +x clusterlab/k3s/scripts/post-k3s.sh && sudo ./clusterlab/k3s/scripts/post-k3s.sh'; done
+
+kubectl cluster-info && kubectl get nodes -o wide && kubectl get pods -o wide --all-namespaces
+
+###Install Ceph
+chmod +x scripts/install-ceph.sh && sudo ./scripts/install-ceph.sh
+kubectl --namespace ceph get cephcluster
+kubectl get pods -n rook-ceph && kubectl get pods -n ceph
+#kubectl get all -n rook-ceph && kubectl get all -n ceph
+#kubectl get -n rook-ceph jobs.batch && kubectl -n rook-ceph get cephcluster
+#kubectl get sc -n ceph && kubectl get pvc -n ceph && kubectl get svc -n ceph
+kubectl -n ceph exec -it deploy/rook-ceph-tools -- ceph -s
+kubectl -n ceph exec -it deploy/rook-ceph-tools -- ceph status && \
+kubectl -n ceph exec -it deploy/rook-ceph-tools -- ceph osd status && \
+kubectl -n ceph exec -it deploy/rook-ceph-tools -- ceph df && \
+kubectl -n ceph exec -it deploy/rook-ceph-tools -- rados df
+
+tee > /tmp/custom-pool.yaml <<EOF
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: replicapool
+  namespace: ceph
+spec:
+  replicated:
+    size: 3
+  mirroring:
+    enabled: false
+EOF
+
+kubectl apply -f /tmp/custom-pool.yaml
+
+###Install OSH Dependencies
+chmod +x scripts/install-osh-deps.sh && sudo ./scripts/install-osh-deps.sh
+
+###Install OSH
+#Install OpenStack Infrastructure Components
+chmod +x scripts/install-osh.sh && sudo ./scripts/install-osh.sh --infra
+
+#Install OpenStack Core Components
+sudo ./scripts/install-osh.sh --core && sleep 10 && sudo ./scripts/install-osh.sh --cinder
+sudo ./scripts/install-osh.sh --heat && sleep 10 && sudo ./scripts/install-osh.sh --skyline
+
+#Install and Configure Libvirt
+sudo ./scripts/install-osh.sh --libvirt
+
+#Install OpenStack Compute Kit
+sudo ./scripts/install-osh.sh --compute
+
+sudo apt install python3.12-venv -y && python3 -m venv ~/openstack-client && source ~/openstack-client/bin/activate && pip install python-openstackclient
+
+mkdir -p ~/.config/openstack && cat > ~/.config/openstack/clouds.yaml << 'EOF'
+clouds:
+  openstack_helm:
+    region_name: RegionOne
+    identity_api_version: 3
+    auth:
+      username: 'admin'
+      password: 'password'
+      project_name: 'admin'
+      project_domain_name: 'default'
+      user_domain_name: 'default'
+      auth_url: 'http://keystone.osh.cloud.dev/v3'
+EOF
+
+export OS_CLOUD=openstack_helm
+
+openstack service list && openstack server list && openstack endpoint list && openstack catalog list && openstack image list && openstack flavor list && \
+openstack network list && openstack subnet list && openstack project list && openstack port list && openstack user list && openstack network agent list && \
+openstack hypervisor list && openstack volume list && openstack floating ip list
+
+#Cleanup
+sudo ./scripts/install-osh.sh --uninstall && chmod +x scripts/purge.sh && sudo ./scripts/purge.sh --k3s && sudo ./scripts/purge.sh --ceph
+
+#############################################################################################################
+################ Delete ########################################################################################
+#############################################################################################################
+
+for i in {1..2}; do uvt-kvm destroy "inode${i}"; done && for i in {1..5}; do uvt-kvm destroy "snode${i}"; done && \
+virsh net-destroy virbr-mgt && virsh net-undefine virbr-mgt && virsh net-destroy virbr-serv && virsh net-undefine virbr-serv && \
+cd /mnt/extra/ && rm -rf clusterlab/ && sudo cp -r /etc/hosts.temp /etc/hosts && sudo rm -rf /etc/hosts.temp && \
+rm -rf /root/.ssh/known_hosts && touch /root/.ssh/known_hosts && sudo virsh list --all && sudo brctl show && sudo virsh net-list --all
