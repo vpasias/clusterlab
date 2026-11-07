@@ -7,7 +7,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "$BASE_DIR/lib/colors.sh"
 source "$BASE_DIR/lib/atomic_helm.sh"
 
-MGMT_DOMAIN="${MGMT_DOMAIN:-int.cloud.dev}"
+MGMT_DOMAIN="${MGMT_DOMAIN:-int.openstack.svc.cluster.local}"
 MGMT_INGRESS_CLASS="${MGMT_INGRESS_CLASS:-traefik}"
 
 OPENSTACK_NS="${OPENSTACK_NS:-openstack}"
