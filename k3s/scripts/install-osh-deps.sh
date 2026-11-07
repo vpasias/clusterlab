@@ -107,7 +107,56 @@ helm_safe_install_atomic ceph-adapter-rook ceph-adapter-rook "${OPENSTACK_NS}" "
 
 helm osh wait-for-pods ${OPENSTACK_NS}
 
+# --- Install Envoy Gateway -----------------------------
+info "Install Envoy Gateway for Openstack"
+
+helm install eg oci://docker.io/envoyproxy/gateway-helm --version v1.7.0 --namespace envoy-gateway-system --create-namespace
+
+cat <<EOF | kubectl apply -f -
+tee > /tmp/gatewayapi_envoy_default.yaml <<EOF
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+  name: gateway-proxy-default
+  namespace: envoy-gateway-system
+spec:
+  provider:
+    type: Kubernetes
+    kubernetes:
+      envoyService:
+        type: LoadBalancer
+        externalTrafficPolicy: Cluster
+        annotations:
+          metallb.universe.tf/loadBalancerIPs: "172.19.123.250"
+        patch:
+          type: StrategicMerge
+          value:
+            spec:
+              externalTrafficPolicy: Cluster
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: gateway-default
+  namespace: envoy-gateway-system
+spec:
+  gatewayClassName: default
+  infrastructure:
+    parametersRef:
+      group: gateway.envoyproxy.io
+      kind: EnvoyProxy
+      name: gateway-proxy-default
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: All
+EOF
+
 # --- Install MetalLB -----------------------------------
+info "Install MetalLB load-balancer for Openstack"
 
 cat <<EOF | kubectl apply -f -
 apiVersion: metallb.io/v1beta1
@@ -117,8 +166,10 @@ metadata:
     namespace: metallb-system
 spec:
     addresses:
-    - "172.19.123.200-172.19.123.250"
----
+    - "172.19.123.210-172.19.123.250"
+EOF
+
+cat <<EOF | kubectl apply -f -
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
 metadata:
@@ -130,22 +181,22 @@ spec:
 EOF
 
 # --- Install Nginx Ingress Controller for Openstack -----------------------------------
-info "Install Nginx Ingress Controller for Openstack"
+#info "Install Nginx Ingress Controller for Openstack"
+#
+#helm_safe_install_atomic ingress-nginx ingress-nginx openstack "${NGINX_REPO_URL}" \
+#    --version="4.8.3" \
+#    --set controller.kind=Deployment \
+#    --set controller.admissionWebhooks.enabled="false" \
+#    --set controller.scope.enabled="true" \
+#    --set controller.service.enabled="false" \
+#    --set controller.ingressClassResource.name=${OSH_INGRESS_CLASS} \
+#    --set controller.ingressClassResource.controllerValue="k8s.io/ingress-nginx" \
+#    --set controller.ingressClassResource.default="false" \
+#    --set controller.ingressClass=${OSH_INGRESS_CLASS} \
+#    --set controller.labels.app=ingress-api \
+#    --wait --timeout 10m >/dev/null 2>&1 || true
 
-helm_safe_install_atomic ingress-nginx ingress-nginx openstack "${NGINX_REPO_URL}" \
-    --version="4.8.3" \
-    --set controller.kind=Deployment \
-    --set controller.admissionWebhooks.enabled="false" \
-    --set controller.scope.enabled="true" \
-    --set controller.service.enabled="false" \
-    --set controller.ingressClassResource.name=${OSH_INGRESS_CLASS} \
-    --set controller.ingressClassResource.controllerValue="k8s.io/ingress-nginx" \
-    --set controller.ingressClassResource.default="false" \
-    --set controller.ingressClass=${OSH_INGRESS_CLASS} \
-    --set controller.labels.app=ingress-api \
-    --wait --timeout 10m >/dev/null 2>&1 || true
-
-helm osh wait-for-pods openstack
+#helm osh wait-for-pods openstack
 
 cat > "$K3S_OVERRIDES_DIR/openstack_endpoint_service.yaml" <<EOF
 ---
