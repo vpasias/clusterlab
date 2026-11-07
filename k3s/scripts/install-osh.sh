@@ -18,6 +18,7 @@ FEATURES="${FEATURES:-${OPENSTACK_RELEASE} ${OS_DISTRO}}"
 OSH_PWD="${OSH_PWD:-$(eval echo "~${SUDO_USER:-$USER}")/osh}"
 OVERRIDES_DIR="${OVERRIDES_DIR:-${OSH_PWD}/overrides}"
 K3S_OVERRIDES_DIR="${K3S_OVERRIDES_DIR:-${OSH_PWD}/overrides_k3s}"
+OVERRIDES_URL=https://opendev.org/openstack/openstack-helm/raw/branch/master/values_overrides
 
 HELM_OSH_REPO_URL="https://tarballs.opendev.org/openstack/openstack-helm"
 
@@ -117,6 +118,16 @@ if [[ "$INFRA" -eq 1 ]]; then
     # --- Deploying OSH-Infra -----------------------------------
     info "Deploying OSH Infra..."
 
-fi
+for chart in rabbitmq mariadb memcached openvswitch libvirt keystone heat glance cinder trove placement nova neutron horizon; do
+    helm osh get-values-overrides -d -u ${OVERRIDES_URL} -p ${OVERRIDES_DIR} -c ${chart} ${FEATURES}
+done
+
+helm upgrade --install rabbitmq openstack-helm/rabbitmq \
+    --namespace=openstack \
+    --set pod.replicas.server=1 \
+    --timeout=600s \
+    $(helm osh get-values-overrides -p ${OVERRIDES_DIR} -c rabbitmq ${FEATURES})
+
+helm osh wait-for-pods openstack
 
 ok "OSH installation complete"
