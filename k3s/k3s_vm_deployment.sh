@@ -149,15 +149,15 @@ for i in {1..1}; do
     ssh_in "${i}" -t -- 'echo "ubuntu ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/ubuntu'
 
 ssh_in "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
-172.19.123.11 inode1 inode1.cloud.dev
-172.19.123.12 inode2 inode2.cloud.dev
-172.19.123.21 snode1 snode1.cloud.dev
-172.19.123.22 snode2 snode2.cloud.dev
-172.19.123.23 snode3 snode3.cloud.dev
-172.19.123.24 snode4 snode4.cloud.dev
-172.19.123.25 snode5 snode5.cloud.dev
-172.19.123.250 openstack.svc.cluster.local keystone.openstack.svc.cluster.local horizon.openstack.svc.cluster.local
-172.19.123.251 int.cloud.dev kite.int.cloud.dev ceph.int.cloud.dev
+172.19.123.11 inode1 inode1.openstack.svc.cluster.local
+172.19.123.12 inode2 inode2.openstack.svc.cluster.local
+172.19.123.21 snode1 snode1.openstack.svc.cluster.local
+172.19.123.22 snode2 snode2.openstack.svc.cluster.local
+172.19.123.23 snode3 snode3.openstack.svc.cluster.local
+172.19.123.24 snode4 snode4.openstack.svc.cluster.local
+172.19.123.25 snode5 snode5.openstack.svc.cluster.local
+172.19.123.250 openstack.svc.cluster.local keystone.openstack.svc.cluster.local horizon.openstack.svc.cluster.local osh.openstack.svc.cluster.local
+172.19.123.251 int.openstack.svc.cluster.local kite.openstack.svc.cluster.local ceph.openstack.svc.cluster.local
 EOF'
 
 ssh_in "${i}" -t -- 'sudo tee -a /etc/haproxy/haproxy.cfg <<EOF
@@ -222,15 +222,15 @@ for i in {2..2}; do
     ssh_in "${i}" -t -- 'echo "ubuntu ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/ubuntu'
 
 ssh_in "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
-172.19.123.11 inode1 inode1.cloud.dev
-172.19.123.12 inode2 inode2.cloud.dev
-172.19.123.21 snode1 snode1.cloud.dev
-172.19.123.22 snode2 snode2.cloud.dev
-172.19.123.23 snode3 snode3.cloud.dev
-172.19.123.24 snode4 snode4.cloud.dev
-172.19.123.25 snode5 snode5.cloud.dev
-172.19.123.250 openstack.svc.cluster.local keystone.openstack.svc.cluster.local horizon.openstack.svc.cluster.localv
-172.19.123.251 int.cloud.dev kite.int.cloud.dev ceph.int.cloud.dev
+172.19.123.11 inode1 inode1.openstack.svc.cluster.local
+172.19.123.12 inode2 inode2.openstack.svc.cluster.local
+172.19.123.21 snode1 snode1.openstack.svc.cluster.local
+172.19.123.22 snode2 snode2.openstack.svc.cluster.local
+172.19.123.23 snode3 snode3.openstack.svc.cluster.local
+172.19.123.24 snode4 snode4.openstack.svc.cluster.local
+172.19.123.25 snode5 snode5.openstack.svc.cluster.local
+172.19.123.250 openstack.svc.cluster.local keystone.openstack.svc.cluster.local horizon.openstack.svc.cluster.local osh.openstack.svc.cluster.local
+172.19.123.251 int.openstack.svc.cluster.local kite.openstack.svc.cluster.local ceph.openstack.svc.cluster.local
 EOF'
 
 ssh_in "${i}" -t -- 'sudo tee -a /etc/haproxy/haproxy.cfg <<EOF
@@ -294,15 +294,15 @@ for i in {1..5}; do
     ssh_sn "${i}" -t -- 'echo "ubuntu ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/ubuntu'
 
 ssh_sn "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
-172.19.123.11 inode1 inode1.cloud.dev
-172.19.123.12 inode2 inode2.cloud.dev
-172.19.123.21 snode1 snode1.cloud.dev
-172.19.123.22 snode2 snode2.cloud.dev
-172.19.123.23 snode3 snode3.cloud.dev
-172.19.123.24 snode4 snode4.cloud.dev
-172.19.123.25 snode5 snode5.cloud.dev
-172.19.123.250 openstack.svc.cluster.local keystone.openstack.svc.cluster.local horizon.openstack.svc.cluster.local
-172.19.123.251 int.cloud.dev kite.int.cloud.dev ceph.int.cloud.dev
+172.19.123.11 inode1 inode1.openstack.svc.cluster.local
+172.19.123.12 inode2 inode2.openstack.svc.cluster.local
+172.19.123.21 snode1 snode1.openstack.svc.cluster.local
+172.19.123.22 snode2 snode2.openstack.svc.cluster.local
+172.19.123.23 snode3 snode3.openstack.svc.cluster.local
+172.19.123.24 snode4 snode4.openstack.svc.cluster.local
+172.19.123.25 snode5 snode5.openstack.svc.cluster.local
+172.19.123.250 openstack.svc.cluster.local keystone.openstack.svc.cluster.local horizon.openstack.svc.cluster.local osh.openstack.svc.cluster.local
+172.19.123.251 int.openstack.svc.cluster.local kite.openstack.svc.cluster.local ceph.openstack.svc.cluster.local
 EOF'
 
 done
