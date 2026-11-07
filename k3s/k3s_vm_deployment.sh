@@ -156,7 +156,7 @@ ssh_in "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
 172.19.123.23 snode3 snode3.cloud.dev
 172.19.123.24 snode4 snode4.cloud.dev
 172.19.123.25 snode5 snode5.cloud.dev
-172.19.123.250 osh.cloud.dev keystone.osh.cloud.dev horizon.osh.cloud.dev skyline.osh.cloud.dev novncproxy.osh.cloud.dev
+172.19.123.250 openstack.svc.cluster.local keystone.openstack.svc.cluster.local horizon.openstack.svc.cluster.local
 172.19.123.251 int.cloud.dev kite.int.cloud.dev ceph.int.cloud.dev
 EOF'
 
@@ -229,7 +229,7 @@ ssh_in "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
 172.19.123.23 snode3 snode3.cloud.dev
 172.19.123.24 snode4 snode4.cloud.dev
 172.19.123.25 snode5 snode5.cloud.dev
-172.19.123.250 osh.cloud.dev keystone.osh.cloud.dev horizon.osh.cloud.dev skyline.osh.cloud.dev novncproxy.osh.cloud.dev
+172.19.123.250 openstack.svc.cluster.local keystone.openstack.svc.cluster.local horizon.openstack.svc.cluster.localv
 172.19.123.251 int.cloud.dev kite.int.cloud.dev ceph.int.cloud.dev
 EOF'
 
@@ -301,7 +301,7 @@ ssh_sn "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
 172.19.123.23 snode3 snode3.cloud.dev
 172.19.123.24 snode4 snode4.cloud.dev
 172.19.123.25 snode5 snode5.cloud.dev
-172.19.123.250 osh.cloud.dev keystone.osh.cloud.dev horizon.osh.cloud.dev skyline.osh.cloud.dev novncproxy.osh.cloud.dev
+172.19.123.250 openstack.svc.cluster.local keystone.openstack.svc.cluster.local horizon.openstack.svc.cluster.local
 172.19.123.251 int.cloud.dev kite.int.cloud.dev ceph.int.cloud.dev
 EOF'
 
