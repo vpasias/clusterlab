@@ -7,8 +7,8 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "$BASE_DIR/lib/colors.sh"
 source "$BASE_DIR/lib/atomic_helm.sh"
 
-OSH_DOMAIN="${OSH_DOMAIN:-osh.cloud.dev}"
-MGMT_DOMAIN="${MGMT_DOMAIN:-int.cloud.dev}"
+OSH_DOMAIN="${OSH_DOMAIN:-osh.openstack.svc.cluster.local}"
+MGMT_DOMAIN="${MGMT_DOMAIN:-int.openstack.svc.cluster.local}"
 
 OSH_INGRESS_CLASS="${OSH_INGRESS_CLASS:-nginx}"
 MGMT_INGRESS_CLASS="${MGMT_INGRESS_CLASS:-traefik}"
