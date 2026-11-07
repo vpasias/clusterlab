@@ -45,7 +45,7 @@ sudo tee -a /etc/hosts <<EOF
 172.19.123.23 snode3 snode3.cloud.dev
 172.19.123.24 snode4 snode4.cloud.dev
 172.19.123.25 snode5 snode5.cloud.dev
-172.19.123.250 osh.cloud.dev keystone.osh.cloud.dev horizon.osh.cloud.dev skyline.osh.cloud.dev novncproxy.osh.cloud.dev
+172.19.123.250 openstack.svc.cluster.local keystone.openstack.svc.cluster.local horizon.openstack.svc.cluster.local
 172.19.123.251 int.cloud.dev kite.int.cloud.dev ceph.int.cloud.dev
 EOF
 
@@ -114,18 +114,86 @@ kubectl apply -f /tmp/custom-pool.yaml
 chmod +x scripts/install-osh-deps.sh && sudo ./scripts/install-osh-deps.sh
 
 ###Install OSH
-#Install OpenStack Infrastructure Components
-chmod +x scripts/install-osh.sh && sudo ./scripts/install-osh.sh --infra
+export OPENSTACK_RELEASE=2026.1 && export FEATURES="${OPENSTACK_RELEASE} ubuntu_noble" && export OVERRIDES_DIR=$(pwd)/overrides
 
-#Install OpenStack Core Components
-sudo ./scripts/install-osh.sh --core && sleep 10 && sudo ./scripts/install-osh.sh --cinder
-sudo ./scripts/install-osh.sh --heat && sleep 10 && sudo ./scripts/install-osh.sh --skyline
+OVERRIDES_URL=https://opendev.org/openstack/openstack-helm/raw/branch/master/values_overrides
+for chart in rabbitmq mariadb memcached openvswitch libvirt keystone heat glance cinder trove placement nova neutron horizon; do
+    helm osh get-values-overrides -d -u ${OVERRIDES_URL} -p ${OVERRIDES_DIR} -c ${chart} ${FEATURES}
+done
 
-#Install and Configure Libvirt
-sudo ./scripts/install-osh.sh --libvirt
+#Install RabbitMQ
+helm upgrade --install rabbitmq openstack-helm/rabbitmq --namespace=openstack --set pod.replicas.server=1 --timeout=600s \
+    $(helm osh get-values-overrides -p ${OVERRIDES_DIR} -c rabbitmq ${FEATURES})
 
-#Install OpenStack Compute Kit
-sudo ./scripts/install-osh.sh --compute
+#Install MariaDB
+helm upgrade --install mariadb openstack-helm/mariadb --namespace=openstack --set pod.replicas.server=1 \
+    $(helm osh get-values-overrides -p ${OVERRIDES_DIR} -c mariadb ${FEATURES})
+
+#Install Memcached
+helm upgrade --install memcached openstack-helm/memcached --namespace=openstack \
+    $(helm osh get-values-overrides -p ${OVERRIDES_DIR} -c memcached ${FEATURES})
+
+#Install Keystone
+helm upgrade --install keystone openstack-helm/keystone --namespace=openstack $(helm osh get-values-overrides -p ${OVERRIDES_DIR} -c keystone ${FEATURES})
+
+#Install Heat
+helm upgrade --install heat openstack-helm/heat --namespace=openstack $(helm osh get-values-overrides -p ${OVERRIDES_DIR} -c heat ${FEATURES})
+
+#Install Glance
+tee ${OVERRIDES_DIR}/glance/glance_pvc_storage.yaml <<EOF
+storage: pvc
+volume:
+  class_name: general
+  size: 10Gi
+EOF
+
+helm upgrade --install glance openstack-helm/glance --namespace=openstack \
+    $(helm osh get-values-overrides -p ${OVERRIDES_DIR} -c glance glance_pvc_storage ${FEATURES})
+
+#Install Cinder
+helm upgrade --install cinder openstack-helm/cinder --namespace=openstack --timeout=600s \
+    $(helm osh get-values-overrides -p ${OVERRIDES_DIR} -c cinder ${FEATURES})
+
+#Install Compute kit backend: Openvswitch and Libvirt
+helm upgrade --install openvswitch openstack-helm/openvswitch --namespace=openstack \
+    $(helm osh get-values-overrides -p ${OVERRIDES_DIR} -c openvswitch ${FEATURES})
+
+helm upgrade --install libvirt openstack-helm/libvirt --namespace=openstack --set conf.ceph.enabled=true \
+    $(helm osh get-values-overrides -p ${OVERRIDES_DIR} -c libvirt ${FEATURES})
+
+#Install Compute kit: Placement, Nova, Neutron
+helm upgrade --install placement openstack-helm/placement --namespace=openstack \
+    $(helm osh get-values-overrides -p ${OVERRIDES_DIR} -c placement ${FEATURES})
+
+helm upgrade --install nova openstack-helm/nova --namespace=openstack --set bootstrap.wait_for_computes.enabled=true \
+    --set conf.ceph.enabled=true \
+    $(helm osh get-values-overrides -p ${OVERRIDES_DIR} -c nova ${FEATURES})
+
+PROVIDER_INTERFACE=enp8s0 && tee ${OVERRIDES_DIR}/neutron/neutron_simple.yaml << EOF
+conf:
+  neutron:
+    DEFAULT:
+      l3_ha: False
+      max_l3_agents_per_router: 1
+  # <provider_interface_name> will be attached to the br-ex bridge.
+  # The IP assigned to the interface will be moved to the bridge.
+  auto_bridge_add:
+    br-ex: ${PROVIDER_INTERFACE}
+  plugins:
+    ml2_conf:
+      ml2_type_flat:
+        flat_networks: public
+    openvswitch_agent:
+      ovs:
+        bridge_mappings: public:br-ex
+EOF
+
+helm upgrade --install neutron openstack-helm/neutron --namespace=openstack \
+    $(helm osh get-values-overrides -p ${OVERRIDES_DIR} -c neutron neutron_simple ${FEATURES})
+
+#Install Horizon
+helm upgrade --install horizon openstack-helm/horizon --namespace=openstack \
+    $(helm osh get-values-overrides -p ${OVERRIDES_DIR} -c horizon ${FEATURES})
 
 sudo apt install python3.12-venv -y && python3 -m venv ~/openstack-client && source ~/openstack-client/bin/activate && pip install python-openstackclient
 
@@ -140,7 +208,7 @@ clouds:
       project_name: 'admin'
       project_domain_name: 'default'
       user_domain_name: 'default'
-      auth_url: 'http://keystone.osh.cloud.dev/v3'
+      auth_url: 'http://keystone.openstack.svc.cluster.local/v3'
 EOF
 
 export OS_CLOUD=openstack_helm
