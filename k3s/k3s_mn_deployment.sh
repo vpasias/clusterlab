@@ -128,8 +128,6 @@ ssh_in "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
 172.19.123.23 snode3 snode3.openstack.svc.cluster.local
 172.19.123.24 snode4 snode4.openstack.svc.cluster.local
 172.19.123.25 snode5 snode5.openstack.svc.cluster.local
-172.19.123.250 keystone.openstack.svc.cluster.local horizon.openstack.svc.cluster.local osh.openstack.svc.cluster.local novncproxy.openstack.svc.cluster.local skyline.openstack.svc.cluster.local
-172.19.123.251 int.openstack.svc.cluster.local kite.openstack.svc.cluster.local ceph.openstack.svc.cluster.local
 EOF'
 
 ssh_in "${i}" -t -- 'sudo tee -a /etc/haproxy/haproxy.cfg <<EOF
@@ -201,8 +199,6 @@ ssh_in "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
 172.19.123.23 snode3 snode3.openstack.svc.cluster.local
 172.19.123.24 snode4 snode4.openstack.svc.cluster.local
 172.19.123.25 snode5 snode5.openstack.svc.cluster.local
-172.19.123.250 keystone.openstack.svc.cluster.local horizon.openstack.svc.cluster.local osh.openstack.svc.cluster.local novncproxy.openstack.svc.cluster.local skyline.openstack.svc.cluster.local
-172.19.123.251 int.openstack.svc.cluster.local kite.openstack.svc.cluster.local ceph.openstack.svc.cluster.local
 EOF'
 
 ssh_in "${i}" -t -- 'sudo tee -a /etc/haproxy/haproxy.cfg <<EOF
@@ -273,8 +269,6 @@ ssh_sn "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
 172.19.123.23 snode3 snode3.openstack.svc.cluster.local
 172.19.123.24 snode4 snode4.openstack.svc.cluster.local
 172.19.123.25 snode5 snode5.openstack.svc.cluster.local
-172.19.123.250 keystone.openstack.svc.cluster.local horizon.openstack.svc.cluster.local osh.openstack.svc.cluster.local novncproxy.openstack.svc.cluster.local skyline.openstack.svc.cluster.local
-172.19.123.251 int.openstack.svc.cluster.local kite.openstack.svc.cluster.local ceph.openstack.svc.cluster.local
 EOF'
 
 done
