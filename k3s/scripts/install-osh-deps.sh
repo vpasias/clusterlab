@@ -166,7 +166,7 @@ metadata:
     namespace: metallb-system
 spec:
     addresses:
-    - "172.19.123.210-172.19.123.250"
+    - "172.19.123.0/24"
 EOF
 
 cat <<EOF | kubectl apply -f -
@@ -206,7 +206,7 @@ metadata:
   name: public-openstack
   namespace: openstack
   annotations:
-    metallb.universe.tf/loadBalancerIPs: "172.19.123.210"
+    metallb.universe.tf/loadBalancerIPs: "172.19.123.254"
 spec:
   externalTrafficPolicy: Cluster
   type: LoadBalancer
