@@ -156,29 +156,29 @@ helm osh wait-for-pods ${OPENSTACK_NS}
 #EOF
 
 # --- Install MetalLB -----------------------------------
-#info "Install MetalLB load-balancer for Openstack"
+info "Install MetalLB load-balancer for Openstack"
 
-#cat <<EOF | kubectl apply -f -
-#apiVersion: metallb.io/v1beta1
-#kind: IPAddressPool
-#metadata:
-#    name: public
-#    namespace: metallb-system
-#spec:
-#    addresses:
-#    - "172.19.123.210-172.19.123.250"
-#EOF
+cat <<EOF | kubectl apply -f -
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+    name: public
+    namespace: metallb-system
+spec:
+    addresses:
+    - "172.19.123.210-172.19.123.250"
+EOF
 
-#cat <<EOF | kubectl apply -f -
-#apiVersion: metallb.io/v1beta1
-#kind: L2Advertisement
-#metadata:
-#    name: public
-#    namespace: metallb-system
-#spec:
-#    ipAddressPools:
-#    - public
-#EOF
+cat <<EOF | kubectl apply -f -
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+    name: public
+    namespace: metallb-system
+spec:
+    ipAddressPools:
+    - public
+EOF
 
 # --- Install Nginx Ingress Controller for Openstack -----------------------------------
 info "Install Nginx Ingress Controller for Openstack"
@@ -205,8 +205,8 @@ apiVersion: v1
 metadata:
   name: public-openstack
   namespace: openstack
-#  annotations:
-#    metallb.universe.tf/loadBalancerIPs: "172.19.123.210"
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: "172.19.123.210"
 spec:
   externalTrafficPolicy: Cluster
   type: LoadBalancer
