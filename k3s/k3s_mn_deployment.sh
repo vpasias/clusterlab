@@ -57,7 +57,7 @@ for i in {1..5}; do
         --machine-type q35 \
         --cpu 16 \
         --host-passthrough \
-        --memory 65536 \
+        --memory 32768 \
         --disk 100 \
         --ephemeral-disk 100 \
         --unsafe-caching \
