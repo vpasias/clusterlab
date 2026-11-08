@@ -166,7 +166,7 @@ metadata:
     namespace: metallb-system
 spec:
     addresses:
-    - "172.19.123.0/24"
+    - 172.19.123.200-172.19.123.254
 EOF
 
 cat <<EOF | kubectl apply -f -
