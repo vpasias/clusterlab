@@ -55,9 +55,9 @@ done
 for i in {1..5}; do
     cat <<EOF | uvt-kvm create \
         --machine-type q35 \
-        --cpu 8 \
+        --cpu 16 \
         --host-passthrough \
-        --memory 32768 \
+        --memory 65536 \
         --disk 100 \
         --ephemeral-disk 100 \
         --unsafe-caching \
