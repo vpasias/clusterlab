@@ -1,1 +1,292 @@
+#!/bin/bash
 
+set -eux
+
+cd "$(dirname "$0")"
+
+function ssh_in() {
+    local ip="172.19.123.1${1}"
+    shift
+    ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu "${ip}" "$@"
+}
+
+function ssh_sn() {
+    local ip="172.19.123.2${1}"
+    shift
+    ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu "${ip}" "$@"
+}
+
+for i in {1..2}; do
+    cat <<EOF | uvt-kvm create \
+        --machine-type q35 \
+        --cpu 4 \
+        --host-passthrough \
+        --memory 16384 \
+        --disk 100 \
+        --unsafe-caching \
+        --network-config /dev/stdin \
+        --no-start \
+        "inode${i}" \
+        release=noble
+network:
+  version: 2
+  ethernets:
+    enp1s0:
+      dhcp4: false
+      dhcp6: false
+      accept-ra: false
+      addresses:
+        - 172.19.123.1${i}/24
+      routes:
+        - to: default
+          via: 172.19.123.1
+      nameservers:
+        addresses:
+          - 172.19.123.1
+    enp8s0:
+      dhcp4: false
+      dhcp6: false
+      accept-ra: false
+      addresses:
+        - 172.19.124.1${i}/24
+EOF
+done
+
+for i in {1..5}; do
+    cat <<EOF | uvt-kvm create \
+        --machine-type q35 \
+        --cpu 8 \
+        --host-passthrough \
+        --memory 32768 \
+        --disk 100 \
+        --ephemeral-disk 100 \
+        --unsafe-caching \
+        --network-config /dev/stdin \
+        --no-start \
+        "snode${i}" \
+        release=noble
+network:
+  version: 2
+  ethernets:
+    enp1s0:
+      dhcp4: false
+      dhcp6: false
+      accept-ra: false
+      addresses:
+        - 172.19.123.2${i}/24
+      routes:
+        - to: default
+          via: 172.19.123.1
+      nameservers:
+        addresses:
+          - 172.19.123.1
+    enp8s0:
+      dhcp4: false
+      dhcp6: false
+      accept-ra: false
+      addresses:
+        - 172.19.124.2${i}/24
+EOF
+done
+
+for i in {1..2}; do
+    virsh detach-interface "inode${i}" network --config    
+    virsh attach-interface "inode${i}" network virbr-mgt --model virtio --config
+    virsh attach-interface "inode${i}" network virbr-serv --model virtio --config
+    virsh start "inode${i}"
+done
+
+for i in {1..5}; do
+    virsh detach-interface "snode${i}" network --config    
+    virsh attach-interface "snode${i}" network virbr-mgt --model virtio --config    
+    virsh attach-interface "snode${i}" network virbr-serv --model virtio --config    
+    virsh start "snode${i}"
+done
+
+sleep 30
+
+for i in {1..1}; do
+
+    ssh_in "${i}" -t -- sudo apt update -y
+    ssh_in "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils sshpass ca-certificates gnupg lsb-release jq
+    ssh_in "${i}" -t -- sudo apt-get install haproxy keepalived -y
+
+    ssh_in "${i}" -t -- 'echo "root:gprm8350" | sudo chpasswd'
+    ssh_in "${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
+    ssh_in "${i}" -t -- "sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config"
+    ssh_in "${i}" -t -- "sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config"
+    ssh_in "${i}" -t -- "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config.d/60-cloudimg-settings.conf"
+    ssh_in "${i}" -t -- sudo systemctl restart ssh
+    ssh_in "${i}" -t -- sudo rm -rf /root/.ssh/authorized_keys
+    ssh_in "${i}" -t -- 'echo "ubuntu ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/ubuntu'
+
+ssh_in "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
+172.19.123.11 inode1 inode1.openstack.svc.cluster.local
+172.19.123.12 inode2 inode2.openstack.svc.cluster.local
+172.19.123.21 snode1 snode1.openstack.svc.cluster.local
+172.19.123.22 snode2 snode2.openstack.svc.cluster.local
+172.19.123.23 snode3 snode3.openstack.svc.cluster.local
+172.19.123.24 snode4 snode4.openstack.svc.cluster.local
+172.19.123.25 snode5 snode5.openstack.svc.cluster.local
+172.19.123.250 keystone.openstack.svc.cluster.local horizon.openstack.svc.cluster.local osh.openstack.svc.cluster.local novncproxy.openstack.svc.cluster.local skyline.openstack.svc.cluster.local
+172.19.123.251 int.openstack.svc.cluster.local kite.openstack.svc.cluster.local ceph.openstack.svc.cluster.local
+EOF'
+
+ssh_in "${i}" -t -- 'sudo tee -a /etc/haproxy/haproxy.cfg <<EOF
+frontend k3s-frontend
+    bind *:6443
+    mode tcp
+    option tcplog
+    default_backend k3s-backend
+
+backend k3s-backend
+    mode tcp
+    option tcp-check
+    balance roundrobin
+    default-server inter 10s downinter 5s
+    server snode1 172.19.123.21:6443 check
+    server snode2 172.19.123.22:6443 check
+    server snode3 172.19.123.23:6443 check
+EOF'
+
+ssh_in "${i}" -t -- 'sudo tee -a /etc/keepalived/keepalived.conf <<EOF
+global_defs {
+  enable_script_security
+  script_user root
+}
+
+vrrp_script chk_haproxy {
+    script 'killall -0 haproxy' # faster than pidof
+    interval 2
+}
+
+vrrp_instance haproxy-vip {
+    interface enp1s0
+    state MASTER
+    priority 200
+
+    virtual_router_id 51
+
+    virtual_ipaddress {
+        172.19.123.254/24
+    }
+EOF'
+
+ssh_in "${i}" -t -- sudo systemctl restart haproxy
+
+ssh_in "${i}" -t -- sudo systemctl restart keepalived
+
+done
+
+for i in {2..2}; do
+
+    ssh_in "${i}" -t -- sudo apt update -y
+    ssh_in "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils sshpass ca-certificates gnupg lsb-release jq
+    ssh_in "${i}" -t -- sudo apt-get install haproxy keepalived -y
+
+    ssh_in "${i}" -t -- 'echo "root:gprm8350" | sudo chpasswd'
+    ssh_in "${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
+    ssh_in "${i}" -t -- "sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config"
+    ssh_in "${i}" -t -- "sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config"
+    ssh_in "${i}" -t -- "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config.d/60-cloudimg-settings.conf"
+    ssh_in "${i}" -t -- sudo systemctl restart ssh
+    ssh_in "${i}" -t -- sudo rm -rf /root/.ssh/authorized_keys
+    ssh_in "${i}" -t -- 'echo "ubuntu ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/ubuntu'
+
+ssh_in "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
+172.19.123.11 inode1 inode1.openstack.svc.cluster.local
+172.19.123.12 inode2 inode2.openstack.svc.cluster.local
+172.19.123.21 snode1 snode1.openstack.svc.cluster.local
+172.19.123.22 snode2 snode2.openstack.svc.cluster.local
+172.19.123.23 snode3 snode3.openstack.svc.cluster.local
+172.19.123.24 snode4 snode4.openstack.svc.cluster.local
+172.19.123.25 snode5 snode5.openstack.svc.cluster.local
+172.19.123.250 keystone.openstack.svc.cluster.local horizon.openstack.svc.cluster.local osh.openstack.svc.cluster.local novncproxy.openstack.svc.cluster.local skyline.openstack.svc.cluster.local
+172.19.123.251 int.openstack.svc.cluster.local kite.openstack.svc.cluster.local ceph.openstack.svc.cluster.local
+EOF'
+
+ssh_in "${i}" -t -- 'sudo tee -a /etc/haproxy/haproxy.cfg <<EOF
+frontend k3s-frontend
+    bind *:6443
+    mode tcp
+    option tcplog
+    default_backend k3s-backend
+
+backend k3s-backend
+    mode tcp
+    option tcp-check
+    balance roundrobin
+    default-server inter 10s downinter 5s
+    server snode1 172.19.123.21:6443 check
+    server snode2 172.19.123.22:6443 check
+    server snode3 172.19.123.23:6443 check
+EOF'
+
+ssh_in "${i}" -t -- 'sudo tee -a /etc/keepalived/keepalived.conf <<EOF
+global_defs {
+  enable_script_security
+  script_user root
+}
+
+vrrp_script chk_haproxy {
+    script 'killall -0 haproxy' # faster than pidof
+    interval 2
+}
+
+vrrp_instance haproxy-vip {
+    interface enp1s0
+    state BACKUP
+    priority 100
+
+    virtual_router_id 51
+
+    virtual_ipaddress {
+        172.19.123.254/24
+    }
+EOF'
+
+ssh_in "${i}" -t -- sudo systemctl restart haproxy
+
+ssh_in "${i}" -t -- sudo systemctl restart keepalived
+
+done
+
+for i in {1..5}; do
+
+    ssh_sn "${i}" -t -- sudo apt update -y
+    ssh_sn "${i}" -t -- sudo apt-get install -y git vim net-tools wget curl bash-completion apt-utils sshpass ca-certificates gnupg lsb-release jq
+
+    ssh_sn "${i}" -t -- 'echo "root:gprm8350" | sudo chpasswd'
+    ssh_sn "${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
+    ssh_sn "${i}" -t -- "sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config"
+    ssh_sn "${i}" -t -- "sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config"
+    ssh_sn "${i}" -t -- "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config.d/60-cloudimg-settings.conf"
+    ssh_sn "${i}" -t -- sudo systemctl restart ssh
+    ssh_sn "${i}" -t -- sudo rm -rf /root/.ssh/authorized_keys
+    ssh_sn "${i}" -t -- 'echo "ubuntu ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/ubuntu'
+
+ssh_sn "${i}" -t -- 'sudo tee -a /etc/hosts <<EOF
+172.19.123.11 inode1 inode1.openstack.svc.cluster.local
+172.19.123.12 inode2 inode2.openstack.svc.cluster.local
+172.19.123.21 snode1 snode1.openstack.svc.cluster.local
+172.19.123.22 snode2 snode2.openstack.svc.cluster.local
+172.19.123.23 snode3 snode3.openstack.svc.cluster.local
+172.19.123.24 snode4 snode4.openstack.svc.cluster.local
+172.19.123.25 snode5 snode5.openstack.svc.cluster.local
+172.19.123.250 keystone.openstack.svc.cluster.local horizon.openstack.svc.cluster.local osh.openstack.svc.cluster.local novncproxy.openstack.svc.cluster.local skyline.openstack.svc.cluster.local
+172.19.123.251 int.openstack.svc.cluster.local kite.openstack.svc.cluster.local ceph.openstack.svc.cluster.local
+EOF'
+
+done
+
+for i in {1..1}; do
+
+    ssh_in "${i}" -t -- sudo reboot
+
+done
+
+for i in {1..5}; do
+
+    ssh_sn "${i}" -t -- sudo reboot
+
+done
