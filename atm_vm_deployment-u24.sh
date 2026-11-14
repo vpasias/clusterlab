@@ -4,6 +4,31 @@ set -eux
 
 cd "$(dirname "$0")"
 
+cat <<EOF | virsh net-define /dev/stdin
+<network>
+  <name>virbr-mgt</name>
+  <bridge name='virbr-mgt' stp='off'/>
+  <forward mode='nat'/>
+  <ip address='10.0.123.1' netmask='255.255.255.0'>
+  </ip>
+</network>
+EOF
+
+cat <<EOF | virsh net-define /dev/stdin
+<network>
+  <name>virbr-serv</name>
+  <bridge name='virbr-serv' stp='off'/>
+  <forward mode='nat'/>
+  <ip address='10.0.124.1' netmask='255.255.255.0'>
+  </ip>
+</network>
+EOF
+
+virsh net-autostart virbr-mgt
+virsh net-start virbr-mgt
+virsh net-autostart virbr-serv
+virsh net-start virbr-serv
+
 function ssh_ctl() {
     local ip="10.0.123.1${1}"
     shift
