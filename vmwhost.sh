@@ -82,7 +82,7 @@ for i in {1..1}; do
     ssh_to "${i}" -t -- sudo apt update -y
     ssh_to "${i}" -t -- sudo apt upgrade -y
     ssh_to "${i}" -t -- sudo timedatectl set-timezone America/New_York
-    ssh_to "${i}" -t -- sudo apt-get install -y git vim wget curl
+    ssh_to "${i}" -t -- sudo apt-get install -y git vim wget curl net-tools
 
     ssh_to "${i}" -t -- 'echo "root:gprm8350" | sudo chpasswd'
     ssh_to "${i}" -t -- 'echo "ubuntu:kyax7344" | sudo chpasswd'
