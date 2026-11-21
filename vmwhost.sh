@@ -104,10 +104,10 @@ done
 
 ssh_to 1 -- 'sudo tee -a /etc/hosts <<EOF
 192.168.254.11 node-1 node-1.cloud.ds.dev
-192.168.254.101 esxi1.cloud.ds.dev
-192.168.254.102 esxi2.cloud.ds.dev
-192.168.254.103 esxi3.cloud.ds.dev
-192.168.254.200 vcenter.cloud.ds.dev
+192.168.254.101 esxi1 esxi1.cloud.ds.dev
+192.168.254.102 esxi2 esxi2.cloud.ds.dev
+192.168.254.103 esxi3 esxi3.cloud.ds.dev
+192.168.254.200 vcenter vcenter.cloud.ds.dev
 EOF'
 
 for i in {1..1}; do
