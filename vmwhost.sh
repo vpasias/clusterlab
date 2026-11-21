@@ -40,9 +40,9 @@ function ssh_to() {
 for i in {1..1}; do
     cat <<EOF | uvt-kvm create \
         --machine-type q35 \
-        --cpu 52 \
+        --cpu 60 \
         --host-passthrough \
-        --memory 245760 \
+        --memory 376832 \
         --disk 1400 \
         --unsafe-caching \
         --network-config /dev/stdin \
